@@ -1,0 +1,350 @@
+[
+ {
+  "id": "p01",
+  "title": "망토",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["hidden_side", "facing_mismatch"],
+  "traps": ["등 돌린 사람의 뒷모습을 봄"],
+  "initial_state": {
+   "서윤": {"facing": {"도현": "front"}},
+   "도현": {"facing": {"서윤": "front"}}
+  },
+  "sentences": [
+   {"text": "서윤은 도현의 말을 끝까지 듣지 않고 몸을 돌렸다.",
+    "events": [{"type": "turn", "character": "서윤", "away_from": "도현"}]},
+   {"text": "그녀는 망토 깃을 여며 어깨까지 감쌌다.", "events": []},
+   {"text": "도현은 망토에 덮인 그 뒷모습을 한참 바라보았다.",
+    "events": [{"type": "state", "character": "서윤", "facing": {"도현": "back"}}]},
+   {"text": "바람이 불어 망토 자락이 크게 펄럭였다.", "events": []},
+   {"text": "서윤이 다시 몸을 돌려 도현을 마주했다.",
+    "events": [{"type": "turn", "character": "서윤", "toward": "도현"}]},
+   {"text": "도현은 그제야 그녀의 눈가가 붉어진 것을 보았다.",
+    "events": [{"type": "see", "character": "도현", "target": "서윤", "part": "face"}]}
+  ],
+  "errors": [
+   {"sentence": 2, "text": "도현은 망토 너머로 그녀가 입술을 깨무는 것을 보았다.",
+    "events": [{"type": "see", "character": "도현", "target": "서윤", "part": "face"}],
+    "rule": "hidden_side", "note": "서윤은 도현에게 등을 보이고 있다"},
+   {"sentence": 3, "text": "서윤은 도현을 마주 본 채 펄럭이는 망토 자락을 움켜쥐었다.",
+    "events": [{"type": "state", "character": "서윤", "facing": {"도현": "back"}},
+               {"type": "state", "character": "서윤", "facing": {"도현": "front"}}],
+    "rule": "facing_mismatch", "note": "돌아서는 행동 없이 마주 본다"}
+  ]
+ },
+ {
+  "id": "p02",
+  "title": "산 중턱",
+  "source": "original",
+  "difficulty": "explicit",
+  "patterns": ["layer_order", "hand_full"],
+  "traps": ["배낭을 먼저 벗고 바람막이를 벗음"],
+  "initial_state": {
+   "준호": {"hands": {"left": null, "right": null},
+            "worn": {"torso": ["티셔츠", "바람막이", "배낭"]}, "front": [], "back": ["배낭"]}
+  },
+  "items": {"생수병": "바위 위"},
+  "sentences": [
+   {"text": "산 중턱에 이르자 준호의 등이 땀으로 흠뻑 젖었다.", "events": []},
+   {"text": "그는 배낭을 벗어 바위 위에 내려놓고, 바람막이 지퍼를 내려 두 팔을 빼냈다.",
+    "events": [{"type": "take_off", "character": "준호", "item": "배낭", "free_hands_needed": 1, "to": "바위 위"},
+               {"type": "take_off", "character": "준호", "item": "바람막이", "free_hands_needed": 1}]},
+   {"text": "벗은 바람막이를 둘둘 말아 배낭 옆 주머니에 꽂았다.",
+    "events": [{"type": "grab", "character": "준호", "object": "바람막이"},
+               {"type": "release", "character": "준호", "object": "바람막이", "to": "배낭 옆 주머니"}]},
+   {"text": "준호는 티셔츠 차림으로 배낭을 다시 멨다.",
+    "events": [{"type": "wear", "character": "준호", "item": "배낭", "zone": "torso", "side": "back"}]},
+   {"text": "땀이 식자 그는 두 손으로 배낭 어깨끈을 당겨 고쳐 맸다.",
+    "events": [{"type": "use", "character": "준호", "hand": "both", "free_hands_needed": 2, "action": "어깨끈을 당김"}]}
+  ],
+  "errors": [
+   {"sentence": 1, "text": "그는 배낭을 멘 채 바람막이 지퍼를 내려 두 팔을 빼냈다.",
+    "events": [{"type": "take_off", "character": "준호", "item": "바람막이", "free_hands_needed": 1}],
+    "rule": "layer_order", "note": "배낭 끈이 바람막이 위에 있다"},
+   {"sentence": 4, "text": "땀이 식자 그는 바위 위의 생수병을 쥔 채 두 손으로 배낭 어깨끈을 당겨 고쳐 맸다.",
+    "events": [{"type": "grab", "character": "준호", "object": "생수병", "from": "바위 위"},
+               {"type": "use", "character": "준호", "hand": "both", "free_hands_needed": 2, "action": "어깨끈을 당김"}],
+    "rule": "hand_full", "note": "한 손에 생수병이 있다"}
+  ]
+ },
+ {
+  "id": "p03",
+  "title": "입국장",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["hand_full", "state_mismatch", "item_location"],
+  "traps": ["캐리어를 끌며 걸음"],
+  "initial_state": {
+   "하린": {"hands": {"left": "캐리어", "right": null}, "front": []},
+   "지우": {"hands": {"left": null, "right": "꽃다발"}, "front": []}
+  },
+  "sentences": [
+   {"text": "입국장 문이 열리자 하린이 캐리어를 끌며 걸어 나왔다.",
+    "events": [{"type": "state", "character": "하린", "holds": "캐리어"}]},
+   {"text": "지우는 들고 있던 꽃다발을 벤치에 내려놓았다.",
+    "events": [{"type": "release", "character": "지우", "object": "꽃다발", "to": "벤치"}]},
+   {"text": "하린은 캐리어 손잡이를 놓고 지우를 꼭 끌어안았다.",
+    "events": [{"type": "release", "character": "하린", "object": "캐리어", "to": "바닥"},
+               {"type": "touch", "character": "하린", "target": "지우", "kind": "hug"}]},
+   {"text": "지우도 두 팔로 하린의 등을 감쌌다.",
+    "events": [{"type": "touch", "character": "지우", "target": "하린", "kind": "hug"}]},
+   {"text": "한참 뒤 두 사람은 팔을 풀었다.",
+    "events": [{"type": "untouch", "character": "하린", "target": "지우"}]},
+   {"text": "지우가 벤치에서 꽃다발을 집어 하린에게 건넸다.",
+    "events": [{"type": "grab", "character": "지우", "object": "꽃다발", "from": "벤치"},
+               {"type": "give", "character": "지우", "to": "하린", "object": "꽃다발"}]}
+  ],
+  "errors": [
+   {"sentence": 2, "text": "하린은 캐리어 손잡이를 쥔 채 두 팔로 지우를 꼭 끌어안았다.",
+    "events": [{"type": "touch", "character": "하린", "target": "지우", "kind": "hug"}],
+    "rule": "hand_full", "note": "한 손이 캐리어를 쥐고 있다"},
+   {"sentence": 3, "text": "지우는 꽃다발을 품에 든 채 두 팔로 하린의 등을 감쌌다.",
+    "events": [{"type": "state", "character": "지우", "holds": "꽃다발"},
+               {"type": "touch", "character": "지우", "target": "하린", "kind": "hug"}],
+    "rule": "state_mismatch", "note": "꽃다발은 벤치에 있다"},
+   {"sentence": 5, "text": "지우가 가방에서 꽃다발을 꺼내 하린에게 건넸다.",
+    "events": [{"type": "grab", "character": "지우", "object": "꽃다발", "from": "가방"},
+               {"type": "give", "character": "지우", "to": "하린", "object": "꽃다발"}],
+    "rule": "item_location", "note": "꽃다발은 벤치에 있다"}
+  ]
+ },
+ {
+  "id": "p04",
+  "title": "복도",
+  "source": "original",
+  "difficulty": "explicit",
+  "patterns": ["contact_kept"],
+  "traps": ["돌아서려 했지만 돌아서지 못함"],
+  "initial_state": {
+   "태오": {"hands": {"left": null, "right": null}},
+   "은서": {"hands": {"left": null, "right": null}}
+  },
+  "sentences": [
+   {"text": "은서가 돌아서려 하자 태오가 오른손으로 그녀의 손목을 붙잡았다.",
+    "events": [{"type": "touch", "character": "태오", "target": "은서", "kind": "grip", "hand": "right"}]},
+   {"text": "\"잠깐만, 이야기 좀 해.\"", "events": []},
+   {"text": "은서는 손목을 비틀어 그의 손을 뿌리치고 복도 끝으로 걸어갔다.",
+    "events": [{"type": "untouch", "character": "은서", "target": "태오"},
+               {"type": "move", "character": "은서", "away_from": "태오"}]},
+   {"text": "태오는 고개를 숙이고 길게 숨을 내쉬었다.", "events": []}
+  ],
+  "errors": [
+   {"sentence": 2, "text": "은서는 손목을 잡힌 채로 그를 지나쳐 복도 끝으로 걸어갔다.",
+    "events": [{"type": "move", "character": "은서", "away_from": "태오"}],
+    "rule": "contact_kept", "note": "태오가 아직 손목을 잡고 있다"}
+  ]
+ },
+ {
+  "id": "p05",
+  "title": "현관 열쇠",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["item_location", "tool_missing", "hand_full"],
+  "traps": ["쥔 열쇠로 문을 엶"],
+  "initial_state": {
+   "미라": {"hands": {"left": null, "right": null}}
+  },
+  "items": {"열쇠": "가방 안주머니", "우유": "냉장고"},
+  "sentences": [
+   {"text": "미라는 현관 앞에서 가방을 뒤져 열쇠를 꺼냈다.",
+    "events": [{"type": "grab", "character": "미라", "hand": "right", "object": "열쇠", "from": "가방"}]},
+   {"text": "문을 열고 들어선 그녀는 열쇠를 신발장 위 접시에 던져 두었다.",
+    "events": [{"type": "use", "character": "미라", "free_hands_needed": 0, "action": "문을 엶", "with": "열쇠"},
+               {"type": "release", "character": "미라", "object": "열쇠", "to": "신발장 위 접시"}]},
+   {"text": "부엌으로 간 미라는 냉장고에서 우유를 꺼내 컵에 따랐다.",
+    "events": [{"type": "grab", "character": "미라", "hand": "right", "object": "우유", "from": "냉장고"},
+               {"type": "use", "character": "미라", "free_hands_needed": 1, "action": "컵을 잡음"}]},
+   {"text": "우유갑을 냉장고에 다시 넣은 그녀는 컵을 들고 거실 소파에 앉았다.",
+    "events": [{"type": "release", "character": "미라", "object": "우유", "to": "냉장고"},
+               {"type": "grab", "character": "미라", "object": "컵"}]},
+   {"text": "잠시 뒤 택배 기사가 초인종을 눌렀다.", "events": []},
+   {"text": "미라는 컵을 탁자에 내려놓고 신발장 위 접시에서 열쇠를 집어 들었다.",
+    "events": [{"type": "release", "character": "미라", "object": "컵", "to": "탁자"},
+               {"type": "grab", "character": "미라", "object": "열쇠", "from": "신발장 위 접시"}]}
+  ],
+  "errors": [
+   {"sentence": 1, "text": "문을 연 그녀는 열쇠를 신발장 위 접시에 던져 두고, 그 열쇠로 중문 자물쇠도 열었다.",
+    "events": [{"type": "use", "character": "미라", "free_hands_needed": 0, "action": "문을 엶", "with": "열쇠"},
+               {"type": "release", "character": "미라", "object": "열쇠", "to": "신발장 위 접시"},
+               {"type": "use", "character": "미라", "free_hands_needed": 0, "action": "중문을 엶", "with": "열쇠"}],
+    "rule": "tool_missing", "note": "열쇠는 이미 접시에 있다"},
+   {"sentence": 3, "text": "우유갑을 든 채 그녀는 컵까지 두 손으로 받쳐 들고 소파에 앉았다.",
+    "events": [{"type": "grab", "character": "미라", "hand": "both", "object": "컵"}],
+    "rule": "hand_full", "note": "한 손이 우유갑을 쥐고 있다"},
+   {"sentence": 5, "text": "미라는 컵을 탁자에 내려놓고 가방 안주머니에서 열쇠를 꺼냈다.",
+    "events": [{"type": "release", "character": "미라", "object": "컵", "to": "탁자"},
+               {"type": "grab", "character": "미라", "object": "열쇠", "from": "가방 안주머니"}],
+    "rule": "item_location", "note": "열쇠는 신발장 위 접시에 있다"}
+  ]
+ },
+ {
+  "id": "p06",
+  "title": "둘이 찍은 사진",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["hidden_side", "facing_mismatch", "contact_kept"],
+  "traps": ["화면 속 얼굴을 봄"],
+  "initial_state": {
+   "현우": {"hands": {"left": null, "right": null}, "front": []},
+   "지아": {"back": []}
+  },
+  "sentences": [
+   {"text": "현우가 뒤에서 지아를 감싸 안았다.",
+    "events": [{"type": "touch", "character": "현우", "target": "지아", "kind": "back_hug"}]},
+   {"text": "지아는 그의 가슴에 등을 기댄 채 휴대폰을 앞으로 내밀었다.",
+    "events": [{"type": "state", "character": "지아", "facing": {"현우": "back"}, "holds": "휴대폰"}]},
+   {"text": "두 사람의 얼굴이 화면 속에 나란히 담겼다.", "events": []},
+   {"text": "현우는 지아의 어깨너머로 화면 속 그녀의 웃는 얼굴을 보았다.", "events": []},
+   {"text": "지아가 셔터를 누르자 현우는 팔을 풀었다.",
+    "events": [{"type": "use", "character": "지아", "free_hands_needed": 0, "action": "셔터를 누름", "with": "휴대폰"},
+               {"type": "untouch", "character": "현우", "target": "지아"}]},
+   {"text": "지아가 돌아서서 현우를 올려다보았다.",
+    "events": [{"type": "turn", "character": "지아", "toward": "현우"}]},
+   {"text": "현우는 그녀의 볼이 붉게 달아오른 것을 보았다.",
+    "events": [{"type": "see", "character": "현우", "target": "지아", "part": "face"}]}
+  ],
+  "errors": [
+   {"sentence": 1, "text": "지아는 그를 마주 본 채 휴대폰을 앞으로 내밀었다.",
+    "events": [{"type": "state", "character": "지아", "facing": {"현우": "front"}}],
+    "rule": "facing_mismatch", "note": "뒤에서 안겼으니 등을 보이고 있다"},
+   {"sentence": 3, "text": "현우는 지아의 어깨너머로 그녀가 입술을 깨무는 것을 내려다보았다.",
+    "events": [{"type": "see", "character": "현우", "target": "지아", "part": "face"}],
+    "rule": "hidden_side", "note": "지아는 현우에게 등을 보이고 있다"},
+   {"sentence": 4, "text": "지아가 셔터를 누르자 현우는 그녀를 안은 채 한 걸음 뒤로 물러섰다.",
+    "events": [{"type": "use", "character": "지아", "free_hands_needed": 0, "action": "셔터를 누름", "with": "휴대폰"},
+               {"type": "move", "character": "현우", "away_from": "지아"}],
+    "rule": "contact_kept", "note": "안은 채 멀어질 수 없다"}
+  ]
+ },
+ {
+  "id": "p07",
+  "title": "언덕길",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["state_mismatch", "hand_full"],
+  "traps": ["우산을 쥔 손으로 어깨를 짚음"],
+  "initial_state": {
+   "동수": {"hands": {"left": "우산", "right": null}, "back": []},
+   "민지": {"hands": {"left": null, "right": null}, "front": []}
+  },
+  "sentences": [
+   {"text": "비가 그치자 동수는 접은 우산을 왼손에 쥐고 걸었다.",
+    "events": [{"type": "state", "character": "동수", "holds": "우산"}]},
+   {"text": "발목을 접질린 민지가 더는 걷지 못했다.", "events": []},
+   {"text": "동수는 우산을 민지에게 건네고 그녀 앞에 등을 내밀었다.",
+    "events": [{"type": "give", "character": "동수", "to": "민지", "object": "우산"}]},
+   {"text": "민지가 등에 업히자 동수는 두 손으로 그녀의 다리를 받쳤다.",
+    "events": [{"type": "touch", "character": "동수", "target": "민지", "kind": "carry_back"}]},
+   {"text": "민지는 우산을 쥔 손으로 그의 어깨를 짚었다.", "events": []},
+   {"text": "동수는 민지를 업은 채 천천히 언덕을 내려갔다.",
+    "events": [{"type": "move", "character": "동수", "to": "언덕 아래"}]}
+  ],
+  "errors": [
+   {"sentence": 3, "text": "민지가 등에 업히자 동수는 우산을 쥔 왼손까지 두 손으로 그녀의 다리를 받쳤다.",
+    "events": [{"type": "state", "character": "동수", "holds": "우산"},
+               {"type": "touch", "character": "동수", "target": "민지", "kind": "carry_back"}],
+    "rule": "state_mismatch", "note": "우산은 이미 민지에게 건넸다"},
+   {"sentence": 5, "text": "동수는 민지를 업은 채 오른손으로 휴대폰을 꺼내 택시를 불렀다.",
+    "events": [{"type": "grab", "character": "동수", "hand": "right", "object": "휴대폰"}],
+    "rule": "hand_full", "note": "두 손이 민지의 다리를 받치고 있다"}
+  ]
+ },
+ {
+  "id": "p08",
+  "title": "반지 확인",
+  "source": "original",
+  "difficulty": "explicit",
+  "patterns": ["layer_order", "not_worn"],
+  "traps": ["장갑을 먼저 벗고 반지를 뺌"],
+  "initial_state": {
+   "소희": {"hands": {"left": null, "right": null}, "worn": {"hands": ["반지", "장갑"], "neck": []}}
+  },
+  "sentences": [
+   {"text": "목도리도 없이 털장갑만 낀 소희가 언 손을 비비며 가게에 들어섰다.",
+    "events": [{"type": "state", "character": "소희", "wears": "장갑"}]},
+   {"text": "계산대 앞에서 그녀는 장갑을 벗어 코트 주머니에 넣고, 왼손 약지의 반지를 빼서 점원에게 보여 주었다.",
+    "events": [{"type": "take_off", "character": "소희", "item": "장갑", "free_hands_needed": 1, "to": "코트 주머니"},
+               {"type": "take_off", "character": "소희", "item": "반지", "free_hands_needed": 1}]},
+   {"text": "점원이 반지 안쪽에 새긴 글자를 확인하고 고개를 끄덕였다.", "events": []},
+   {"text": "소희는 반지를 다시 끼고 장갑은 주머니에 둔 채 가게를 나섰다.",
+    "events": [{"type": "wear", "character": "소희", "item": "반지", "zone": "hands"},
+               {"type": "move", "character": "소희", "to": "거리"}]}
+  ],
+  "errors": [
+   {"sentence": 1, "text": "계산대 앞에서 그녀는 장갑 낀 왼손 약지에서 반지를 빼서 점원에게 보여 주었다.",
+    "events": [{"type": "take_off", "character": "소희", "item": "반지", "free_hands_needed": 1}],
+    "rule": "layer_order", "note": "장갑이 반지 위에 있다"},
+   {"sentence": 3, "text": "소희는 반지를 다시 끼고, 목에 둘렀던 목도리를 풀어 가방에 넣은 뒤 가게를 나섰다.",
+    "events": [{"type": "wear", "character": "소희", "item": "반지", "zone": "hands"},
+               {"type": "take_off", "character": "소희", "item": "목도리", "zone": "neck"},
+               {"type": "move", "character": "소희", "to": "거리"}],
+    "rule": "not_worn", "note": "목도리 없이 들어왔다"}
+  ]
+ },
+ {
+  "id": "p09",
+  "title": "만원 엘리베이터",
+  "source": "original",
+  "difficulty": "explicit",
+  "patterns": ["space_full", "hand_full"],
+  "traps": ["뒤에 선 사람의 가슴이 등에 닿음"],
+  "initial_state": {
+   "수빈": {"hands": {"left": "상자", "right": "상자"}, "front": ["상자"], "back": [], "facing": {}},
+   "남자": {"front": [], "back": []}
+  },
+  "sentences": [
+   {"text": "문이 닫히기 직전, 수빈이 상자를 두 팔로 안고 만원 엘리베이터에 뛰어들었다.",
+    "events": [{"type": "state", "character": "수빈", "holds": "상자"}]},
+   {"text": "뒤에서 사람들이 밀려 들어오자 수빈의 등에 낯선 남자의 가슴이 닿았다.",
+    "events": [{"type": "touch", "character": "남자", "target": "수빈", "kind": "lean"}]},
+   {"text": "수빈은 상자를 고쳐 안으며 층수 표시만 올려다보았다.", "events": []},
+   {"text": "문이 열리자 뒤에 있던 남자가 먼저 내렸다.",
+    "events": [{"type": "move", "character": "남자", "away_from": "수빈"}]},
+   {"text": "수빈은 상자를 안은 채 엘리베이터에서 내렸다.",
+    "events": [{"type": "move", "character": "수빈", "to": "복도"}]}
+  ],
+  "errors": [
+   {"sentence": 1, "text": "앞에서 사람들이 밀려 오자 수빈은 상자를 안은 채 앞에 선 남자와 가슴이 맞닿았다.",
+    "events": [{"type": "touch", "character": "수빈", "target": "남자", "kind": "press"}],
+    "rule": "space_full", "note": "몸 앞에 상자가 있다"},
+   {"sentence": 2, "text": "수빈은 상자를 안은 채 한 손으로 휴대폰을 꺼내 층수를 확인했다.",
+    "events": [{"type": "grab", "character": "수빈", "object": "휴대폰"}],
+    "rule": "hand_full", "note": "두 팔로 상자를 안고 있다"}
+  ]
+ },
+ {
+  "id": "p10",
+  "title": "칼 건네기",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["state_mismatch", "hand_full"],
+  "traps": ["칼을 쥔 손으로 썲"],
+  "initial_state": {
+   "셰프": {"hands": {"left": null, "right": "칼"}},
+   "민호": {"hands": {"left": "양파", "right": null}}
+  },
+  "sentences": [
+   {"text": "셰프가 칼을 내밀자 민호는 오른손으로 칼자루를 받았다.",
+    "events": [{"type": "grab", "character": "민호", "hand": "right", "object": "칼"}]},
+   {"text": "민호는 왼손으로 양파를 도마에 누르고 칼을 내리쳤다.",
+    "events": [{"type": "use", "character": "민호", "free_hands_needed": 0, "action": "썲", "with": "칼"}]},
+   {"text": "셰프는 오른손으로 민호의 손등을 잡아 칼의 각도를 고쳐 주었다.",
+    "events": [{"type": "touch", "character": "셰프", "target": "민호", "kind": "grip", "hand": "right"}]},
+   {"text": "셰프가 손을 떼자 민호는 혼자 양파를 마저 썰었다.",
+    "events": [{"type": "untouch", "character": "셰프", "target": "민호"},
+               {"type": "use", "character": "민호", "free_hands_needed": 0, "action": "썲", "with": "칼"}]},
+   {"text": "다 썬 양파를 그릇에 옮긴 민호는 칼을 셰프에게 돌려주었다.",
+    "events": [{"type": "release", "character": "민호", "object": "양파", "to": "그릇"},
+               {"type": "give", "character": "민호", "to": "셰프", "object": "칼"}]}
+  ],
+  "errors": [
+   {"sentence": 1, "text": "민호는 양파를 쥔 왼손으로 마늘 한 줌까지 집어 도마에 올렸다.",
+    "events": [{"type": "grab", "character": "민호", "hand": "left", "object": "마늘"}],
+    "rule": "hand_full", "note": "왼손이 양파를 쥐고 있다"},
+   {"sentence": 2, "text": "셰프는 칼을 쥔 오른손으로 민호의 손등을 잡아 각도를 고쳐 주었다.",
+    "events": [{"type": "state", "character": "셰프", "holds": "칼"},
+               {"type": "touch", "character": "셰프", "target": "민호", "kind": "grip", "hand": "right"}],
+    "rule": "state_mismatch", "note": "칼은 이미 민호에게 건넸다"}
+  ]
+ }
+]

@@ -8,6 +8,7 @@ from shadowcast import scenes
 ROOT = Path(__file__).parent.parent
 V1 = ROOT / "hand-check" / "data" / "scenes.json"
 EXAMPLE = ROOT / "data" / "scenes-v2-example.json"
+PILOT = ROOT / "data" / "scenes-v2-pilot.json"
 
 
 class V1Data(unittest.TestCase):
@@ -38,6 +39,17 @@ class ExampleData(unittest.TestCase):
                                "x01-error3": ["space_full"], "x01-error4": ["hand_full"]})
 
 
+class PilotData(unittest.TestCase):
+    def test_pilot_passes(self):
+        self.assertEqual(scenes.validate_files([PILOT]), (10, 32, []))
+
+    def test_pilot_covers_each_rule(self):
+        # not_held is a slip of event lists more than of prose, so no pilot scene targets it.
+        labels = {e["rule"] for p in (PILOT, EXAMPLE) for s in scenes.load(p) for e in s["errors"]}
+        self.assertEqual(labels, {"hand_full", "tool_missing", "facing_mismatch", "hidden_side", "layer_order",
+                                  "not_worn", "space_full", "contact_kept", "item_location", "state_mismatch"})
+
+
 class Validation(unittest.TestCase):
     def scene(self, **change):
         base = {"id": "t1", "initial_state": {"지호": {"hands": {"left": "컵", "right": None}}},
@@ -56,6 +68,13 @@ class Validation(unittest.TestCase):
                                                           {"type": "grab", "character": "지호", "object": "펜"}]},
                                   {"text": "b", "events": []}])
         self.assertTrue(any("clean item has violations" in p for p in scenes.validate_scene(s)))
+
+    def test_later_failure_in_the_error_sentence_is_allowed(self):
+        s = self.scene()
+        s["errors"][0]["events"].append({"type": "release", "character": "지호", "hand": "right", "object": "책"})
+        _, violations = scenes.run_item(scenes.expand(s)[1])
+        self.assertEqual([v["rule"] for v in violations], ["hand_full", "not_held"])
+        self.assertEqual(scenes.validate_scene(s), [])
 
     def test_wrong_rule_label(self):
         s = self.scene()

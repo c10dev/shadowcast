@@ -25,7 +25,7 @@ Events. All events have "type" and "character".
   use       hand, free_hands_needed, action?, with?   act with the hands
   turn      toward | away_from | side_to  change facing to one person
   wear      item, zone, side?             put on an item (side: "front" | "back")
-  take_off  item, free_hands_needed?, to? take off a worn item
+  take_off  item, zone?, free_hands_needed?, to?   take off a worn item
   touch     target, kind, hand?           start contact (kinds: TOUCH_KINDS)
   untouch   target                        end all contact with the target
   move      away_from? | to?              move the body
@@ -40,7 +40,7 @@ Violation rules (the "rule" field of a violation)
   facing_mismatch  the text describes a facing that the state does not have
   hidden_side      see the face or front of a person who shows the back
   layer_order      take off an inner layer under an outer layer
-  not_worn         take off an item that is not worn
+  not_worn         take off an item that is not on a known zone
   space_full       put an item or a person into a front or back space that is full
   contact_kept     move away from or turn from a person who is still held
   item_location    take an object from a place where it is not
@@ -226,6 +226,12 @@ class Scene:
         self.items.pop(obj, None)
         return None
 
+    def _clear_sides(self, who, obj):
+        body = self.body(who)
+        for side in SIDES:
+            if body[side] is not None:
+                body[side] = [x for x in body[side] if is_person(x) or not _same(x, obj)]
+
     def _release(self, who, hand, obj):
         """Free the hand that holds obj. Return an error text or None."""
         hands = self.body(who)["hands"]
@@ -262,6 +268,7 @@ class Scene:
         if err:
             return "not_held", err
         if obj:
+            self._clear_sides(who, obj)  # a carried box leaves the front space
             if e.get("to"):
                 self.items[obj] = e["to"]
             else:
@@ -276,6 +283,7 @@ class Scene:
         err = self._release(who, e.get("hand") or "any", obj)
         if err:
             return "not_held", err
+        self._clear_sides(who, obj)
         err = self._take_hands(to, e.get("to_hand") or "any", 1, obj)
         if err:
             return "hand_full", f"cannot receive '{obj}': {err}"
@@ -325,6 +333,8 @@ class Scene:
         side = e.get("side")
         body = self.body(who)
         old = self.worn_by(who, item)
+        if old == zone and (side not in SIDES or item in (body[side] or [])):
+            return None  # already worn there
         if old is not None:  # moving a worn item (a backpack from the back to the front)
             err = self._take_off(who, item, old)
             if err:
@@ -357,9 +367,11 @@ class Scene:
         item = self.name(e.get("item"))
         zone = self.worn_by(who, item)
         if zone is None:
-            if self.body(who)["worn"]:
-                return "not_worn", f"{who} does not wear '{item}', wears {self.body(who)['worn']}"
-            return None  # nothing is known about the clothes
+            # Only a known zone can say "not worn". Clothes the text never named are unknown.
+            asked = e.get("zone")
+            if asked and asked in self.body(who)["worn"]:
+                return "not_worn", f"{who} does not wear '{item}' on {asked}, wears {self.body(who)['worn'][asked]}"
+            return None
         need = int(e.get("free_hands_needed") or 0)
         if need and len(self.free(self.body(who)["hands"])) < need:
             return "hand_full", f"{who}: needs {need} free hand(s) to take off '{item}', holds {self.body(who)['hands']}"

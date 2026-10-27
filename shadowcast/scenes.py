@@ -116,7 +116,8 @@ def validate_scene(scene):
     """Check that the gold events agree with the gold labels.
 
     The clean item has no violation. Each error item has violations only
-    at its error sentence, and they break the error's rule when it is given.
+    at its error sentence. When the error gives a rule, the first violation breaks it.
+    Later events in the same sentence can fail after it (a failed grab, then a give).
     """
     problems = check_events(scene)
     if problems:
@@ -130,7 +131,7 @@ def validate_scene(scene):
             continue
         if where != [item["error_sentence"]]:
             problems.append(f"{item['item_id']}: expected violation only at {item['error_sentence']}, got {violations}")
-        elif item["rule"] and {v["rule"] for v in violations} != {item["rule"]}:
+        elif item["rule"] and violations[0]["rule"] != item["rule"]:
             problems.append(f"{item['item_id']}: expected rule {item['rule']}, got {violations}")
     return problems
 

@@ -124,8 +124,16 @@ class WornRules(unittest.TestCase):
                                                [ev("take_off", "민준", item="셔츠")]]), [])
 
     def test_take_off_what_is_not_worn(self):
-        self.assertEqual(rules_of(self.START, [[ev("take_off", "민준", item="재킷")]]), [(0, "not_worn")])
-        self.assertEqual(rules_of({}, [[ev("take_off", "민준", item="재킷")]]), [])  # clothes unknown
+        self.assertEqual(rules_of(self.START, [[ev("take_off", "민준", item="재킷", zone="torso")]]),
+                         [(0, "not_worn")])
+        # A zone that the scene never named is unknown, so a scarf can come off.
+        self.assertEqual(rules_of(self.START, [[ev("take_off", "민준", item="목도리", zone="neck")]]), [])
+        self.assertEqual(rules_of(self.START, [[ev("take_off", "민준", item="재킷")]]), [])
+
+    def test_wear_again_in_the_same_zone_does_nothing(self):
+        start = {"소희": {"hands": {"left": None, "right": None}, "worn": {"left_hand": ["반지", "장갑"]}}}
+        self.assertEqual(rules_of(start, [[ev("take_off", "소희", item="반지")],
+                                          [ev("wear", "소희", item="반지", zone="left_hand")]]), [(0, "layer_order")])
 
     def test_take_off_needs_hands(self):
         start = {"민준": {"hands": {"left": "손잡이", "right": "@유나"}, "worn": {"torso": ["재킷"]}}}
@@ -150,6 +158,13 @@ class SpaceRules(unittest.TestCase):
     def test_hug_needs_an_empty_front(self):
         start = {"민준": {"hands": {"left": None, "right": None}, "front": ["백팩"]}}
         self.assertEqual(rules_of(start, [[ev("touch", "민준", target="유나", kind="hug")]]), [(0, "space_full")])
+
+
+    def test_put_down_box_leaves_the_front(self):
+        start = {"수빈": {"hands": {"left": "상자", "right": "상자"}, "front": ["상자"]}}
+        press = ev("touch", "수빈", target="남자", kind="press")
+        self.assertEqual(rules_of(start, [[press]]), [(0, "space_full")])
+        self.assertEqual(rules_of(start, [[ev("release", "수빈", hand="both", object="상자", to="바닥")], [press]]), [])
 
 
 class ContactRules(unittest.TestCase):
