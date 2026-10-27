@@ -24,7 +24,6 @@ python3 -m unittest discover -s tests
 |---|---|
 | `id`, `title` | 이름 |
 | `source` | 글의 출처. `original`(직접 씀), `hand-check v1` 등 |
-| `difficulty` | `explicit`(오류 문장이 상태를 밝힘) 또는 `implicit`(앞 문장을 기억해야 보임) |
 | `patterns` | 장면에 든 오류 종류 (자유 표기) |
 | `traps` | 정상판에서 오류처럼 보이지만 오류가 아닌 행동 |
 | `characters` | `{이름: {"height_cm": 숫자}}`. 높이 규칙(뒤 단계)을 위해 받아 둔다 |
@@ -32,7 +31,7 @@ python3 -m unittest discover -s tests
 | `initial_state` | `{이름: 몸}`. 아래 "상태" |
 | `items` | `{물건: 자리}`. 손이나 몸에 없는 물건의 처음 자리 |
 | `sentences` | `[{"text", "events"}]` |
-| `errors` | `[{"sentence", "text", "events", "rule", "note"}]`. 오류 하나가 오류판 하나가 된다. 정상판에서 그 문장만 바꾼다 |
+| `errors` | `[{"sentence", "text", "events", "rule", "difficulty", "note"}]`. 오류 하나가 오류판 하나가 된다. 정상판에서 그 문장만 바꾼다. `difficulty` 는 `explicit`(오류 문장 하나만 보고 어긋남이 보임) 또는 `implicit`(앞 문장을 기억해야 보임)이다. 한 장면 안에서도 오류판마다 다를 수 있어서 오류마다 단다. v1 장면은 장면의 난이도가 그 하나뿐인 오류로 옮겨 간다 |
 
 장면 하나에 오류를 여럿 둘 수 있다. 긴 장면 하나가 정상판 1개와 오류판 여러 개가 된다. 항목 이름은 오류가 하나면 `<id>-error`, 여럿이면 `<id>-error1`, `<id>-error2` … 다.
 

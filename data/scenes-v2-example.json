@@ -3,7 +3,6 @@
   "id": "x01",
   "title": "퇴근길 지하철",
   "source": "original",
-  "difficulty": "implicit",
   "patterns": ["space_full", "layer_order", "hand_full", "facing_mismatch"],
   "traps": ["손잡이를 쥔 채 오른손만 씀", "몸 앞에 사람이 붙은 채 백팩을 옆구리로 돌림"],
   "characters": {"민준": {"height_cm": 182}, "유나": {"height_cm": 160}},
@@ -57,7 +56,7 @@
     "events": [
      {"type": "state", "character": "유나", "facing": {"민준": "back"}}
     ],
-    "rule": "facing_mismatch",
+    "difficulty": "implicit", "rule": "facing_mismatch",
     "note": "앞 장면 설정에서는 유나가 민준을 마주 보고 섰다"},
    {"sentence": 3,
     "text": "통지서를 셔츠 가슴 주머니에 넣은 그는 백팩을 멘 채 셔츠를 벗어 손에 걸쳤다.",
@@ -65,7 +64,7 @@
      {"type": "release", "character": "민준", "hand": "right", "object": "통지서", "to": "셔츠 가슴 주머니"},
      {"type": "take_off", "character": "민준", "item": "셔츠", "free_hands_needed": 1}
     ],
-    "rule": "layer_order",
+    "difficulty": "explicit", "rule": "layer_order",
     "note": "백팩 끈이 셔츠 위에 있다"},
    {"sentence": 4,
     "text": "민준은 오른손으로 백팩 한쪽 끈을 내려 가방을 몸 앞으로 돌려 멨다.",
@@ -73,7 +72,7 @@
      {"type": "take_off", "character": "민준", "item": "백팩", "free_hands_needed": 1},
      {"type": "wear", "character": "민준", "item": "백팩", "zone": "torso", "side": "front"}
     ],
-    "rule": "space_full",
+    "difficulty": "implicit", "rule": "space_full",
     "note": "몸 앞에 유나가 붙어 있다"},
    {"sentence": 6,
     "text": "민준은 손잡이를 쥔 채 두 손으로 백팩 지퍼를 열어 물병을 꺼냈다.",
@@ -81,7 +80,7 @@
      {"type": "use", "character": "민준", "hand": "both", "free_hands_needed": 2, "action": "두 손으로 지퍼를 엶"},
      {"type": "grab", "character": "민준", "hand": "right", "object": "물병", "from": "백팩"}
     ],
-    "rule": "hand_full",
+    "difficulty": "explicit", "rule": "hand_full",
     "note": "왼손은 손잡이를 쥐고 있다"}
   ]
  }

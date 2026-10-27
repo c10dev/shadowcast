@@ -3,7 +3,6 @@
 A scene is one JSON object. A file holds a list of scenes.
   id, title          names
   source             where the text comes from ("original", "hand-check v1", ...)
-  difficulty         "explicit" or "implicit"
   patterns           error kinds in the scene, free text labels
   traps              actions in the clean text that look like errors but are not
   characters         {name: {"height_cm": int}} (optional, for a later height rule)
@@ -11,8 +10,10 @@ A scene is one JSON object. A file holds a list of scenes.
   initial_state      {name: body}. See rules.py for the body fields.
   items              {object: place} at the start
   sentences          [{"text", "events": [...]}]
-  errors             [{"sentence", "text", "events", "rule", "note"}]
+  errors             [{"sentence", "text", "events", "rule", "difficulty", "note"}]
                      Each error makes one error item: the clean text with one sentence replaced.
+                     difficulty: "explicit" (the error sentence alone shows the conflict)
+                     or "implicit" (the reader must remember an earlier sentence).
 
 A v1 scene (hand-check/data/scenes.json) has "error" (one object) instead of "errors".
 load() converts it to v2.
@@ -50,7 +51,7 @@ def is_v1(scene):
 
 def from_v1(scene):
     """Convert a v1 scene (hands only, one error) to v2."""
-    out = {k: scene[k] for k in ("id", "title", "difficulty") if k in scene}
+    out = {k: scene[k] for k in ("id", "title") if k in scene}
     out["source"] = "hand-check v1"
     out["patterns"] = [scene["pattern"]] if scene.get("pattern") else []
     out["traps"] = scene.get("traps", [])
@@ -58,6 +59,8 @@ def from_v1(scene):
                             for who, h in scene["initial_state"].items()}
     out["sentences"] = scene["sentences"]
     error = dict(scene["error"])
+    if scene.get("difficulty"):
+        error["difficulty"] = scene["difficulty"]  # v1 marks difficulty per scene, and a v1 scene has one error
     if scene.get("pattern") in V1_PATTERN_RULE:
         error["rule"] = V1_PATTERN_RULE[scene["pattern"]]
     out["errors"] = [error]
@@ -74,8 +77,8 @@ def expand(scene):
     """Make the clean item and one error item per error."""
     texts = [s["text"] for s in scene["sentences"]]
     events = [s.get("events", []) for s in scene["sentences"]]
-    base = {k: scene.get(k) for k in ("id", "title", "difficulty", "patterns", "traps", *SCENE_FIELDS)}
-    items = [{**base, "item_id": f"{scene['id']}-clean", "variant": "clean",
+    base = {k: scene.get(k) for k in ("id", "title", "patterns", "traps", *SCENE_FIELDS)}
+    items = [{**base, "item_id": f"{scene['id']}-clean", "variant": "clean", "difficulty": None,
               "sentences": texts, "events": events, "error_sentence": None, "rule": None}]
     errors = scene.get("errors", [])
     for j, err in enumerate(errors, 1):
@@ -84,7 +87,8 @@ def expand(scene):
         items.append({**base, "item_id": f"{scene['id']}-{suffix}", "variant": "error",
                       "sentences": texts[:i] + [err["text"]] + texts[i + 1:],
                       "events": events[:i] + [err.get("events", [])] + events[i + 1:],
-                      "error_sentence": i, "rule": err.get("rule"), "note": err.get("note", "")})
+                      "error_sentence": i, "rule": err.get("rule"), "difficulty": err.get("difficulty"),
+                      "note": err.get("note", "")})
     return items
 
 
@@ -109,6 +113,8 @@ def check_events(scene):
     for j, err in enumerate(scene.get("errors", [])):
         if not 0 <= err.get("sentence", -1) < len(scene.get("sentences", [])):
             problems.append(f"{scene['id']} error {j}: sentence {err.get('sentence')} is out of range")
+        if err.get("difficulty") not in (None, "explicit", "implicit"):
+            problems.append(f"{scene['id']} error {j}: difficulty must be explicit or implicit")
     return problems
 
 

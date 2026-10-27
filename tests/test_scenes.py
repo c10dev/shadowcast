@@ -21,6 +21,8 @@ class V1Data(unittest.TestCase):
         self.assertEqual(s["source"], "hand-check v1")
         self.assertEqual(len(s["errors"]), 1)
         self.assertEqual(s["errors"][0]["rule"], "hand_full")
+        self.assertIn(s["errors"][0]["difficulty"], ("explicit", "implicit"))
+        self.assertNotIn("difficulty", s)
         ids = [i["item_id"] for i in scenes.expand(s)]
         self.assertEqual(ids, [f"{s['id']}-clean", f"{s['id']}-error"])
 
@@ -42,6 +44,10 @@ class ExampleData(unittest.TestCase):
 class PilotData(unittest.TestCase):
     def test_pilot_passes(self):
         self.assertEqual(scenes.validate_files([PILOT]), (11, 37, []))
+
+    def test_every_error_has_a_difficulty(self):
+        items = [i for p in (PILOT, EXAMPLE) for s in scenes.load(p) for i in scenes.expand(s) if i["variant"] == "error"]
+        self.assertEqual({i["difficulty"] for i in items}, {"explicit", "implicit"})
 
     def test_pilot_covers_each_rule(self):
         # not_held is a slip of event lists more than of prose, so no pilot scene targets it.
@@ -88,6 +94,11 @@ class Validation(unittest.TestCase):
         problems = scenes.validate_scene(s)
         self.assertTrue(any("unknown event type 'jump'" in p for p in problems))
         self.assertTrue(any("grab event lacks ['object']" in p for p in problems))
+
+    def test_bad_difficulty(self):
+        s = self.scene()
+        s["errors"][0]["difficulty"] = "hard"
+        self.assertTrue(any("difficulty must be" in p for p in scenes.validate_scene(s)))
 
     def test_error_sentence_out_of_range(self):
         s = self.scene()
