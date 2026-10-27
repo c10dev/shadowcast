@@ -115,6 +115,11 @@ class Scene:
         # Objects of failed events. Their state after the failure is unknown,
         # so later events on them do not give a second violation.
         self.failed = set()
+        # Items taken off and not grabbed or worn since. They can be in a hand or put down,
+        # so they take no hand, and a later release, give, or use of them is allowed.
+        self.loose = set()
+        # Pairs (who, "@other") that an untouch ended. A later release of that person repeats it.
+        self.let_go = set()
 
     # ----- state helpers -----
 
@@ -243,8 +248,8 @@ class Scene:
         hand = e.get("hand") or "any"
         if e.get("from") and obj in self.items and not same_place(self.items[obj], e["from"]):
             return "item_location", f"'{obj}' is at '{self.items[obj]}', not '{e['from']}'"
-        if hand == "any" and any(giver == who for giver, _ in self.holders(obj)):
-            return None  # already in a hand (a coat just taken off)
+        if any(giver == who and hand in ("any", h) for giver, h in self.holders(obj)):
+            return None  # already in this hand (the person took it in a give just before)
         # A grab of an object in another person's hand is a handoff: the other hand lets go.
         for giver, h in self.holders(obj):
             if giver != who:
@@ -254,6 +259,7 @@ class Scene:
             return "hand_full", f"cannot grab '{obj}': {err}"
         self.items.pop(obj, None)
         self.failed.discard(obj)
+        self.loose.discard(obj)
         return None
 
     def _clear_sides(self, who, obj):
@@ -302,7 +308,11 @@ class Scene:
 
     def _ev_release(self, who, e):
         obj = self.name(e.get("object"))
-        if self._unknown_after_failure(who, obj):
+        if self._unknown_after_failure(who, obj) or (who, obj) in self.let_go:
+            return None
+        if self._take_loose(who, obj):
+            if e.get("to"):
+                self.items[obj] = e["to"]
             return None
         err = self._release(who, e.get("hand") or "any", obj)
         if err:
@@ -315,6 +325,13 @@ class Scene:
                 self.items.pop(obj, None)
         return None
 
+    def _take_loose(self, who, obj):
+        """True when obj is a loose item that who does not hold. It stops being loose."""
+        if obj not in self.loose or any(w == who for w, _ in self.holders(obj)):
+            return False
+        self.loose.discard(obj)
+        return True
+
     def _ev_give(self, who, e):
         obj = self.name(e.get("object"))
         to = e.get("to")
@@ -322,10 +339,11 @@ class Scene:
             return "bad_event", "give event has no 'to'"
         if self._unknown_after_failure(who, obj):
             return None
-        err = self._release(who, e.get("hand") or "any", obj)
-        if err:
-            return "not_held", err
-        self._clear_sides(who, obj)
+        if not self._take_loose(who, obj):
+            err = self._release(who, e.get("hand") or "any", obj)
+            if err:
+                return "not_held", err
+            self._clear_sides(who, obj)
         err = self._take_hands(to, e.get("to_hand") or "any", 1, obj)
         if err:
             return "hand_full", f"cannot receive '{obj}': {err}"
@@ -334,7 +352,7 @@ class Scene:
     def _ev_use(self, who, e):
         hands = self.body(who)["hands"]
         tool = self.name(e.get("with"))
-        if tool and tool not in self.failed and not any(hands[h] not in (None, UNKNOWN) and _same(hands[h], tool) for h in HANDS) \
+        if tool and tool not in self.failed and tool not in self.loose and not any(hands[h] not in (None, UNKNOWN) and _same(hands[h], tool) for h in HANDS) \
                 and UNKNOWN not in hands.values():
             return "tool_missing", f"{who} does not hold '{tool}' for '{e.get('action', '')}', holds {hands}"
         need = int(e.get("free_hands_needed") or 0)
@@ -391,6 +409,7 @@ class Scene:
         body["worn"].setdefault(zone, []).append(item)
         self.items.pop(item, None)
         self.failed.discard(item)
+        self.loose.discard(item)
         return None
 
     def _take_off(self, who, item, zone):
@@ -425,14 +444,9 @@ class Scene:
             return err
         if e.get("to"):
             self.items[item] = e["to"]
-            return None
-        # With no place, the item stays in a free hand (the right hand first).
-        # With no free hand, its place is unknown.
-        self.items.pop(item, None)
-        hands = self.body(who)["hands"]
-        free = sorted(self.free(hands), key=lambda h: h != "right")
-        if free:
-            hands[free[0]] = item
+        else:
+            self.items.pop(item, None)
+        self.loose.add(item)
         return None
 
     def _ev_touch(self, who, e):
@@ -441,6 +455,7 @@ class Scene:
         if not target or kind not in TOUCH_KINDS:
             return "bad_event", f"touch event needs a target and a kind in {sorted(TOUCH_KINDS)}"
         a_hands, t_hands, a_side, t_side, a_face, t_face = TOUCH_KINDS[kind]
+        self.let_go -= {(who, person(target)), (target, person(who))}
         err = self._take_hands(who, e.get("hand") or "any", a_hands, person(target))
         if err:
             return "hand_full", f"cannot {kind} {target}: {err}"
@@ -463,6 +478,7 @@ class Scene:
         if not target:
             return "bad_event", "untouch event has no target"
         self._clear_pair(who, target)
+        self.let_go |= {(who, person(target)), (target, person(who))}
         return None
 
     def _ev_move(self, who, e):

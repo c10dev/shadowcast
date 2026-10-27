@@ -143,11 +143,15 @@ def predict(args, backend, item, cond, cache):
     events = events_from_extraction(rec["output"], item)
     states, violations = rules.run_scene(item.get("initial_state"), events, item.get("items"), item.get("aliases"))
     gold_states, _ = rules.run_scene(item.get("initial_state"), item["events"], item.get("items"), item.get("aliases"))
+    # A malformed extracted event is an extraction failure, not a contradiction in the text.
+    bad = [v for v in violations if v["rule"] == "bad_event"]
+    violations = [v for v in violations if v["rule"] != "bad_event"]
     return {"has_error": bool(violations),
             "sentences": sorted({v["sentence"] for v in violations}),
             "rule": violations[0]["rule"] if violations else None,
             "reason": "; ".join(v["reason"] for v in violations),
             "channels": {ch: list(mt) for ch, mt in channel_accuracy(states, gold_states).items()},
+            "bad_events": [v["reason"] for v in bad],
             "meta": rec["meta"]}
 
 

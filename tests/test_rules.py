@@ -34,6 +34,14 @@ class HandRules(unittest.TestCase):
                          [(0, "hand_full")])
         self.assertEqual(rules_of(start, [[ev("use", "지호", free_hands_needed=1, action="문을 엶")]]), [])
 
+    def test_grab_of_an_item_already_in_that_hand(self):
+        start = {"셰프": {"hands": {"left": None, "right": "칼"}}, "민호": {"hands": {"left": "양파", "right": None}}}
+        self.assertEqual(rules_of(start, [[ev("give", "셰프", to="민호", object="칼", to_hand="right"),
+                                           ev("grab", "민호", hand="right", object="칼")]]), [])
+        # The other hand is full, so a grab of the same item with it still fails.
+        self.assertEqual(rules_of(start, [[ev("give", "셰프", to="민호", object="칼", to_hand="right"),
+                                           ev("grab", "민호", hand="left", object="칼")]]), [(0, "hand_full")])
+
     def test_two_arm_hold_takes_both_hands(self):
         start = {"지후": {"hands": {"left": "상자", "right": "상자"}}}
         self.assertEqual(rules_of(start, [[ev("grab", "지후", hand="right", object="볼펜")]]), [(0, "hand_full")])
@@ -180,26 +188,37 @@ class WornRules(unittest.TestCase):
         self.assertEqual(rules_of(start, [[ev("take_off", "민준", item="재킷", free_hands_needed=1)]]),
                          [(0, "hand_full")])
 
-    def test_taken_off_item_stays_in_a_free_hand(self):
+    def test_taken_off_item_is_loose(self):
+        # With no place, a taken-off item can be in a hand or put down. It takes no hand.
         start = {"준호": {"hands": {"left": None, "right": None}, "worn": {"torso": ["바람막이"]}}}
         take_off = ev("take_off", "준호", item="바람막이", free_hands_needed=1)
         states, _ = rules.run_scene(start, [[take_off]])
-        self.assertEqual(states[0]["bodies"]["준호"]["hands"], {"left": None, "right": "바람막이"})
+        self.assertEqual(states[0]["bodies"]["준호"]["hands"], {"left": None, "right": None})
+        self.assertNotIn("바람막이", states[0]["items"])
+        # A release with no grab before it (one model wrote this order).
         self.assertEqual(rules_of(start, [[take_off],
                                           [ev("release", "준호", object="바람막이", to="배낭 옆 주머니")]]), [])
-        # A grab of the item that is already in the hand does not take a second hand.
+        # A two-hand action with no release of the item (another model wrote this order).
         self.assertEqual(rules_of(start, [[take_off],
-                                          [ev("grab", "준호", object="바람막이"),
-                                           ev("grab", "준호", object="컵")]]), [])
-        self.assertEqual(rules_of(start, [[take_off, ev("grab", "준호", object="컵"),
-                                           ev("grab", "준호", object="볼펜")]]), [(0, "hand_full")])
+                                          [ev("use", "준호", hand="both", free_hands_needed=2, action="어깨끈을 당김")]]), [])
+        # A grab puts it in a hand. Then it is held like any other item.
+        self.assertEqual(rules_of(start, [[take_off],
+                                          [ev("grab", "준호", object="바람막이"), ev("grab", "준호", object="컵"),
+                                           ev("grab", "준호", object="볼펜")]]), [(1, "hand_full")])
+        self.assertEqual(rules_of(start, [[take_off],
+                                          [ev("give", "준호", to="유나", object="바람막이")],
+                                          [ev("release", "준호", object="바람막이")]]), [(2, "not_held")])
 
-    def test_taken_off_item_with_no_free_hand_is_unknown(self):
+    def test_taken_off_item_can_be_a_tool(self):
+        start = {"소희": {"hands": {"left": None, "right": None}, "worn": {"hands": ["반지"]}}}
+        self.assertEqual(rules_of(start, [[ev("take_off", "소희", item="반지"),
+                                           ev("use", "소희", action="점원에게 보여 줌", **{"with": "반지"})]]), [])
+
+    def test_taken_off_item_with_full_hands(self):
         start = {"준호": {"hands": {"left": "손잡이", "right": "컵"}, "worn": {"torso": ["바람막이"]}}}
         states, violations = rules.run_scene(start, [[ev("take_off", "준호", item="바람막이")]])
         self.assertEqual(violations, [])
         self.assertEqual(states[0]["bodies"]["준호"]["hands"], {"left": "손잡이", "right": "컵"})
-        self.assertNotIn("바람막이", states[0]["items"])
 
     def test_taken_off_item_goes_to_its_place(self):
         start = {"준호": {"hands": {"left": None, "right": None}, "worn": {"torso": ["바람막이"]}}}
@@ -210,6 +229,8 @@ class WornRules(unittest.TestCase):
         self.assertEqual(rules_of(start, [[take_off], [ev("grab", "준호", object="바람막이", **{"from": "의자"})]]), [])
         self.assertEqual(rules_of(start, [[take_off], [ev("grab", "준호", object="바람막이", **{"from": "가방"})]]),
                          [(1, "item_location")])
+        # "벗어 의자에 내려놓았다" as take_off and release: the release repeats the take_off.
+        self.assertEqual(rules_of(start, [[take_off, ev("release", "준호", object="바람막이", to="의자")]]), [])
 
     def test_move_a_worn_backpack_to_the_front(self):
         sentences = [[ev("wear", "민준", item="백팩", zone="torso", side="front")],
@@ -265,6 +286,16 @@ class ContactRules(unittest.TestCase):
         self.assertEqual(rules_of(start, [[grip], [ev("move", "유나", away_from="민준")]]), [(1, "contact_kept")])
         self.assertEqual(rules_of(start, [[grip], [ev("untouch", "민준", target="유나")],
                                           [ev("move", "유나", away_from="민준")]]), [])
+
+    def test_release_after_untouch_repeats_it(self):
+        start = {"태오": {"hands": {"left": None, "right": None}}, "은서": {"hands": {"left": None, "right": None}}}
+        grip = ev("touch", "태오", target="은서", kind="grip", hand="right")
+        self.assertEqual(rules_of(start, [[grip], [ev("untouch", "은서", target="태오"),
+                                                   ev("release", "태오", hand="right", object="@은서")]]), [])
+        # A new touch ends the mark. A release with no hold is then not_held again.
+        self.assertEqual(rules_of(start, [[grip], [ev("untouch", "은서", target="태오")],
+                                          [ev("touch", "태오", target="은서", kind="lean")],
+                                          [ev("release", "태오", object="@은서")]]), [(3, "not_held")])
 
     def test_let_go_with_the_hand_only(self):
         start = {"정우": {"hands": {"left": "손잡이", "right": None}, "front": [], "worn": {"torso": ["백팩"]}}}

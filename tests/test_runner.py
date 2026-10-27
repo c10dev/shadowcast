@@ -54,6 +54,20 @@ class GoldAndBaseline(unittest.TestCase):
             self.assertEqual(sorted(p.name for p in (Path(d) / "cache").iterdir()), first)  # read from the cache
 
 
+class ExtractionScoring(unittest.TestCase):
+    def test_a_malformed_event_is_not_a_found_error(self):
+        from shadowcast import scenes
+        item = scenes.expand(scenes.load(runner.DEFAULT_DATA[0])[0])[0]  # p01-clean
+        out = {"sentences": [{"index": i, "events": []} for i in range(len(item["sentences"]))]}
+        out["sentences"][0]["events"] = [prompts.flatten({"type": "turn", "character": "서윤"})]
+        fake = types.SimpleNamespace(call=lambda *a: (out, {}))
+        args = types.SimpleNamespace(backend="fake", model="m", effort="medium")
+        with tempfile.TemporaryDirectory() as d:
+            pred = runner.predict(args, fake, item, "C", Path(d))
+        self.assertFalse(pred["has_error"])
+        self.assertEqual(len(pred["bad_events"]), 1)
+
+
 class FakeBackends(unittest.TestCase):
     """call() on each backend with a fake client: no network."""
 

@@ -54,13 +54,13 @@ python3 -m unittest discover -s tests
 
 | 사건 | 칸 | 하는 일 |
 |---|---|---|
-| `grab` | `hand`, `object`, `from`? | 물건을 쥔다. 다른 사람 손에 있던 물건이면 그 손이 빈다(건네받기). `hand` 가 `any` 이고 이미 쥔 물건이면 아무것도 바꾸지 않는다 |
-| `release` | `hand`, `object`, `to`? | 물건을 놓는다. `object` 가 `"@이름"` 이면 그 사람을 잡은 손만 놓고, 몸의 접촉(기대기 등)은 그대로 둔다 |
+| `grab` | `hand`, `object`, `from`? | 물건을 쥔다. 다른 사람 손에 있던 물건이면 그 손이 빈다(건네받기). 그 손(`any` 면 어느 손이든)에 이미 쥔 물건이면 아무것도 바꾸지 않는다 |
+| `release` | `hand`, `object`, `to`? | 물건을 놓는다. `object` 가 `"@이름"` 이면 그 사람을 잡은 손만 놓고, 몸의 접촉(기대기 등)은 그대로 둔다. `untouch` 로 이미 접촉을 끝낸 사람을 놓으면 아무 일도 없다 |
 | `give` | `to`, `object`, `hand`?, `to_hand`? | 물건을 다른 사람에게 건넨다 |
 | `use` | `hand`, `free_hands_needed`, `action`?, `with`? | 손이 필요한 행동. `with` 는 쥐고 있어야 하는 도구 |
 | `turn` | `toward` \| `away_from` \| `side_to` | 한 사람을 향해 몸을 돌린다 |
 | `wear` | `item`, `zone`, `side`? | 입거나 멘다. `side` 가 `front` · `back` 이면 그 공간을 차지한다. 이미 멘 것이면 옮겨 멘다 |
-| `take_off` | `item`, `free_hands_needed`?, `to`? | 벗거나 내린다. `to` 가 있으면 벗은 것이 그 자리로 간다. 없으면 빈손 하나에 든다(오른손 먼저). 빈손이 없으면 자리를 모름으로 둔다 |
+| `take_off` | `item`, `free_hands_needed`?, `to`? | 벗거나 내린다. `to` 가 있으면 벗은 것이 그 자리로 간다. 벗은 것은 쥐거나 입기 전까지 "손에 있을 수도 있음"이다. 손을 차지하지 않고, 쥐지 않고도 놓거나 건네거나 도구로 쓸 수 있다. 그래서 "벗은 옷을 든 채 두 손이 필요한 행동"은 잡지 못한다 |
 | `touch` | `target`, `kind`, `hand`?, `target_hand`? | 접촉을 시작한다. 종류는 아래 표 |
 | `untouch` | `target` | 두 사람 사이의 접촉을 모두 끝낸다 |
 | `move` | `away_from`? \| `to`? | 몸을 옮긴다 |
@@ -153,6 +153,7 @@ python3 -m shadowcast run --backend anthropic --model claude-sonnet-5-5
 - 결과는 `results/run-v2-*.json`, 응답 캐시는 `results/cache/` 다. 캐시 키는 전체 프롬프트라서 프롬프트나 데이터를 고치면 새로 부른다.
 - 추출 스키마는 평평하다. 모든 사건이 모든 칸을 갖고, 쓰지 않는 칸은 빈 문자열이다. `prompts.normalize` 가 판정기 형식으로 되돌린다. 모델이 사람 이름을 `@` 없이 쓰면 장면 인물 이름일 때 `@` 를 붙인다.
 - 부위(`zone`)는 `torso · legs · feet · head · neck · hands` 중에서 고르게 한다. 모델마다 부위 이름이 달라 겹침 순서를 놓치지 않게 하려는 것이다.
+- 조건 C 에서 칸이 빠진 사건(`bad_event`)은 찾은 모순으로 세지 않는다. 추출이 실패한 것이지 본문의 모순이 아니다. 행의 `bad_events` 에 따로 남긴다.
 - 자리 이름은 한쪽이 다른 쪽을 품거나, 흔한 낱말(주머니, 위, 안 등)이 아닌 낱말을 함께 가지면 같은 자리로 본다(`rules.same_place`). 모델이 "바지 주머니"라고 쓰고 데이터가 "민준 바지 앞주머니"라고 써도 맞는다.
 
 지표:
