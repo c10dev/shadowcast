@@ -114,6 +114,46 @@ class FacingRules(unittest.TestCase):
                                           [ev("see", "도현", target="서윤", part="face")]]), [])
 
 
+class AfterFailure(unittest.TestCase):
+    """An object of a failed event is unknown. Later events on it give no second violation."""
+
+    START = {"민호": {"hands": {"left": "양파", "right": "칼"}}}
+
+    def test_release_after_a_failed_grab_keeps_the_other_item(self):
+        sentences = [[ev("grab", "민호", hand="left", object="마늘"),
+                      ev("release", "민호", hand="left", object="마늘", to="도마")],
+                     [ev("release", "민호", object="양파", to="그릇"), ev("give", "민호", to="셰프", object="칼")]]
+        self.assertEqual(rules_of(self.START, sentences), [(0, "hand_full")])
+        states, _ = rules.run_scene(self.START, sentences[:1])
+        self.assertEqual(states[0]["bodies"]["민호"]["hands"], {"left": "양파", "right": "칼"})
+
+    def test_release_after_a_failed_take_off(self):
+        start = {"준호": {"hands": {"left": None, "right": None}, "worn": {"torso": ["바람막이", "배낭"]}}}
+        self.assertEqual(rules_of(start, [[ev("take_off", "준호", item="바람막이")],
+                                          [ev("release", "준호", object="바람막이", to="주머니")]]),
+                         [(0, "layer_order")])
+        # The item is still worn, so a second take_off under the backpack is a new violation.
+        self.assertEqual(rules_of(start, [[ev("take_off", "준호", item="바람막이")],
+                                          [ev("take_off", "준호", item="바람막이")]]),
+                         [(0, "layer_order"), (1, "layer_order")])
+
+    def test_use_after_a_failed_grab_of_the_tool(self):
+        self.assertEqual(rules_of(self.START, [[ev("grab", "민호", object="볼펜")],
+                                               [ev("use", "민호", action="씀", **{"with": "볼펜"})]]),
+                         [(0, "hand_full")])
+
+    def test_an_object_never_grabbed_is_still_not_held(self):
+        self.assertEqual(rules_of(self.START, [[ev("release", "민호", object="마늘")]]), [(0, "not_held")])
+
+    def test_a_later_grab_clears_the_failure(self):
+        scene = rules.Scene(self.START)
+        self.assertEqual(scene.apply(ev("grab", "민호", object="마늘"))[0], "hand_full")
+        self.assertIn("마늘", scene.failed)
+        self.assertIsNone(scene.apply(ev("release", "민호", hand="right", object="칼")))
+        self.assertIsNone(scene.apply(ev("grab", "민호", object="마늘")))
+        self.assertNotIn("마늘", scene.failed)
+
+
 class WornRules(unittest.TestCase):
     START = {"민준": {"hands": {"left": None, "right": None}, "worn": {"torso": ["셔츠", "백팩"]},
                      "front": [], "back": ["백팩"]}}

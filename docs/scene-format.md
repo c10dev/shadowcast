@@ -99,7 +99,7 @@ python3 -m unittest discover -s tests
 | `item_location` | 물건이 없는 자리에서 꺼냄 | 코트 주머니에 넣은 열쇠를 가방에서 꺼냄 |
 | `state_mismatch` | 묘사한 쥔 것 · 입은 것 · 앞뒤가 상태와 다름 | 탁자에 내려놓은 컵을 쥐고 있다고 씀 |
 
-위반이 난 사건은 상태를 바꾸지 않는다. v1 의 다섯 오류 유형(`grab_full`, `use_full`, `both_conflict`, `handoff`, `forgotten_object`)은 모두 `hand_full` 이다.
+위반이 난 사건은 상태를 바꾸지 않는다. 그 사건의 물건(또는 사람)은 "모름"이 된다. 그래서 뒤에서 그 물건을 놓거나 건네거나 벗거나 도구로 쓰는 사건은 위반을 다시 내지 않는다. 그 물건을 나중에 쥐거나 입으면 다시 판정한다. v1 의 다섯 오류 유형(`grab_full`, `use_full`, `both_conflict`, `handoff`, `forgotten_object`)은 모두 `hand_full` 이다.
 
 ## v1 에서 바뀐 판정
 

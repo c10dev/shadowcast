@@ -112,6 +112,9 @@ class Scene:
         for who, body in deepcopy(initial_state or {}).items():
             self.bodies[who] = self._new_body(body)
         self.items = {self.name(k): v for k, v in (items or {}).items()}
+        # Objects of failed events. Their state after the failure is unknown,
+        # so later events on them do not give a second violation.
+        self.failed = set()
 
     # ----- state helpers -----
 
@@ -223,7 +226,17 @@ class Scene:
         result = handler(who, event)
         if result:
             self.bodies, self.items = saved["bodies"], saved["items"]
+            obj = event.get("object") or event.get("item") or event.get("with")
+            if obj:
+                self.failed.add(self.name(obj))
+            elif event.get("target"):
+                self.failed.add(person(event["target"]))
         return result
+
+    def _unknown_after_failure(self, who, obj):
+        """True when obj had a failed event and who does not hold it now."""
+        return obj in self.failed and not any(w == who for w, _ in self.holders(obj)) \
+            and not any(self.body(who)["hands"][h] == obj for h in HANDS)
 
     def _ev_grab(self, who, e):
         obj = self.name(e.get("object"))
@@ -240,6 +253,7 @@ class Scene:
         if err:
             return "hand_full", f"cannot grab '{obj}': {err}"
         self.items.pop(obj, None)
+        self.failed.discard(obj)
         return None
 
     def _clear_sides(self, who, obj):
@@ -288,6 +302,8 @@ class Scene:
 
     def _ev_release(self, who, e):
         obj = self.name(e.get("object"))
+        if self._unknown_after_failure(who, obj):
+            return None
         err = self._release(who, e.get("hand") or "any", obj)
         if err:
             return "not_held", err
@@ -304,6 +320,8 @@ class Scene:
         to = e.get("to")
         if not to:
             return "bad_event", "give event has no 'to'"
+        if self._unknown_after_failure(who, obj):
+            return None
         err = self._release(who, e.get("hand") or "any", obj)
         if err:
             return "not_held", err
@@ -316,7 +334,7 @@ class Scene:
     def _ev_use(self, who, e):
         hands = self.body(who)["hands"]
         tool = self.name(e.get("with"))
-        if tool and not any(hands[h] not in (None, UNKNOWN) and _same(hands[h], tool) for h in HANDS) \
+        if tool and tool not in self.failed and not any(hands[h] not in (None, UNKNOWN) and _same(hands[h], tool) for h in HANDS) \
                 and UNKNOWN not in hands.values():
             return "tool_missing", f"{who} does not hold '{tool}' for '{e.get('action', '')}', holds {hands}"
         need = int(e.get("free_hands_needed") or 0)
@@ -372,6 +390,7 @@ class Scene:
                 body["hands"][h] = None
         body["worn"].setdefault(zone, []).append(item)
         self.items.pop(item, None)
+        self.failed.discard(item)
         return None
 
     def _take_off(self, who, item, zone):
@@ -391,6 +410,8 @@ class Scene:
         item = self.name(e.get("item"))
         zone = self.worn_by(who, item)
         if zone is None:
+            if item in self.failed:
+                return None
             # Only a known zone can say "not worn". Clothes the text never named are unknown.
             asked = e.get("zone")
             if asked and asked in self.body(who)["worn"]:
