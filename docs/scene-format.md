@@ -130,8 +130,42 @@ hand-check v1 의 조건 C 헛경보 세 가지를 고쳤다.
 
 `not_held` 는 글보다 사건 목록에서 나는 실수라서 시범 장면에 따로 두지 않았다. p11 만원 버스는 한 장면에 향한 쪽 · 손 · 몸 앞 공간 · 겹침 순서가 함께 얽힌 경우다. 장면은 4~7문장, 인물은 1~2명이다. 긴 본문과 여러 인물은 5단계에서 쓴다.
 
+## 모델로 돌리기
+
+`shadowcast/runner.py` 가 v2 장면으로 조건 A · B · C 를 돌린다. 조건은 hand-check 와 같다.
+
+| 조건 | 모델 입력 | 판정 |
+|---|---|---|
+| A | 문단만 | 모델이 직접 판정하고 규칙 이름도 고른다 |
+| B | 문단 + 장면 시작 상태(손 · 향한 쪽 · 착용 · 몸 앞뒤 · 물건 자리 · 다른 이름) | 모델이 직접 판정 |
+| C | 문단 + 시작 상태 + 인물 · 물건 목록 | 모델은 사건만 뽑고 `rules.py` 가 판정 |
+
+```bash
+python3 -m shadowcast run --backend gold                # 파이프라인 점검: 모든 지표가 1.00 이어야 한다
+python3 -m shadowcast run --backend baseline            # "항상 오류 없음" 기준선
+python3 -m shadowcast run --backend gemini --limit 2    # 앞의 장면 2개만. 비용과 출력 형식부터 본다
+python3 -m shadowcast run --backend gemini
+python3 -m shadowcast run --backend anthropic --model claude-sonnet-5-5
+```
+
+- 데이터는 기본이 `data/scenes-v2-pilot.json` 이다. `--data` 로 여러 파일을 줄 수 있다(예: v1 `hand-check/data/scenes.json`).
+- 백엔드는 `shadowcast/backends.py` 에 있다(anthropic, gemini, ollama). Gemini 인증은 hand-check 와 같다. 키는 저장소 맨 위 `.env`, 없으면 `hand-check/.env` 에서 읽는다.
+- 결과는 `results/run-v2-*.json`, 응답 캐시는 `results/cache/` 다. 캐시 키는 전체 프롬프트라서 프롬프트나 데이터를 고치면 새로 부른다.
+- 추출 스키마는 평평하다. 모든 사건이 모든 칸을 갖고, 쓰지 않는 칸은 빈 문자열이다. `prompts.normalize` 가 판정기 형식으로 되돌린다. 모델이 사람 이름을 `@` 없이 쓰면 장면 인물 이름일 때 `@` 를 붙인다.
+- 부위(`zone`)는 `torso · legs · feet · head · neck · hands` 중에서 고르게 한다. 모델마다 부위 이름이 달라 겹침 순서를 놓치지 않게 하려는 것이다.
+- 자리 이름은 한쪽이 다른 쪽을 품거나, 흔한 낱말(주머니, 위, 안 등)이 아닌 낱말을 함께 가지면 같은 자리로 본다(`rules.same_place`). 모델이 "바지 주머니"라고 쓰고 데이터가 "민준 바지 앞주머니"라고 써도 맞는다.
+
+지표:
+
+| 지표 | 뜻 |
+|---|---|
+| accuracy, precision, recall, false_alarm_rate, localization | hand-check 와 같다 |
+| rule_accuracy | 오류를 맞는 문장에서 찾은 것 가운데 규칙 이름까지 맞힌 비율. C 는 첫 위반의 규칙 |
+| by_difficulty, by_rule | 오류판을 난이도와 규칙으로 나눈 재현율과 위치 |
+| extraction (C) | 정상판에서 문장마다 정답 상태와 견준 칸별 정확도: `hands`(빈손 수), `facing`, `worn`(부위마다 맨 바깥), `space`(몸 앞뒤) |
+| trap_false_alarm_rate | 함정이 있는 정상판을 오류로 잘못 판정한 비율 |
+
 ## 아직 없는 것
 
 - 높이 규칙: `characters.height_cm` 만 받아 둔다.
-- 조건 C 의 v2 추출 프롬프트와 스키마, 조건 B 판정 프롬프트의 다섯 칸 상태(3단계).
-- 칸별 추출 정확도 채점(향한 쪽, 겉옷 맨 위, 앞 · 뒤 차지).
+- 백팩을 옆구리로 메는 자리: 지금은 같은 부위에 다시 멘 것으로 보고 상태를 바꾸지 않는다.

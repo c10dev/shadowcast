@@ -233,6 +233,12 @@ class ItemRules(unittest.TestCase):
                      [ev("grab", "지호", object="열쇠", **{"from": "가방"})]]
         self.assertEqual(rules_of(start, sentences), [(2, "item_location")])
 
+    def test_place_names_match_on_a_shared_word(self):
+        self.assertTrue(rules.same_place("민준 바지 앞주머니", "바지 주머니"))
+        self.assertTrue(rules.same_place("가방 안주머니", "가방"))
+        self.assertFalse(rules.same_place("코트 주머니", "바지 주머니"))  # "주머니" alone does not match
+        self.assertFalse(rules.same_place("신발장 위 접시", "가방 안주머니"))
+
     def test_unknown_place_does_not_break(self):
         self.assertEqual(rules_of({"지호": EMPTY}, [[ev("grab", "지호", object="열쇠", **{"from": "가방"})]]), [])
 

@@ -82,6 +82,19 @@ def _same(a, b):
     return bool(a) and bool(b) and (a in b or b in a)
 
 
+# Words that many places share. They do not make two places the same.
+GENERIC_PLACE_WORDS = {"주머니", "위", "안", "속", "옆", "앞", "뒤", "밑", "아래", "곁"}
+
+
+def same_place(a, b):
+    """Place names match when one contains the other or they share a word that is not generic.
+    A model writes "바지 주머니" where the data says "민준 바지 앞주머니"."""
+    if _same(a, b):
+        return True
+    words = lambda s: {w for w in (s or "").split() if len(w) >= 2 and w not in GENERIC_PLACE_WORDS}
+    return bool(words(a) & words(b))
+
+
 def person(name):
     return "@" + name
 
@@ -215,7 +228,7 @@ class Scene:
     def _ev_grab(self, who, e):
         obj = self.name(e.get("object"))
         hand = e.get("hand") or "any"
-        if e.get("from") and obj in self.items and not _same(self.items[obj], e["from"]):
+        if e.get("from") and obj in self.items and not same_place(self.items[obj], e["from"]):
             return "item_location", f"'{obj}' is at '{self.items[obj]}', not '{e['from']}'"
         # A grab of an object in another person's hand is a handoff: the other hand lets go.
         for giver, h in self.holders(obj):

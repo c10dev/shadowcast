@@ -1,27 +1,37 @@
 """Command line.
 
-  python -m shadowcast validate data/scenes-v2-example.json hand-check/data/scenes.json
+  python -m shadowcast validate data/scenes-v2-pilot.json data/scenes-v2-example.json hand-check/data/scenes.json
+  python -m shadowcast run --backend gold
+  python -m shadowcast run --backend gemini --limit 2
 """
 
 import argparse
 import sys
 
-from . import scenes
+from . import runner, scenes
 
 
-def main():
+def main(argv=None):
     p = argparse.ArgumentParser(prog="python -m shadowcast")
     sub = p.add_subparsers(dest="cmd", required=True)
     v = sub.add_parser("validate", help="check that gold events agree with gold labels")
     v.add_argument("paths", nargs="+")
-    args = p.parse_args()
+    r = sub.add_parser("run", help="run conditions A, B, C on scene data")
+    r.add_argument("--backend", choices=["gold", "baseline", *runner.MODEL_BACKENDS], required=True)
+    r.add_argument("--model", default=None)
+    r.add_argument("--effort", default="medium", choices=["low", "medium", "high", "xhigh", "max"])
+    r.add_argument("--conditions", default="A,B,C")
+    r.add_argument("--data", nargs="+", default=None, help="scene files (default: data/scenes-v2-pilot.json)")
+    r.add_argument("--limit", type=int, default=0, help="use only the first N scenes")
+    r.add_argument("--results", default=None, help="results folder (default: results/)")
+    args = p.parse_args(argv)
     if args.cmd == "validate":
         n_scenes, n_items, problems = scenes.validate_files(args.paths)
         for line in problems:
             print("FAIL", line)
         print(f"{n_scenes} scenes, {n_items} items, {len(problems)} problems")
         return 1 if problems else 0
-    return 2
+    return runner.run(args)
 
 
 if __name__ == "__main__":
