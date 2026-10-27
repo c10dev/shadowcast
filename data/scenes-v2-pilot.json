@@ -204,10 +204,10 @@
    {"sentence": 3, "text": "현우는 지아의 어깨너머로 그녀가 입술을 깨무는 것을 내려다보았다.",
     "events": [{"type": "see", "character": "현우", "target": "지아", "part": "face"}],
     "difficulty": "implicit", "rule": "hidden_side", "note": "지아는 현우에게 등을 보이고 있다"},
-   {"sentence": 4, "text": "지아가 셔터를 누르자 현우는 그녀를 안은 채 한 걸음 뒤로 물러섰다.",
+   {"sentence": 4, "text": "지아가 셔터를 누르자 현우는 그녀를 안은 채 몸을 돌려 그녀에게 등을 보였다.",
     "events": [{"type": "use", "character": "지아", "free_hands_needed": 0, "action": "셔터를 누름", "with": "휴대폰"},
-               {"type": "move", "character": "현우", "away_from": "지아"}],
-    "difficulty": "explicit", "rule": "contact_kept", "note": "안은 채 멀어질 수 없다"}
+               {"type": "turn", "character": "현우", "away_from": "지아"}],
+    "difficulty": "explicit", "rule": "contact_kept", "note": "뒤에서 안은 채로는 등을 돌릴 수 없다"}
   ]
  },
  {

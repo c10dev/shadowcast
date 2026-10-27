@@ -123,7 +123,7 @@ hand-check v1 의 조건 C 헛경보 세 가지를 고쳤다.
 | `state_mismatch` | 3 | p03 내려놓은 꽃다발, p07 건넨 우산, p10 건넨 칼 |
 | `hidden_side` | 2 | p01 망토, p06 뒤에서 안김 |
 | `space_full` | 3 | p09 상자를 안은 채 맞닿음, p11 기댄 사람 쪽으로 백팩, x01 백팩을 앞으로 멤 |
-| `contact_kept` | 2 | p04 손목, p06 안은 채 물러섬 |
+| `contact_kept` | 2 | p04 손목, p06 안은 채 등을 돌림 |
 | `item_location` | 2 | p03 꽃다발, p05 열쇠 |
 | `tool_missing` | 1 | p05 내려놓은 열쇠 |
 | `not_worn` | 1 | p08 목도리 |
