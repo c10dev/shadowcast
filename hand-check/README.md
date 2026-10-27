@@ -46,7 +46,15 @@ python3 -m venv .venv
 .venv/bin/python run.py run --backend anthropic --model claude-sonnet-5-5
 ```
 
-자격 증명은 `ANTHROPIC_API_KEY` 환경 변수나 `ant auth login` 프로필에서 읽는다.
+API 키는 `hand-check/.env`에 한 줄로 넣는다. `run.py`가 실행할 때 이 파일을 읽는다. `.env`는 `.gitignore`에 있어서 커밋되지 않는다.
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+- 키를 명령줄에 직접 치지 않는다. 셸 기록에 남는다. 편집기로 파일을 만든 뒤 `chmod 600 .env`로 권한을 줄인다.
+- 셸에 이미 설정된 환경 변수가 `.env`보다 우선한다.
+- `.env`가 없으면 SDK가 `ANTHROPIC_API_KEY` 환경 변수나 `ant auth login` 프로필에서 읽는다.
 `--limit 2`를 주면 앞의 장면 2개(4항목)만 돌린다. 처음에는 이것으로 비용과 출력 형식을 확인한다.
 
 로컬 모델로 돌리기 (Ollama 설치와 모델 다운로드가 먼저 필요하다):

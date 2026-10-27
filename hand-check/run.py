@@ -10,11 +10,14 @@ Conditions:
   A  paragraph only -> model judges
   B  paragraph + initial state -> model judges
   C  paragraph + initial state -> model extracts events -> rules.py judges
+
+Credentials: put ANTHROPIC_API_KEY=... in hand-check/.env (git-ignored).
 """
 
 import argparse
 import hashlib
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -26,6 +29,36 @@ ROOT = Path(__file__).parent
 DATA = ROOT / "data" / "scenes.json"
 RESULTS = ROOT / "results"
 CACHE = RESULTS / "cache"
+ENV_FILE = ROOT / ".env"
+
+
+def load_env(path=ENV_FILE):
+    """Read KEY=VALUE lines from a .env file into os.environ.
+
+    Variables already set in the shell win over the file.
+    Return the names that were set from the file.
+    """
+    if not path.exists():
+        return []
+    loaded = []
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export "):].lstrip()
+        key, sep, value = line.partition("=")
+        key, value = key.strip(), value.strip()
+        if not sep or not key:
+            continue
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        elif " #" in value:
+            value = value.split(" #", 1)[0].rstrip()  # inline comment
+        if key not in os.environ:
+            os.environ[key] = value
+            loaded.append(key)
+    return loaded
 
 
 def load_items(path=DATA):
@@ -219,6 +252,7 @@ def main():
     r.add_argument("--conditions", default="A,B,C")
     r.add_argument("--limit", type=int, default=0, help="use only the first N scenes")
     args = p.parse_args()
+    load_env()
 
     if args.cmd == "validate":
         items = load_items()
