@@ -346,5 +346,234 @@
                {"type": "touch", "character": "셰프", "target": "민호", "kind": "grip", "hand": "right"}],
     "rule": "state_mismatch", "note": "칼은 이미 민호에게 건넸다"}
   ]
+ },
+ {
+  "id": "p11",
+  "title": "만원 버스",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": [
+   "facing_mismatch",
+   "space_full",
+   "hand_full",
+   "layer_order"
+  ],
+  "traps": [
+   "손잡이를 쥔 채 오른손만 씀",
+   "기댄 사람에게서 손만 떼고 몸은 그대로 둠"
+  ],
+  "initial_state": {
+   "정우": {
+    "hands": {
+     "left": "손잡이",
+     "right": null
+    },
+    "worn": {
+     "torso": [
+      "셔츠",
+      "재킷",
+      "백팩"
+     ]
+    },
+    "front": [],
+    "back": [
+     "백팩"
+    ],
+    "facing": {}
+   },
+   "은숙": {
+    "back": [],
+    "facing": {}
+   }
+  },
+  "sentences": [
+   {
+    "text": "퇴근길 버스가 급정거하자 정우 앞에 서 있던 중년의 은숙이 휘청이며 뒤로 넘어졌다.",
+    "events": []
+   },
+   {
+    "text": "정우는 왼손으로 손잡이를 쥔 채 가슴으로 그녀를 받아 내고, 오른손으로 그녀의 어깨를 붙들었다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "정우",
+      "target": "은숙",
+      "kind": "lean"
+     },
+     {
+      "type": "touch",
+      "character": "정우",
+      "target": "은숙",
+      "kind": "grip",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "은숙은 그의 가슴에 등을 기댄 채 가쁜 숨을 몰아쉬었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은숙",
+      "facing": {
+       "정우": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "버스가 다시 출발하자 정우는 그녀의 어깨에서 오른손을 떼고 백팩을 오른쪽 옆구리로 돌려 멨다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정우",
+      "hand": "right",
+      "object": "@은숙"
+     },
+     {
+      "type": "use",
+      "character": "정우",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "백팩 끈을 잡음"
+     },
+     {
+      "type": "wear",
+      "character": "정우",
+      "item": "백팩",
+      "zone": "torso"
+     }
+    ]
+   },
+   {
+    "text": "앞자리의 청년이 일어나 자리를 내주자, 정우는 은숙을 그 자리에 앉혔다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "정우",
+      "target": "은숙"
+     },
+     {
+      "type": "move",
+      "character": "은숙",
+      "to": "빈자리"
+     }
+    ]
+   },
+   {
+    "text": "그는 백팩을 벗어 발치에 두고, 오른손으로 재킷 단추를 풀어 벗었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "정우",
+      "item": "백팩",
+      "free_hands_needed": 1,
+      "to": "발치"
+     },
+     {
+      "type": "take_off",
+      "character": "정우",
+      "item": "재킷",
+      "free_hands_needed": 1
+     }
+    ]
+   },
+   {
+    "text": "벗은 재킷은 오한에 떠는 은숙의 무릎에 덮어 주었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정우",
+      "object": "재킷"
+     },
+     {
+      "type": "release",
+      "character": "정우",
+      "object": "재킷",
+      "to": "은숙의 무릎"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 2,
+    "text": "은숙은 그의 가슴에 얼굴을 묻은 채 가쁜 숨을 몰아쉬었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은숙",
+      "facing": {
+       "정우": "front"
+      }
+     }
+    ],
+    "rule": "facing_mismatch",
+    "note": "뒤로 넘어져 등을 기댔으니 얼굴이 가슴 쪽일 수 없다"
+   },
+   {
+    "sentence": 3,
+    "text": "버스가 다시 출발하자 정우는 그녀의 어깨를 붙든 채 오른손으로 백팩을 옆구리로 돌려 멨다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "정우",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "백팩 끈을 잡음"
+     },
+     {
+      "type": "wear",
+      "character": "정우",
+      "item": "백팩",
+      "zone": "torso"
+     }
+    ],
+    "rule": "hand_full",
+    "note": "왼손은 손잡이, 오른손은 은숙의 어깨를 잡고 있다"
+   },
+   {
+    "sentence": 3,
+    "text": "버스가 다시 출발하자 정우는 그녀의 어깨에서 오른손을 떼고 백팩을 몸 앞으로 돌려 멨다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정우",
+      "hand": "right",
+      "object": "@은숙"
+     },
+     {
+      "type": "use",
+      "character": "정우",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "백팩 끈을 잡음"
+     },
+     {
+      "type": "wear",
+      "character": "정우",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "front"
+     }
+    ],
+    "rule": "space_full",
+    "note": "은숙이 아직 가슴에 기대 있다"
+   },
+   {
+    "sentence": 5,
+    "text": "그는 백팩을 멘 채 오른손으로 재킷 단추를 풀어 벗었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "정우",
+      "item": "재킷",
+      "free_hands_needed": 1
+     }
+    ],
+    "rule": "layer_order",
+    "note": "백팩 끈이 재킷 위에 있다"
+   }
+  ]
  }
 ]

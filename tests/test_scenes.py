@@ -41,7 +41,7 @@ class ExampleData(unittest.TestCase):
 
 class PilotData(unittest.TestCase):
     def test_pilot_passes(self):
-        self.assertEqual(scenes.validate_files([PILOT]), (10, 32, []))
+        self.assertEqual(scenes.validate_files([PILOT]), (11, 37, []))
 
     def test_pilot_covers_each_rule(self):
         # not_held is a slip of event lists more than of prose, so no pilot scene targets it.

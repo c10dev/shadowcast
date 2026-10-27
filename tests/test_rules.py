@@ -195,6 +195,17 @@ class ContactRules(unittest.TestCase):
         self.assertEqual(rules_of(start, [[grip], [ev("untouch", "민준", target="유나")],
                                           [ev("move", "유나", away_from="민준")]]), [])
 
+    def test_let_go_with_the_hand_only(self):
+        start = {"정우": {"hands": {"left": "손잡이", "right": None}, "front": [], "worn": {"torso": ["백팩"]}}}
+        sentences = [[ev("touch", "정우", target="은숙", kind="lean"),
+                      ev("touch", "정우", target="은숙", kind="grip", hand="right")],
+                     [ev("release", "정우", hand="right", object="@은숙")],
+                     [ev("use", "정우", hand="right", free_hands_needed=1, action="끈을 잡음"),
+                      ev("wear", "정우", item="백팩", zone="torso", side="front")]]
+        # The hand is free again, but 은숙 still leans on the front.
+        self.assertEqual(rules_of(start, sentences), [(2, "space_full")])
+        self.assertEqual(rules_of(start, sentences[:1] + [[ev("release", "정우", object="@민수")]]), [(1, "not_held")])
+
     def test_turn_away_while_hugged(self):
         start = {"민준": {"hands": {"left": None, "right": None}}}
         self.assertEqual(rules_of(start, [[ev("touch", "민준", target="유나", kind="hug")],

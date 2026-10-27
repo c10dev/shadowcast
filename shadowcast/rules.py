@@ -20,7 +20,8 @@ State
 
 Events. All events have "type" and "character".
   grab      hand, object, from?           take an object into a hand
-  release   hand, object, to?             let an object go
+  release   hand, object, to?             let an object go. object "@name" lets go of a person
+                                          with the hand only; body contact stays
   give      to, object, hand?, to_hand?   pass an object to another person
   use       hand, free_hands_needed, action?, with?   act with the hands
   turn      toward | away_from | side_to  change facing to one person
@@ -235,6 +236,14 @@ class Scene:
     def _release(self, who, hand, obj):
         """Free the hand that holds obj. Return an error text or None."""
         hands = self.body(who)["hands"]
+        if is_person(obj):
+            # Let go of a person: only the hand lets go, body contact stays.
+            held = [h for h in HANDS if hands[h] == obj and hand in (h, "any", "both")]
+            if not held:
+                return f"{who}: does not hold {obj}, holds {hands}"
+            for h in held:
+                hands[h] = None
+            return None
         if hand in HANDS:
             if hands[hand] is None:
                 return f"{who}: {hand} hand is already empty"
