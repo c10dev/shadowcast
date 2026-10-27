@@ -1,0 +1,88 @@
+[
+ {
+  "id": "x01",
+  "title": "퇴근길 지하철",
+  "source": "original",
+  "difficulty": "implicit",
+  "patterns": ["space_full", "layer_order", "hand_full", "facing_mismatch"],
+  "traps": ["손잡이를 쥔 채 오른손만 씀", "몸 앞에 사람이 붙은 채 백팩을 옆구리로 돌림"],
+  "characters": {"민준": {"height_cm": 182}, "유나": {"height_cm": 160}},
+  "aliases": {"가방": "백팩"},
+  "initial_state": {
+   "민준": {
+    "hands": {"left": "손잡이", "right": null},
+    "facing": {"유나": "front"},
+    "worn": {"torso": ["셔츠", "백팩"]},
+    "front": ["@유나"],
+    "back": ["백팩"]
+   },
+   "유나": {
+    "facing": {"민준": "front"},
+    "front": ["@민준"]
+   }
+  },
+  "items": {"통지서": "민준 바지 앞주머니", "물병": "백팩 앞주머니"},
+  "sentences": [
+   {"text": "퇴근길 지하철은 발 디딜 틈이 없었다.", "events": []},
+   {"text": "민준은 왼손으로 손잡이를 잡고, 마주 선 유나와 가슴이 닿을 만큼 붙어 있었다.",
+    "events": [
+     {"type": "state", "character": "민준", "holds": "손잡이", "facing": {"유나": "front"}, "front": "@유나"}
+    ]},
+   {"text": "민준은 오른손을 바지 앞주머니에 넣어 통지서를 꺼냈다.",
+    "events": [
+     {"type": "grab", "character": "민준", "hand": "right", "object": "통지서", "from": "바지 앞주머니"}
+    ]},
+   {"text": "통지서를 확인한 그는 그것을 셔츠 가슴 주머니에 넣었다.",
+    "events": [
+     {"type": "release", "character": "민준", "hand": "right", "object": "통지서", "to": "셔츠 가슴 주머니"}
+    ]},
+   {"text": "민준은 오른손으로 백팩 한쪽 끈을 내려 가방을 오른쪽 옆구리로 돌려 멨다.",
+    "events": [
+     {"type": "take_off", "character": "민준", "item": "백팩", "free_hands_needed": 1},
+     {"type": "wear", "character": "민준", "item": "백팩", "zone": "torso"}
+    ]},
+   {"text": "다음 역에서 유나가 내렸다.",
+    "events": [
+     {"type": "move", "character": "유나", "away_from": "민준"}
+    ]},
+   {"text": "민준은 손잡이를 놓지 않은 채 오른손으로 백팩 지퍼를 열어 물병을 꺼냈다.",
+    "events": [
+     {"type": "use", "character": "민준", "hand": "right", "free_hands_needed": 1, "action": "지퍼를 엶"},
+     {"type": "grab", "character": "민준", "hand": "right", "object": "물병", "from": "백팩"}
+    ]}
+  ],
+  "errors": [
+   {"sentence": 1,
+    "text": "민준은 왼손으로 손잡이를 잡고, 등을 보이고 선 유나의 뒷머리에 턱이 닿을 만큼 붙어 있었다.",
+    "events": [
+     {"type": "state", "character": "유나", "facing": {"민준": "back"}}
+    ],
+    "rule": "facing_mismatch",
+    "note": "앞 장면 설정에서는 유나가 민준을 마주 보고 섰다"},
+   {"sentence": 3,
+    "text": "통지서를 셔츠 가슴 주머니에 넣은 그는 백팩을 멘 채 셔츠를 벗어 손에 걸쳤다.",
+    "events": [
+     {"type": "release", "character": "민준", "hand": "right", "object": "통지서", "to": "셔츠 가슴 주머니"},
+     {"type": "take_off", "character": "민준", "item": "셔츠", "free_hands_needed": 1}
+    ],
+    "rule": "layer_order",
+    "note": "백팩 끈이 셔츠 위에 있다"},
+   {"sentence": 4,
+    "text": "민준은 오른손으로 백팩 한쪽 끈을 내려 가방을 몸 앞으로 돌려 멨다.",
+    "events": [
+     {"type": "take_off", "character": "민준", "item": "백팩", "free_hands_needed": 1},
+     {"type": "wear", "character": "민준", "item": "백팩", "zone": "torso", "side": "front"}
+    ],
+    "rule": "space_full",
+    "note": "몸 앞에 유나가 붙어 있다"},
+   {"sentence": 6,
+    "text": "민준은 손잡이를 쥔 채 두 손으로 백팩 지퍼를 열어 물병을 꺼냈다.",
+    "events": [
+     {"type": "use", "character": "민준", "hand": "both", "free_hands_needed": 2, "action": "두 손으로 지퍼를 엶"},
+     {"type": "grab", "character": "민준", "hand": "right", "object": "물병", "from": "백팩"}
+    ],
+    "rule": "hand_full",
+    "note": "왼손은 손잡이를 쥐고 있다"}
+  ]
+ }
+]
