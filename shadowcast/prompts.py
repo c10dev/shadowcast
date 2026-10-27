@@ -58,8 +58,10 @@ EXTRACT_SYSTEM = f"""너는 소설 문장에서 인물의 몸 · 손 · 옷 · �
 - touch: 접촉을 시작한다. target, kind, hand, target_hand
   kind: grip(손목 · 어깨를 잡음), hold_hands(손을 맞잡음), hug(마주 안음), back_hug(뒤에서 안음),
   carry_back(업음, target 이 업힌 사람), lean(target 이 character 의 몸 앞에 등을 기댐), press(앞몸끼리 맞닿음)
+  touch 로 적은 손 동작(업은 다리를 받침, 안은 팔)은 use 로 다시 적지 않는다.
 - untouch: 두 사람 사이의 접촉을 끝낸다. target
 - move: 몸을 옮긴다. away_from(그 사람에게서 멀어짐) 또는 to(간 곳)
+  다른 사람에게 잡히거나 맞닿은 채 다른 곳으로 가면 to 와 함께 away_from 도 적는다.
 - state: 문장이 지금 상태를 묘사한다. holds(쥔 물건), wears(입은 것), front · back(몸 앞 · 뒤에 붙은 것, 사람은 "@이름"),
   facing_who 와 facing(그 사람에게 front=앞, back=등, side=옆을 보임)
 - see: 다른 사람의 얼굴이나 앞모습을 직접 본다. target, part(face 또는 front). 화면 · 거울로 본 것은 적지 않는다.
