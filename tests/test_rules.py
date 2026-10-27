@@ -214,6 +214,14 @@ class WornRules(unittest.TestCase):
         self.assertEqual(rules_of(start, [[ev("take_off", "소희", item="반지"),
                                            ev("use", "소희", action="점원에게 보여 줌", **{"with": "반지"})]]), [])
 
+    def test_text_says_the_taken_off_item_is_held(self):
+        start = {"준호": {"hands": {"left": None, "right": None}, "worn": {"torso": ["바람막이"]}}}
+        sentences = [[ev("take_off", "준호", item="바람막이")], [ev("state", "준호", holds="바람막이")]]
+        self.assertEqual(rules_of(start, sentences), [])
+        # Now it takes a hand.
+        self.assertEqual(rules_of(start, sentences + [[ev("use", "준호", hand="both", free_hands_needed=2, action="끈을 당김")]]),
+                         [(2, "hand_full")])
+
     def test_taken_off_item_with_full_hands(self):
         start = {"준호": {"hands": {"left": "손잡이", "right": "컵"}, "worn": {"torso": ["바람막이"]}}}
         states, violations = rules.run_scene(start, [[ev("take_off", "준호", item="바람막이")]])

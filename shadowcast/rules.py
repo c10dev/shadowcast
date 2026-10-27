@@ -507,10 +507,14 @@ class Scene:
         if obj:
             hands = body["hands"]
             if not any(hands[h] not in (None, UNKNOWN) and _same(hands[h], obj) for h in HANDS):
-                if UNKNOWN not in hands.values():
+                if obj in self.loose and self.free(hands):
+                    self._take_hands(who, "any", 1, obj)  # the text says the taken-off item is in a hand
+                    self.loose.discard(obj)
+                elif UNKNOWN not in hands.values():
                     return "state_mismatch", f"text says {who} holds '{obj}', hands hold {hands}"
-                h = next(h for h in HANDS if hands[h] == UNKNOWN)
-                hands[h] = obj
+                else:
+                    h = next(h for h in HANDS if hands[h] == UNKNOWN)
+                    hands[h] = obj
         item = self.name(e.get("wears"))
         if item and self.worn_by(who, item) is None and body["worn"]:
             return "state_mismatch", f"text says {who} wears '{item}', worn {body['worn']}"
