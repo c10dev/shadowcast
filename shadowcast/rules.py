@@ -230,6 +230,8 @@ class Scene:
         hand = e.get("hand") or "any"
         if e.get("from") and obj in self.items and not same_place(self.items[obj], e["from"]):
             return "item_location", f"'{obj}' is at '{self.items[obj]}', not '{e['from']}'"
+        if hand == "any" and any(giver == who for giver, _ in self.holders(obj)):
+            return None  # already in a hand (a coat just taken off)
         # A grab of an object in another person's hand is a handoff: the other hand lets go.
         for giver, h in self.holders(obj):
             if giver != who:
@@ -402,6 +404,14 @@ class Scene:
             return err
         if e.get("to"):
             self.items[item] = e["to"]
+            return None
+        # With no place, the item stays in a free hand (the right hand first).
+        # With no free hand, its place is unknown.
+        self.items.pop(item, None)
+        hands = self.body(who)["hands"]
+        free = sorted(self.free(hands), key=lambda h: h != "right")
+        if free:
+            hands[free[0]] = item
         return None
 
     def _ev_touch(self, who, e):

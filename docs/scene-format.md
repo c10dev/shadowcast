@@ -54,13 +54,13 @@ python3 -m unittest discover -s tests
 
 | 사건 | 칸 | 하는 일 |
 |---|---|---|
-| `grab` | `hand`, `object`, `from`? | 물건을 쥔다. 다른 사람 손에 있던 물건이면 그 손이 빈다(건네받기) |
+| `grab` | `hand`, `object`, `from`? | 물건을 쥔다. 다른 사람 손에 있던 물건이면 그 손이 빈다(건네받기). `hand` 가 `any` 이고 이미 쥔 물건이면 아무것도 바꾸지 않는다 |
 | `release` | `hand`, `object`, `to`? | 물건을 놓는다. `object` 가 `"@이름"` 이면 그 사람을 잡은 손만 놓고, 몸의 접촉(기대기 등)은 그대로 둔다 |
 | `give` | `to`, `object`, `hand`?, `to_hand`? | 물건을 다른 사람에게 건넨다 |
 | `use` | `hand`, `free_hands_needed`, `action`?, `with`? | 손이 필요한 행동. `with` 는 쥐고 있어야 하는 도구 |
 | `turn` | `toward` \| `away_from` \| `side_to` | 한 사람을 향해 몸을 돌린다 |
 | `wear` | `item`, `zone`, `side`? | 입거나 멘다. `side` 가 `front` · `back` 이면 그 공간을 차지한다. 이미 멘 것이면 옮겨 멘다 |
-| `take_off` | `item`, `free_hands_needed`?, `to`? | 벗거나 내린다 |
+| `take_off` | `item`, `free_hands_needed`?, `to`? | 벗거나 내린다. `to` 가 있으면 벗은 것이 그 자리로 간다. 없으면 빈손 하나에 든다(오른손 먼저). 빈손이 없으면 자리를 모름으로 둔다 |
 | `touch` | `target`, `kind`, `hand`?, `target_hand`? | 접촉을 시작한다. 종류는 아래 표 |
 | `untouch` | `target` | 두 사람 사이의 접촉을 모두 끝낸다 |
 | `move` | `away_from`? \| `to`? | 몸을 옮긴다 |

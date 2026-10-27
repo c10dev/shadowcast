@@ -37,7 +37,7 @@
     ]},
    {"text": "민준은 오른손으로 백팩 한쪽 끈을 내려 가방을 오른쪽 옆구리로 돌려 멨다.",
     "events": [
-     {"type": "take_off", "character": "민준", "item": "백팩", "free_hands_needed": 1},
+     {"type": "use", "character": "민준", "hand": "right", "free_hands_needed": 1, "action": "끈을 내림"},
      {"type": "wear", "character": "민준", "item": "백팩", "zone": "torso"}
     ]},
    {"text": "다음 역에서 유나가 내렸다.",
@@ -69,7 +69,7 @@
    {"sentence": 4,
     "text": "민준은 오른손으로 백팩 한쪽 끈을 내려 가방을 몸 앞으로 돌려 멨다.",
     "events": [
-     {"type": "take_off", "character": "민준", "item": "백팩", "free_hands_needed": 1},
+     {"type": "use", "character": "민준", "hand": "right", "free_hands_needed": 1, "action": "끈을 내림"},
      {"type": "wear", "character": "민준", "item": "백팩", "zone": "torso", "side": "front"}
     ],
     "difficulty": "implicit", "rule": "space_full",

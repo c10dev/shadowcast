@@ -140,6 +140,37 @@ class WornRules(unittest.TestCase):
         self.assertEqual(rules_of(start, [[ev("take_off", "민준", item="재킷", free_hands_needed=1)]]),
                          [(0, "hand_full")])
 
+    def test_taken_off_item_stays_in_a_free_hand(self):
+        start = {"준호": {"hands": {"left": None, "right": None}, "worn": {"torso": ["바람막이"]}}}
+        take_off = ev("take_off", "준호", item="바람막이", free_hands_needed=1)
+        states, _ = rules.run_scene(start, [[take_off]])
+        self.assertEqual(states[0]["bodies"]["준호"]["hands"], {"left": None, "right": "바람막이"})
+        self.assertEqual(rules_of(start, [[take_off],
+                                          [ev("release", "준호", object="바람막이", to="배낭 옆 주머니")]]), [])
+        # A grab of the item that is already in the hand does not take a second hand.
+        self.assertEqual(rules_of(start, [[take_off],
+                                          [ev("grab", "준호", object="바람막이"),
+                                           ev("grab", "준호", object="컵")]]), [])
+        self.assertEqual(rules_of(start, [[take_off, ev("grab", "준호", object="컵"),
+                                           ev("grab", "준호", object="볼펜")]]), [(0, "hand_full")])
+
+    def test_taken_off_item_with_no_free_hand_is_unknown(self):
+        start = {"준호": {"hands": {"left": "손잡이", "right": "컵"}, "worn": {"torso": ["바람막이"]}}}
+        states, violations = rules.run_scene(start, [[ev("take_off", "준호", item="바람막이")]])
+        self.assertEqual(violations, [])
+        self.assertEqual(states[0]["bodies"]["준호"]["hands"], {"left": "손잡이", "right": "컵"})
+        self.assertNotIn("바람막이", states[0]["items"])
+
+    def test_taken_off_item_goes_to_its_place(self):
+        start = {"준호": {"hands": {"left": None, "right": None}, "worn": {"torso": ["바람막이"]}}}
+        take_off = ev("take_off", "준호", item="바람막이", to="의자")
+        states, _ = rules.run_scene(start, [[take_off]])
+        self.assertEqual(states[0]["bodies"]["준호"]["hands"], {"left": None, "right": None})
+        self.assertEqual(states[0]["items"]["바람막이"], "의자")
+        self.assertEqual(rules_of(start, [[take_off], [ev("grab", "준호", object="바람막이", **{"from": "의자"})]]), [])
+        self.assertEqual(rules_of(start, [[take_off], [ev("grab", "준호", object="바람막이", **{"from": "가방"})]]),
+                         [(1, "item_location")])
+
     def test_move_a_worn_backpack_to_the_front(self):
         sentences = [[ev("wear", "민준", item="백팩", zone="torso", side="front")],
                      [ev("state", "민준", front="백팩")]]
