@@ -1,0 +1,10 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Experiment outputs and model response cache
+results/
+
+# macOS
+.DS_Store

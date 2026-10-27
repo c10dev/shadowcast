@@ -1,0 +1,141 @@
+[
+  {
+    "id": "s01",
+    "title": "식탁에서 전화 받기",
+    "difficulty": "explicit",
+    "initial_state": {"지호": {"left": null, "right": null}},
+    "sentences": [
+      {"text": "지호는 왼손으로 국그릇을 들고 오른손으로 숟가락을 집었다.",
+       "events": [{"character": "지호", "type": "grab", "hand": "left", "object": "국그릇"},
+                  {"character": "지호", "type": "grab", "hand": "right", "object": "숟가락"}]},
+      {"text": "그는 국을 한 숟갈 떠서 마셨다.",
+       "events": [{"character": "지호", "type": "use", "hand": "right", "object": "숟가락", "free_hands_needed": 0, "action": "국을 떠 마심"}]},
+      {"text": "그때 식탁 위의 휴대폰이 울렸다.", "events": []},
+      {"text": "지호는 숟가락을 내려놓고 오른손으로 휴대폰을 집었다.",
+       "events": [{"character": "지호", "type": "release", "hand": "right", "object": "숟가락"},
+                  {"character": "지호", "type": "grab", "hand": "right", "object": "휴대폰"}]},
+      {"text": "\"여보세요?\" 그는 국그릇을 든 채 대답했다.", "events": []}
+    ],
+    "error": {
+      "sentence": 3,
+      "text": "지호는 숟가락과 국그릇을 그대로 든 채 휴대폰을 집어 들었다.",
+      "events": [{"character": "지호", "type": "grab", "hand": "any", "object": "휴대폰"}],
+      "note": "양손이 차 있는데 휴대폰을 집음"
+    }
+  },
+  {
+    "id": "s02",
+    "title": "이삿짐 들고 문 열기",
+    "difficulty": "explicit",
+    "initial_state": {"서연": {"left": null, "right": null}, "민재": {"left": null, "right": "열쇠"}},
+    "sentences": [
+      {"text": "서연은 커다란 상자를 두 팔로 안아 들었다.",
+       "events": [{"character": "서연", "type": "grab", "hand": "both", "object": "상자"}]},
+      {"text": "민재가 오른손에 든 열쇠로 현관문을 열었다.",
+       "events": [{"character": "민재", "type": "use", "hand": "right", "object": "열쇠", "free_hands_needed": 0, "action": "열쇠로 문을 엶"}]},
+      {"text": "서연은 상자를 안은 채 어깨로 문을 밀고 들어갔다.",
+       "events": [{"character": "서연", "type": "use", "hand": "any", "object": null, "free_hands_needed": 0, "action": "어깨로 문을 밂"}]},
+      {"text": "민재는 열쇠를 주머니에 넣고 상자 한쪽을 받쳐 주었다.",
+       "events": [{"character": "민재", "type": "release", "hand": "right", "object": "열쇠"},
+                  {"character": "민재", "type": "use", "hand": "any", "object": "상자", "free_hands_needed": 1, "action": "상자를 받침"}]}
+    ],
+    "error": {
+      "sentence": 2,
+      "text": "서연은 상자를 안은 채 한 손으로 문손잡이를 돌려 문을 활짝 열었다.",
+      "events": [{"character": "서연", "type": "use", "hand": "any", "object": null, "free_hands_needed": 1, "action": "문손잡이를 돌림"}],
+      "note": "두 팔로 상자를 안고 있는데 한 손을 씀"
+    }
+  },
+  {
+    "id": "s03",
+    "title": "카페에서 결제하기",
+    "difficulty": "implicit",
+    "initial_state": {"하린": {"left": "우산", "right": null}},
+    "sentences": [
+      {"text": "하린은 왼손에 접은 우산을 든 채 오른손으로 카페 문을 열었다.",
+       "events": [{"character": "하린", "type": "use", "hand": "right", "object": null, "free_hands_needed": 1, "action": "문을 엶"}]},
+      {"text": "그녀는 카운터에서 뜨거운 커피를 오른손으로 받았다.",
+       "events": [{"character": "하린", "type": "grab", "hand": "right", "object": "커피"}]},
+      {"text": "하린은 우산을 우산꽂이에 꽂고, 빈 왼손으로 휴대폰을 꺼내 결제했다.",
+       "events": [{"character": "하린", "type": "release", "hand": "left", "object": "우산"},
+                  {"character": "하린", "type": "grab", "hand": "left", "object": "휴대폰"}]},
+      {"text": "그녀는 창가 자리에 앉았다.", "events": []}
+    ],
+    "error": {
+      "sentence": 2,
+      "text": "하린은 커피를 든 채 왼손으로 지갑에서 카드를 꺼내 결제했다.",
+      "events": [{"character": "하린", "type": "grab", "hand": "left", "object": "카드"}],
+      "note": "왼손의 우산을 잊음"
+    }
+  },
+  {
+    "id": "s04",
+    "title": "목검 대련",
+    "difficulty": "explicit",
+    "initial_state": {"도윤": {"left": null, "right": "목검"}, "태오": {"left": null, "right": null}},
+    "sentences": [
+      {"text": "도윤이 오른손에 쥔 목검을 휘둘렀다.",
+       "events": [{"character": "도윤", "type": "use", "hand": "right", "object": "목검", "free_hands_needed": 0, "action": "목검을 휘두름"}]},
+      {"text": "태오는 두 팔을 교차해 막았다.",
+       "events": [{"character": "태오", "type": "use", "hand": "both", "object": null, "free_hands_needed": 2, "action": "두 팔로 막음"}]},
+      {"text": "도윤은 목검을 놓고 왼손으로 태오의 옷깃을 움켜쥐었다.",
+       "events": [{"character": "도윤", "type": "release", "hand": "right", "object": "목검"},
+                  {"character": "도윤", "type": "grab", "hand": "left", "object": "태오의 옷깃"}]},
+      {"text": "그리고 빈 오른손으로 주먹을 쥐어 들어 올렸다.",
+       "events": [{"character": "도윤", "type": "use", "hand": "right", "object": null, "free_hands_needed": 1, "action": "주먹을 듦"}]}
+    ],
+    "error": {
+      "sentence": 3,
+      "text": "그리고 옷깃을 쥔 채 두 손으로 태오의 어깨를 힘껏 밀쳤다.",
+      "events": [{"character": "도윤", "type": "use", "hand": "both", "object": null, "free_hands_needed": 2, "action": "두 손으로 어깨를 밂"}],
+      "note": "왼손이 옷깃을 쥐고 있는데 두 손을 씀"
+    }
+  },
+  {
+    "id": "s05",
+    "title": "부엌에서 냄비 내리기",
+    "difficulty": "explicit",
+    "initial_state": {"은비": {"left": null, "right": null}},
+    "sentences": [
+      {"text": "은비는 왼손으로 양파를 누르고 오른손으로 칼을 쥐었다.",
+       "events": [{"character": "은비", "type": "grab", "hand": "left", "object": "양파"},
+                  {"character": "은비", "type": "grab", "hand": "right", "object": "칼"}]},
+      {"text": "그녀는 양파를 잘게 썰었다.",
+       "events": [{"character": "은비", "type": "use", "hand": "right", "object": "칼", "free_hands_needed": 0, "action": "양파를 썲"}]},
+      {"text": "그때 냄비가 끓어 넘치려 했다.", "events": []},
+      {"text": "은비는 칼을 도마에 내려놓고 오른손으로 냄비 뚜껑을 열었다.",
+       "events": [{"character": "은비", "type": "release", "hand": "right", "object": "칼"},
+                  {"character": "은비", "type": "use", "hand": "right", "object": null, "free_hands_needed": 1, "action": "뚜껑을 엶"}]}
+    ],
+    "error": {
+      "sentence": 3,
+      "text": "은비는 칼과 양파를 쥔 채 두 손으로 냄비를 들어 불에서 내렸다.",
+      "events": [{"character": "은비", "type": "use", "hand": "both", "object": null, "free_hands_needed": 2, "action": "두 손으로 냄비를 듦"}],
+      "note": "양손이 차 있는데 두 손으로 냄비를 듦"
+    }
+  },
+  {
+    "id": "s06",
+    "title": "꽃다발과 선물 건네기",
+    "difficulty": "implicit",
+    "initial_state": {"준호": {"left": "꽃다발", "right": "선물 상자"}, "미나": {"left": null, "right": "와인잔"}},
+    "sentences": [
+      {"text": "준호는 왼손에 꽃다발, 오른손에 선물 상자를 들고 서 있었다.", "events": []},
+      {"text": "미나가 와인잔을 든 채 다가왔다.", "events": []},
+      {"text": "준호가 꽃다발을 건네자 미나는 빈 왼손으로 받았다.",
+       "events": [{"character": "준호", "type": "release", "hand": "left", "object": "꽃다발"},
+                  {"character": "미나", "type": "grab", "hand": "left", "object": "꽃다발"}]},
+      {"text": "준호는 비워진 왼손으로 머리를 긁적였다.",
+       "events": [{"character": "준호", "type": "use", "hand": "left", "object": null, "free_hands_needed": 1, "action": "머리를 긁적임"}]}
+    ],
+    "error": {
+      "sentence": 2,
+      "text": "준호가 꽃다발을 건네자 미나는 왼손으로 받았고, 이어서 내민 선물 상자도 남은 손으로 받아 들었다.",
+      "events": [{"character": "준호", "type": "release", "hand": "left", "object": "꽃다발"},
+                 {"character": "미나", "type": "grab", "hand": "left", "object": "꽃다발"},
+                 {"character": "준호", "type": "release", "hand": "right", "object": "선물 상자"},
+                 {"character": "미나", "type": "grab", "hand": "any", "object": "선물 상자"}],
+      "note": "미나의 남은 손(오른손)에 와인잔이 있음"
+    }
+  }
+]
