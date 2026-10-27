@@ -2,12 +2,14 @@
 
 Backends:
   anthropic  Claude API (needs `pip install anthropic` and credentials)
+  gemini     Gemini API key or Vertex AI service account (needs `pip install google-genai`)
   ollama     local model through http://localhost:11434
   gold       returns the gold answer (pipeline self-test, no model)
   baseline   always answers "no error"
 """
 
 import json
+import os
 import urllib.request
 
 JUDGE_SYSTEM = """너는 소설 원고의 물리 연속성 검사기다.
@@ -147,6 +149,73 @@ class AnthropicBackend:
         return json.loads(text), {"model": response.model, "request_id": response._request_id}
 
 
+class GeminiBackend:
+    """Gemini with a service account key file (Vertex AI) or an API key.
+
+    GOOGLE_APPLICATION_CREDENTIALS  path to a service account key file (Vertex AI)
+    GOOGLE_CLOUD_PROJECT            project ID; default is project_id in the key file
+    GOOGLE_CLOUD_LOCATION           default "global"
+    GEMINI_API_KEY                  used when no key file is set
+    The --effort option is not sent to Gemini. It only goes into the cache key.
+    """
+
+    DEFAULT_MODEL = "gemini-4-argon"
+
+    def __init__(self, model):
+        from google import genai
+
+        self.model = model or self.DEFAULT_MODEL
+        path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+        key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if path:
+            from google.oauth2 import service_account
+
+            creds = service_account.Credentials.from_service_account_file(
+                path, scopes=["https://www.googleapis.com/auth/cloud-platform"])
+            project = os.environ.get("GOOGLE_CLOUD_PROJECT") or creds.project_id
+            if not project:
+                raise RuntimeError("no project ID: set GOOGLE_CLOUD_PROJECT")
+            location = os.environ.get("GOOGLE_CLOUD_LOCATION", "global")
+            self.client = genai.Client(vertexai=True, project=project, location=location, credentials=creds)
+            self.via = "vertex"
+        elif key:
+            self.client = genai.Client(api_key=key)
+            self.via = "api_key"
+        else:
+            raise RuntimeError("set GOOGLE_APPLICATION_CREDENTIALS or GEMINI_API_KEY")
+
+    def call(self, system, user, schema):
+        from google.genai import types
+
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=user,
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                response_mime_type="application/json",
+                response_json_schema=_without_key(schema, "additionalProperties"),
+            ),
+        )
+        if not response.text:
+            reason = response.candidates[0].finish_reason if response.candidates else None
+            raise RuntimeError(f"empty response (finish_reason={reason})")
+        u = response.usage_metadata
+        usage = {"input": u.prompt_token_count, "output": u.candidates_token_count,
+                 "thinking": u.thoughts_token_count} if u else {}
+        meta = {"model": response.model_version or self.model, "via": self.via, "usage": usage}
+        return json.loads(response.text), meta
+
+
+def _without_key(schema, name):
+    """Copy a JSON schema without one keyword. Gemini accepts a subset of JSON Schema,
+    and the parser here ignores extra fields, so dropping "additionalProperties" is safe."""
+    if isinstance(schema, dict):
+        return {k: _without_key(v, name) for k, v in schema.items() if k != name}
+    if isinstance(schema, list):
+        return [_without_key(v, name) for v in schema]
+    return schema
+
+
 class OllamaBackend:
     def __init__(self, model, host="http://localhost:11434"):
         self.model = model
@@ -176,6 +245,8 @@ class OllamaBackend:
 def make_backend(name, model, effort):
     if name == "anthropic":
         return AnthropicBackend(model, effort)
+    if name == "gemini":
+        return GeminiBackend(model)
     if name == "ollama":
         return OllamaBackend(model)
     return None  # gold and baseline need no model

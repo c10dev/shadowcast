@@ -4,6 +4,7 @@
   python run.py run --backend gold
   python run.py run --backend baseline
   python run.py run --backend anthropic --model claude-opus-5-5
+  python run.py run --backend gemini --model gemini-4-argon
   python run.py run --backend ollama --model <local-model>
 
 Conditions:
@@ -11,7 +12,10 @@ Conditions:
   B  paragraph + initial state -> model judges
   C  paragraph + initial state -> model extracts events -> rules.py judges
 
-Credentials: put ANTHROPIC_API_KEY=... in hand-check/.env (git-ignored).
+Credentials: put these in hand-check/.env (git-ignored).
+  ANTHROPIC_API_KEY=...                          for --backend anthropic
+  GOOGLE_APPLICATION_CREDENTIALS=/path/key.json  for --backend gemini (Vertex AI)
+  or GEMINI_API_KEY=...                          for --backend gemini (API key)
 """
 
 import argparse
@@ -246,7 +250,7 @@ def main():
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("validate")
     r = sub.add_parser("run")
-    r.add_argument("--backend", choices=["gold", "baseline", "anthropic", "ollama"], required=True)
+    r.add_argument("--backend", choices=["gold", "baseline", "anthropic", "gemini", "ollama"], required=True)
     r.add_argument("--model", default=None)
     r.add_argument("--effort", default="medium", choices=["low", "medium", "high", "xhigh", "max"])
     r.add_argument("--conditions", default="A,B,C")
@@ -261,9 +265,11 @@ def main():
             print("FAIL", line)
         print(f"{len(items)} items, {len(problems)} problems")
         return 1 if problems else 0
-    if args.backend in ("anthropic", "ollama") and not args.model:
+    if args.backend in ("anthropic", "gemini", "ollama") and not args.model:
         if args.backend == "anthropic":
             args.model = "claude-opus-5-5"
+        elif args.backend == "gemini":
+            args.model = llm.GeminiBackend.DEFAULT_MODEL
         else:
             p.error("--model is required for ollama")
     return cmd_run(args)

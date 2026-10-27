@@ -1,2 +1,3 @@
-# Only needed for --backend anthropic. The other backends use the standard library.
-anthropic>=2.3,<3
+# Only needed for the model backends. gold, baseline, and ollama use the standard library.
+anthropic>=2.3,<3          # --backend anthropic
+google-genai>=2.30,<3      # --backend gemini

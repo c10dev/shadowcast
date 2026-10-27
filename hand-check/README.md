@@ -57,6 +57,24 @@ ANTHROPIC_API_KEY=sk-ant-...
 - `.env`가 없으면 SDK가 `ANTHROPIC_API_KEY` 환경 변수나 `ant auth login` 프로필에서 읽는다.
 `--limit 2`를 주면 앞의 장면 2개(4항목)만 돌린다. 처음에는 이것으로 비용과 출력 형식을 확인한다.
 
+Gemini로 돌리기. 같은 `requirements.txt`가 `google-genai`도 설치한다. 인증은 둘 중 하나를 `hand-check/.env`에 넣는다.
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=/절대/경로/서비스-계정-키.json
+GEMINI_API_KEY=...
+```
+
+- 키 파일이 있으면 Vertex AI로 부른다. 프로젝트 ID는 키 파일의 `project_id`를 쓰고, `GOOGLE_CLOUD_PROJECT`가 있으면 그 값을 쓴다. 지역은 `GOOGLE_CLOUD_LOCATION`이고 기본값은 `global`이다.
+- 키 파일이 없으면 `GEMINI_API_KEY`로 부른다.
+- 키 파일은 저장소 밖에 두고 `chmod 600`으로 권한을 줄인다. `.env`에는 경로만 적는다.
+- `--model`을 비우면 `gemini-4-argon`을 쓴다. `--effort`는 Gemini에 보내지 않고 캐시 키에만 들어간다.
+- 결과의 `meta.usage`에 입력 · 출력 · 생각 토큰 수가 남는다.
+
+```bash
+.venv/bin/python run.py run --backend gemini --limit 2
+.venv/bin/python run.py run --backend gemini
+```
+
 로컬 모델로 돌리기 (Ollama 설치와 모델 다운로드가 먼저 필요하다):
 
 ```bash
