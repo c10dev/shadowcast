@@ -1,0 +1,5841 @@
+[
+ {
+  "id": "v3d01",
+  "title": "이삿날",
+  "source": "original",
+  "patterns": [
+   "space_full",
+   "hand_full",
+   "item_location"
+  ],
+  "traps": [
+   "상자를 안은 도현의 등을 수아가 한 손으로 토닥임",
+   "의자를 든 박 기사가 다른 손으로 문 손잡이를 잡음",
+   "상자를 신발장에 내려놓은 뒤 휴대폰을 꺼냄"
+  ],
+  "characters": {
+   "도현": {},
+   "수아": {},
+   "박 기사": {}
+  },
+  "initial_state": {
+   "도현": {
+    "hands": {
+     "left": null,
+     "right": null
+    }
+   },
+   "수아": {
+    "hands": {
+     "left": null,
+     "right": null
+    }
+   },
+   "박 기사": {}
+  },
+  "sentences": [
+   {
+    "text": "이삿짐 트럭이 골목 끝에 멈추자 도현은 운동화 끈을 단단히 고쳐 맸다.",
+    "events": []
+   },
+   {
+    "text": "수아는 거실 바닥에 쪼그려 앉아 커터칼로 마지막 상자의 테이프를 갈랐다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "수아",
+      "object": "커터칼",
+      "hand": "right"
+     },
+     {
+      "type": "use",
+      "character": "수아",
+      "free_hands_needed": 0,
+      "action": "테이프를 가름",
+      "with": "커터칼"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 칼날을 집어넣은 커터칼을 싱크대 서랍에 넣어 두었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "수아",
+      "object": "커터칼",
+      "to": "싱크대 서랍"
+     }
+    ]
+   },
+   {
+    "text": "박 기사가 현관문을 활짝 열고 문 밑에 고무 받침을 끼워 넣었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "박 기사",
+      "free_hands_needed": 1,
+      "action": "문 밑에 받침을 끼움"
+     }
+    ]
+   },
+   {
+    "text": "도현은 책이 가득 든 상자를 두 팔로 가슴 앞에 끌어안았다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "책 상자",
+      "hand": "both"
+     },
+     {
+      "type": "state",
+      "character": "도현",
+      "front": "책 상자"
+     }
+    ]
+   },
+   {
+    "text": "\"그거 혼자 들 수 있겠어?\" 수아가 물었다.",
+    "events": []
+   },
+   {
+    "text": "수아는 상자를 안은 오빠의 등을 손바닥으로 가볍게 토닥여 주었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "수아",
+      "free_hands_needed": 1,
+      "action": "등을 토닥임"
+     }
+    ]
+   },
+   {
+    "text": "도현은 계단을 한 칸씩 조심스레 내려가 트럭 짐칸에 책 상자를 밀어 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "도현",
+      "object": "책 상자",
+      "to": "트럭 짐칸"
+     }
+    ]
+   },
+   {
+    "text": "박 기사는 왼손으로 접이식 의자를 들고, 오른손으로는 현관문 손잡이를 붙잡아 문이 닫히지 않게 했다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "박 기사",
+      "object": "접이식 의자",
+      "hand": "left"
+     },
+     {
+      "type": "use",
+      "character": "박 기사",
+      "free_hands_needed": 1,
+      "action": "문 손잡이를 붙잡음",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "\"이 건물은 엘리베이터가 없어서 고생 좀 하시겠네요.\"",
+    "events": []
+   },
+   {
+    "text": "다시 올라온 도현은 이번에는 전기밥솥이 든 상자를 두 손으로 받쳐 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "밥솥 상자",
+      "hand": "both"
+     }
+    ]
+   },
+   {
+    "text": "현관 앞에서 그는 상자를 신발장 위에 잠시 올려 두고, 바지 주머니에서 휴대폰을 꺼내 새집 주소를 확인했다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "도현",
+      "object": "밥솥 상자",
+      "to": "신발장 위"
+     },
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "휴대폰",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "\"신도시 쪽 아파트 맞죠?\" 박 기사가 화면을 들여다보며 물었다.",
+    "events": []
+   },
+   {
+    "text": "도현은 휴대폰을 바지 주머니에 도로 넣고 신발장 위의 밥솥 상자를 다시 들어 올렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "도현",
+      "object": "휴대폰",
+      "to": "바지 주머니"
+     },
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "밥솥 상자",
+      "hand": "both",
+      "from": "신발장 위"
+     }
+    ]
+   },
+   {
+    "text": "그사이 수아는 작은 배낭을 등에 메고 화분 두 개를 양손에 하나씩 들었다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "수아",
+      "item": "배낭",
+      "zone": "torso",
+      "side": "back"
+     },
+     {
+      "type": "grab",
+      "character": "수아",
+      "object": "작은 화분",
+      "hand": "left"
+     },
+     {
+      "type": "grab",
+      "character": "수아",
+      "object": "큰 화분",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "계단참에서 그녀는 숨을 고르며 벽에 어깨를 잠깐 기댔다.",
+    "events": []
+   },
+   {
+    "text": "도현이 밥솥 상자를 짐칸 안쪽에 밀어 넣는 동안, 박 기사는 냉장고를 끈으로 묶어 수레에 실었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "도현",
+      "object": "밥솥 상자",
+      "to": "트럭 짐칸"
+     }
+    ]
+   },
+   {
+    "text": "\"화분은 조수석 발밑에 두면 돼요.\"",
+    "events": []
+   },
+   {
+    "text": "수아는 조수석 문을 무릎으로 밀어 열고 화분 두 개를 발판에 나란히 내려놓았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "수아",
+      "object": "작은 화분",
+      "to": "조수석 발판"
+     },
+     {
+      "type": "release",
+      "character": "수아",
+      "object": "큰 화분",
+      "to": "조수석 발판"
+     }
+    ]
+   },
+   {
+    "text": "빈손이 된 그녀는 등에서 배낭을 내려 조수석 위에 실었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "수아",
+      "item": "배낭",
+      "free_hands_needed": 1,
+      "to": "조수석"
+     }
+    ]
+   },
+   {
+    "text": "도현은 마지막으로 빈 방들을 하나씩 둘러보았다.",
+    "events": []
+   },
+   {
+    "text": "그가 벽에 붙어 있던 달력을 떼어 내자 바랜 벽지에 네모난 자국이 드러났다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "달력"
+     }
+    ]
+   },
+   {
+    "text": "그는 달력을 둘둘 말아 쓰레기봉투에 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "도현",
+      "object": "달력",
+      "to": "쓰레기봉투"
+     }
+    ]
+   },
+   {
+    "text": "수아가 다시 올라와 싱크대 밑에 남은 잡동사니를 정리하기 시작했다.",
+    "events": []
+   },
+   {
+    "text": "그녀는 싱크대 서랍에서 커터칼을 꺼내 쓰레기봉투를 묶어 둔 노끈을 끊었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "수아",
+      "object": "커터칼",
+      "hand": "right",
+      "from": "싱크대 서랍"
+     },
+     {
+      "type": "use",
+      "character": "수아",
+      "free_hands_needed": 0,
+      "action": "노끈을 끊음",
+      "with": "커터칼"
+     }
+    ]
+   },
+   {
+    "text": "수아는 커터칼을 점퍼 주머니에 넣으며 텅 빈 거실을 둘러보았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "수아",
+      "object": "커터칼",
+      "to": "점퍼 주머니"
+     }
+    ]
+   },
+   {
+    "text": "\"생각보다 넓은 집이었네.\"",
+    "events": []
+   },
+   {
+    "text": "도현은 그녀 옆에 서서 창밖의 트럭을 내려다보았다.",
+    "events": []
+   },
+   {
+    "text": "현관 쪽에서 박 기사가 짐을 다 실었다고 외쳤다.",
+    "events": []
+   },
+   {
+    "text": "도현은 거실 불을 끄고, 바지 주머니에서 현관 열쇠를 꺼내 신발장 위에 올려 두었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "도현",
+      "free_hands_needed": 1,
+      "action": "불을 끔"
+     },
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "현관 열쇠",
+      "from": "바지 주머니"
+     },
+     {
+      "type": "release",
+      "character": "도현",
+      "object": "현관 열쇠",
+      "to": "신발장 위"
+     }
+    ]
+   },
+   {
+    "text": "수아가 먼저 신발을 신고 계단을 내려갔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "수아",
+      "to": "계단"
+     }
+    ]
+   },
+   {
+    "text": "도현은 문을 닫기 전에 텅 빈 집 안을 한 번 더 돌아보았다.",
+    "events": []
+   },
+   {
+    "text": "그리고 손잡이를 잡아 문을 천천히 당겨 닫았다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "도현",
+      "free_hands_needed": 1,
+      "action": "문을 닫음"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 6,
+    "text": "수아는 상자를 안은 오빠에게 다가가 그를 와락 끌어안았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "수아",
+      "target": "도현",
+      "kind": "hug"
+     }
+    ],
+    "rule": "space_full",
+    "difficulty": "explicit",
+    "cause": 4,
+    "note": "도현의 가슴 앞은 두 팔로 안은 책 상자가 차지하고 있다"
+   },
+   {
+    "sentence": 11,
+    "text": "현관 앞에서 그는 바지 주머니에서 휴대폰을 꺼내 새집 주소를 확인했다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "도현",
+      "object": "휴대폰",
+      "hand": "right"
+     }
+    ],
+    "rule": "hand_full",
+    "difficulty": "implicit",
+    "cause": 10,
+    "note": "두 손으로 밥솥 상자를 받쳐 든 채다"
+   },
+   {
+    "sentence": 24,
+    "text": "그녀는 공구 가방에서 커터칼을 꺼내 쓰레기봉투를 묶어 둔 노끈을 끊었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "수아",
+      "object": "커터칼",
+      "hand": "right",
+      "from": "공구 가방"
+     },
+     {
+      "type": "use",
+      "character": "수아",
+      "free_hands_needed": 0,
+      "action": "노끈을 끊음",
+      "with": "커터칼"
+     }
+    ],
+    "rule": "item_location",
+    "difficulty": "implicit",
+    "cause": 2,
+    "note": "커터칼은 처음에 싱크대 서랍에 넣어 두었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d02",
+  "title": "비 오는 정류장",
+  "source": "original",
+  "patterns": [
+   "facing_mismatch",
+   "hidden_side",
+   "contact_kept"
+  ],
+  "traps": [
+   "할머니에게 왼팔을 내준 채 오른손의 우산을 기울임",
+   "등 돌린 서연의 뒷머리와 어깨만 바라봄"
+  ],
+  "characters": {
+   "지훈": {},
+   "서연": {},
+   "할머니": {}
+  },
+  "initial_state": {
+   "지훈": {},
+   "서연": {},
+   "할머니": {}
+  },
+  "sentences": [
+   {
+    "text": "저녁부터 쏟아진 비가 정류장 지붕을 요란하게 두드렸다.",
+    "events": []
+   },
+   {
+    "text": "지훈은 오른손에 검은 장우산을 펼쳐 든 채 정류장으로 뛰어들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "지훈",
+      "object": "장우산",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "지붕 끝에 서 있던 할머니가 젖은 연석에서 미끄러질 뻔하자, 그는 얼른 왼팔을 내밀었다.",
+    "events": []
+   },
+   {
+    "text": "할머니는 한 손으로 지팡이를 짚고 다른 손으로 그의 왼팔을 꼭 붙들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "할머니",
+      "object": "지팡이",
+      "hand": "right"
+     },
+     {
+      "type": "touch",
+      "character": "할머니",
+      "target": "지훈",
+      "kind": "grip",
+      "hand": "left"
+     }
+    ]
+   },
+   {
+    "text": "\"고마워요, 총각. 다리가 영 시원찮아서.\"",
+    "events": []
+   },
+   {
+    "text": "벤치 끝에는 서연이 젖은 머리를 털며 앉아 있었다.",
+    "events": []
+   },
+   {
+    "text": "지훈을 알아본 서연은 얼굴을 굳히더니 벌떡 일어나 도로 쪽으로 몸을 돌렸다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "서연",
+      "away_from": "지훈"
+     }
+    ]
+   },
+   {
+    "text": "지훈은 할머니에게 왼팔을 내준 채 오른손의 우산을 기울여 그녀의 어깨 위로 떨어지는 빗물을 막아 주었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "지훈",
+      "free_hands_needed": 0,
+      "action": "우산을 기울임",
+      "with": "장우산"
+     }
+    ]
+   },
+   {
+    "text": "\"서연아, 아직도 화났어?\"",
+    "events": []
+   },
+   {
+    "text": "서연은 그에게 등을 보인 채 버스 시간표만 노려보았다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "서연",
+      "facing": {
+       "지훈": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "빗줄기가 굵어질수록 그녀의 어깨가 조금씩 떨렸다.",
+    "events": []
+   },
+   {
+    "text": "지훈은 그녀의 젖은 뒷머리와 떨리는 어깨를 말없이 바라보았다.",
+    "events": []
+   },
+   {
+    "text": "\"그날 일은 내가 잘못했어.\"",
+    "events": []
+   },
+   {
+    "text": "할머니가 그의 팔에 매달린 채 두 사람을 번갈아 쳐다보았다.",
+    "events": []
+   },
+   {
+    "text": "\"아가씨, 이 총각이 사과하는 것 같은데.\"",
+    "events": []
+   },
+   {
+    "text": "서연은 대답 없이 가방에서 접이식 우산을 꺼냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "서연",
+      "object": "접이식 우산",
+      "from": "가방"
+     }
+    ]
+   },
+   {
+    "text": "그녀가 우산 손잡이의 단추를 눌렀지만, 살 하나가 부러진 우산은 반쯤 펴지다 축 처졌다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "서연",
+      "free_hands_needed": 0,
+      "action": "단추를 누름",
+      "with": "접이식 우산"
+     }
+    ]
+   },
+   {
+    "text": "서연은 한숨을 쉬며 망가진 우산을 접어 벤치 위에 내려놓았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "서연",
+      "object": "접이식 우산",
+      "to": "벤치 위"
+     }
+    ]
+   },
+   {
+    "text": "그때 멀리서 버스 전조등이 빗줄기를 가르며 다가왔다.",
+    "events": []
+   },
+   {
+    "text": "\"내 버스 왔네.\" 할머니가 말했다.",
+    "events": []
+   },
+   {
+    "text": "할머니는 지훈의 팔을 놓고 고개를 꾸벅 숙인 뒤 지팡이를 짚으며 버스에 올랐다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "할머니",
+      "target": "지훈"
+     },
+     {
+      "type": "move",
+      "character": "할머니",
+      "away_from": "지훈"
+     }
+    ]
+   },
+   {
+    "text": "버스가 떠나자 정류장에는 빗소리만 남았다.",
+    "events": []
+   },
+   {
+    "text": "서연이 천천히 몸을 돌려 지훈을 바라보았다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "서연",
+      "toward": "지훈"
+     }
+    ]
+   },
+   {
+    "text": "지훈은 그제야 그녀의 붉어진 눈가를 보았다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "지훈",
+      "target": "서연",
+      "part": "face"
+     }
+    ]
+   },
+   {
+    "text": "그는 장우산을 그녀 쪽으로 내밀었다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "지훈",
+      "to": "서연",
+      "object": "장우산"
+     }
+    ]
+   },
+   {
+    "text": "서연은 잠시 망설이다가 우산 손잡이를 받아 쥐었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "서연",
+      "object": "장우산"
+     }
+    ]
+   },
+   {
+    "text": "두 사람은 한 우산 아래로 바짝 붙어 섰다.",
+    "events": []
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 9,
+    "text": "서연은 그와 똑바로 눈을 마주친 채 아무 대답도 하지 않았다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "서연",
+      "facing": {
+       "지훈": "front"
+      }
+     }
+    ],
+    "rule": "facing_mismatch",
+    "difficulty": "implicit",
+    "cause": 6,
+    "note": "서연은 도로 쪽으로 돌아서서 지훈에게 등을 보이고 있다"
+   },
+   {
+    "sentence": 11,
+    "text": "지훈은 그녀의 붉어진 눈가와 꽉 다문 입술을 말없이 바라보았다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "지훈",
+      "target": "서연",
+      "part": "face"
+     }
+    ],
+    "rule": "hidden_side",
+    "difficulty": "implicit",
+    "cause": 6,
+    "note": "서연은 지훈에게 등을 보이고 있어 얼굴이 보이지 않는다"
+   },
+   {
+    "sentence": 20,
+    "text": "할머니는 지훈에게 고개를 꾸벅 숙인 뒤 지팡이를 짚으며 버스에 올랐다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "할머니",
+      "away_from": "지훈"
+     }
+    ],
+    "rule": "contact_kept",
+    "difficulty": "implicit",
+    "cause": 3,
+    "note": "할머니는 아직 지훈의 왼팔을 붙들고 있다"
+   }
+  ]
+ },
+ {
+  "id": "v3d03",
+  "title": "병원 대기실",
+  "source": "original",
+  "patterns": [
+   "state_mismatch",
+   "not_worn",
+   "tool_missing"
+  ],
+  "traps": [
+   "번호표를 왼손에 쥔 채 오른손으로 볼펜을 받아 문진표를 씀",
+   "맡겼던 신분증을 간호사에게서 돌려받음"
+  ],
+  "characters": {
+   "민재": {},
+   "정희": {},
+   "간호사": {}
+  },
+  "initial_state": {
+   "민재": {
+    "hands": {
+     "left": null,
+     "right": null
+    }
+   },
+   "정희": {
+    "hands": {
+     "left": null,
+     "right": null
+    }
+   },
+   "간호사": {}
+  },
+  "sentences": [
+   {
+    "text": "토요일 오전의 내과 대기실은 마른기침 소리로 가득했다.",
+    "events": []
+   },
+   {
+    "text": "민재는 왼손에 대기 번호표를 쥐고 어머니 정희를 접수대 앞으로 모시고 갔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민재",
+      "object": "번호표",
+      "hand": "left"
+     }
+    ]
+   },
+   {
+    "text": "정희는 왼손에 핸드백을 든 채 오른손으로 지갑에서 신분증을 꺼냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정희",
+      "object": "핸드백",
+      "hand": "left"
+     },
+     {
+      "type": "grab",
+      "character": "정희",
+      "object": "신분증",
+      "hand": "right",
+      "from": "지갑"
+     }
+    ]
+   },
+   {
+    "text": "접수대의 간호사가 문진표 한 장과 일회용 마스크를 내밀었다.",
+    "events": []
+   },
+   {
+    "text": "정희는 신분증을 간호사에게 건넸다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "정희",
+      "to": "간호사",
+      "object": "신분증"
+     }
+    ]
+   },
+   {
+    "text": "민재는 오른손으로 마스크를 받아 귀에 걸어 썼다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민재",
+      "object": "마스크",
+      "hand": "right"
+     },
+     {
+      "type": "wear",
+      "character": "민재",
+      "item": "마스크",
+      "zone": "head"
+     }
+    ]
+   },
+   {
+    "text": "간호사가 볼펜을 내밀자 민재는 번호표를 쥔 채 오른손으로 볼펜을 받아 문진표의 빈칸을 채워 나갔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민재",
+      "object": "볼펜",
+      "hand": "right"
+     },
+     {
+      "type": "use",
+      "character": "민재",
+      "free_hands_needed": 0,
+      "action": "문진표를 씀",
+      "with": "볼펜"
+     }
+    ]
+   },
+   {
+    "text": "증상과 복용 중인 약, 알레르기 여부를 적는 동안 정희는 옆에서 하나하나 일러 주었다.",
+    "events": []
+   },
+   {
+    "text": "다 쓴 민재는 볼펜을 접수대 위 펜꽂이에 꽂아 두었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민재",
+      "object": "볼펜",
+      "to": "접수대 펜꽂이"
+     }
+    ]
+   },
+   {
+    "text": "\"서명은 진료 끝나고 받을게요.\" 간호사가 말했다.",
+    "events": []
+   },
+   {
+    "text": "두 사람은 창가 쪽 의자에 나란히 앉았다.",
+    "events": []
+   },
+   {
+    "text": "목이 마른 민재는 마스크를 벗어 점퍼 주머니에 넣고, 정수기에서 종이컵에 물을 받아 마셨다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "민재",
+      "item": "마스크",
+      "free_hands_needed": 1,
+      "to": "점퍼 주머니"
+     },
+     {
+      "type": "grab",
+      "character": "민재",
+      "object": "종이컵",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "그는 빈 종이컵을 구겨 쓰레기통에 버렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민재",
+      "object": "종이컵",
+      "to": "쓰레기통"
+     }
+    ]
+   },
+   {
+    "text": "정희는 오른손 손가락으로 핸드백 끈을 초조하게 만지작거렸다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "정희",
+      "free_hands_needed": 1,
+      "action": "핸드백 끈을 만지작거림",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "\"엄마, 별일 아닐 거야.\"",
+    "events": []
+   },
+   {
+    "text": "벽에 걸린 텔레비전에서 주말 날씨 소식이 흘러나왔다.",
+    "events": []
+   },
+   {
+    "text": "건너편에 앉은 젊은 남자는 연신 휴지로 코를 훔쳤다.",
+    "events": []
+   },
+   {
+    "text": "잠시 뒤 간호사가 접수대에서 일어나 정희에게 신분증을 돌려주었다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "간호사",
+      "to": "정희",
+      "object": "신분증"
+     }
+    ]
+   },
+   {
+    "text": "정희는 신분증을 지갑에 넣고 지갑을 핸드백 속으로 밀어 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정희",
+      "object": "신분증",
+      "to": "지갑"
+     }
+    ]
+   },
+   {
+    "text": "민재는 왼손에 쥔 번호표의 숫자를 다시 확인했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "민재",
+      "holds": "번호표"
+     }
+    ]
+   },
+   {
+    "text": "\"정희 님, 2번 진료실로 들어오세요.\"",
+    "events": []
+   },
+   {
+    "text": "정희가 핸드백을 어깨에 메고 자리에서 일어났다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "정희",
+      "item": "핸드백",
+      "zone": "torso"
+     }
+    ]
+   },
+   {
+    "text": "민재는 어머니를 따라 진료실로 들어갔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "정희",
+      "to": "진료실"
+     },
+     {
+      "type": "move",
+      "character": "민재",
+      "to": "진료실"
+     }
+    ]
+   },
+   {
+    "text": "흰 가운을 입은 의사가 모니터에서 눈을 떼고 두 사람을 맞았다.",
+    "events": []
+   },
+   {
+    "text": "정희는 의사 앞 둥근 의자에 앉아 핸드백을 벗어 무릎에 올려놓았다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "정희",
+      "item": "핸드백",
+      "to": "무릎"
+     }
+    ]
+   },
+   {
+    "text": "\"어디가 불편하세요?\"",
+    "events": []
+   },
+   {
+    "text": "정희가 머뭇거리자 민재가 대신 입을 열었다.",
+    "events": []
+   },
+   {
+    "text": "민재는 의사에게 어머니가 사흘째 밤마다 기침을 한다고 차근차근 설명했다.",
+    "events": []
+   },
+   {
+    "text": "의사는 청진기로 정희의 등을 짚어 본 뒤 기관지염 약을 처방해 주었다.",
+    "events": []
+   },
+   {
+    "text": "진료실을 나온 민재는 접수대 펜꽂이에서 볼펜을 뽑아 서명란에 이름을 적었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민재",
+      "object": "볼펜",
+      "hand": "right",
+      "from": "접수대 펜꽂이"
+     },
+     {
+      "type": "use",
+      "character": "민재",
+      "free_hands_needed": 0,
+      "action": "서명함",
+      "with": "볼펜"
+     }
+    ]
+   },
+   {
+    "text": "그는 볼펜을 펜꽂이에 도로 꽂고 번호표를 접수대 위에 내려놓았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민재",
+      "object": "볼펜",
+      "to": "접수대 펜꽂이"
+     },
+     {
+      "type": "release",
+      "character": "민재",
+      "object": "번호표",
+      "to": "접수대"
+     }
+    ]
+   },
+   {
+    "text": "정희가 아들의 팔짱을 끼며 \"배고프다, 국밥 먹으러 가자.\" 하고 웃었다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "정희",
+      "target": "민재",
+      "kind": "grip"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 13,
+    "text": "정희는 쥐고 있던 신분증의 모서리를 손가락으로 초조하게 만지작거렸다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "정희",
+      "holds": "신분증"
+     }
+    ],
+    "rule": "state_mismatch",
+    "difficulty": "implicit",
+    "cause": 4,
+    "note": "신분증은 접수할 때 간호사에게 건넸다"
+   },
+   {
+    "sentence": 27,
+    "text": "민재는 마스크를 턱 아래로 벗어 내리고, 의사에게 어머니가 사흘째 밤마다 기침을 한다고 차근차근 설명했다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "민재",
+      "item": "마스크",
+      "zone": "head"
+     }
+    ],
+    "rule": "not_worn",
+    "difficulty": "implicit",
+    "cause": 11,
+    "note": "마스크는 물을 마실 때 벗어 점퍼 주머니에 넣었고 다시 쓰지 않았다"
+   },
+   {
+    "sentence": 29,
+    "text": "진료실을 나온 민재는 손에 든 볼펜으로 접수대의 서명란에 이름을 적었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "민재",
+      "free_hands_needed": 0,
+      "action": "서명함",
+      "with": "볼펜"
+     }
+    ],
+    "rule": "tool_missing",
+    "difficulty": "implicit",
+    "cause": 8,
+    "note": "볼펜은 문진표를 쓴 뒤 펜꽂이에 꽂아 두었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d04",
+  "title": "강가 캠핑장",
+  "source": "original",
+  "patterns": [
+   "hand_full",
+   "layer_order",
+   "contact_kept"
+  ],
+  "traps": [
+   "폴대를 쥔 채 랜턴을 내려놓고 빈 오른손으로 망치를 꺼냄",
+   "배낭을 먼저 내린 뒤 플리스를 벗음",
+   "뒤에서 안긴 채 손등만 토닥임"
+  ],
+  "characters": {
+   "태준": {},
+   "하린": {}
+  },
+  "initial_state": {
+   "태준": {
+    "hands": {
+     "left": null,
+     "right": null
+    }
+   },
+   "하린": {
+    "hands": {
+     "left": null,
+     "right": null
+    }
+   }
+  },
+  "sentences": [
+   {
+    "text": "해가 기울기 시작한 강가 캠핑장에 바람이 제법 차게 불었다.",
+    "events": []
+   },
+   {
+    "text": "태준은 회색 플리스를 걸쳐 입고 지퍼를 턱밑까지 올린 뒤 커다란 배낭을 등에 둘러멨다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "태준",
+      "item": "플리스",
+      "zone": "torso"
+     },
+     {
+      "type": "wear",
+      "character": "태준",
+      "item": "배낭",
+      "zone": "torso",
+      "side": "back"
+     }
+    ]
+   },
+   {
+    "text": "하린은 차 트렁크에서 텐트 가방을 꺼내 두 팔로 안아 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "하린",
+      "object": "텐트 가방",
+      "hand": "both",
+      "from": "트렁크"
+     }
+    ]
+   },
+   {
+    "text": "두 사람은 자갈이 깔린 사이트까지 걸어 내려갔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "태준",
+      "to": "사이트"
+     },
+     {
+      "type": "move",
+      "character": "하린",
+      "to": "사이트"
+     }
+    ]
+   },
+   {
+    "text": "하린은 텐트 가방을 평평한 자리에 내려놓고 지퍼를 열어 안에 든 것을 쏟았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "하린",
+      "object": "텐트 가방",
+      "to": "사이트 바닥"
+     },
+     {
+      "type": "use",
+      "character": "하린",
+      "free_hands_needed": 1,
+      "action": "지퍼를 엶"
+     }
+    ]
+   },
+   {
+    "text": "태준은 배낭을 멘 채 쪼그려 앉아 두 손으로 바닥 시트를 펼쳤다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태준",
+      "free_hands_needed": 2,
+      "action": "시트를 펼침"
+     }
+    ]
+   },
+   {
+    "text": "하린이 이너 텐트의 네 귀퉁이를 잡아당겨 시트 위에 맞췄다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "하린",
+      "free_hands_needed": 2,
+      "action": "귀퉁이를 잡아당김"
+     }
+    ]
+   },
+   {
+    "text": "\"폴대부터 끼우자.\" 태준이 말했다.",
+    "events": []
+   },
+   {
+    "text": "하린은 왼손으로 긴 폴대를 세워 잡고 오른손에는 랜턴을 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "하린",
+      "object": "폴대",
+      "hand": "left"
+     },
+     {
+      "type": "grab",
+      "character": "하린",
+      "object": "랜턴",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "해가 산등성이 뒤로 넘어가자 주위가 금세 어둑해졌다.",
+    "events": []
+   },
+   {
+    "text": "태준은 폴대 끝을 텐트 모서리의 고리에 끼워 넣었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태준",
+      "free_hands_needed": 1,
+      "action": "폴대를 고리에 끼움"
+     }
+    ]
+   },
+   {
+    "text": "하린은 랜턴을 높이 들어 그의 손끝을 비춰 주었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "하린",
+      "free_hands_needed": 0,
+      "action": "손끝을 비춤",
+      "with": "랜턴"
+     }
+    ]
+   },
+   {
+    "text": "\"망치 어디 있어?\" 태준이 물었다.",
+    "events": []
+   },
+   {
+    "text": "하린은 랜턴을 발치에 내려놓고, 빈 오른손으로 공구 주머니에서 고무망치를 꺼내 그에게 건넸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "하린",
+      "object": "랜턴",
+      "to": "발치"
+     },
+     {
+      "type": "grab",
+      "character": "하린",
+      "object": "고무망치",
+      "hand": "right",
+      "from": "공구 주머니"
+     },
+     {
+      "type": "give",
+      "character": "하린",
+      "to": "태준",
+      "object": "고무망치"
+     }
+    ]
+   },
+   {
+    "text": "태준은 고무망치로 팩을 하나씩 땅에 박았다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태준",
+      "free_hands_needed": 1,
+      "action": "팩을 잡음",
+      "with": "고무망치"
+     }
+    ]
+   },
+   {
+    "text": "땀이 밴 태준은 플리스 소매를 팔꿈치까지 걷어 올렸다.",
+    "events": []
+   },
+   {
+    "text": "하린은 폴대를 놓고 한 손으로 플라이 끝을 잡아 텐트 위로 펼쳤다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "하린",
+      "object": "폴대"
+     },
+     {
+      "type": "use",
+      "character": "하린",
+      "free_hands_needed": 1,
+      "action": "플라이를 펼침"
+     }
+    ]
+   },
+   {
+    "text": "태준이 남은 팩에 플라이 끈을 걸어 팽팽하게 당겼다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태준",
+      "free_hands_needed": 1,
+      "action": "끈을 당김"
+     }
+    ]
+   },
+   {
+    "text": "텐트가 제 모양을 갖추자 하린이 환하게 웃었다.",
+    "events": []
+   },
+   {
+    "text": "태준은 고무망치를 공구 주머니에 넣고 그제야 배낭을 내려 텐트 앞에 놓았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "태준",
+      "object": "고무망치",
+      "to": "공구 주머니"
+     },
+     {
+      "type": "take_off",
+      "character": "태준",
+      "item": "배낭",
+      "free_hands_needed": 1,
+      "to": "텐트 앞"
+     }
+    ]
+   },
+   {
+    "text": "이어서 그는 플리스를 벗어 텐트 안으로 던져 넣었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "태준",
+      "item": "플리스",
+      "free_hands_needed": 1,
+      "to": "텐트 안"
+     }
+    ]
+   },
+   {
+    "text": "하린은 발치에 둔 랜턴을 집어 텐트 앞 고리에 걸었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "하린",
+      "object": "랜턴",
+      "from": "발치"
+     },
+     {
+      "type": "release",
+      "character": "하린",
+      "object": "랜턴",
+      "to": "텐트 고리"
+     }
+    ]
+   },
+   {
+    "text": "강 건너편 캠프에서 기타 소리가 희미하게 들려왔다.",
+    "events": []
+   },
+   {
+    "text": "하린이 뒤에서 다가와 태준의 허리를 두 팔로 끌어안았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "하린",
+      "target": "태준",
+      "kind": "back_hug"
+     }
+    ]
+   },
+   {
+    "text": "\"고생했어. 텐트 진짜 예쁘다.\"",
+    "events": []
+   },
+   {
+    "text": "태준은 허리에 감긴 그녀의 손등을 가만히 토닥였다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태준",
+      "free_hands_needed": 1,
+      "action": "손등을 토닥임"
+     }
+    ]
+   },
+   {
+    "text": "잠시 뒤 하린이 팔을 풀자 태준은 장작을 가지러 주차장 쪽으로 걸어갔다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "하린",
+      "target": "태준"
+     },
+     {
+      "type": "move",
+      "character": "태준",
+      "away_from": "하린"
+     }
+    ]
+   },
+   {
+    "text": "하린은 텐트 앞 의자에 앉아 랜턴 불빛이 바람에 흔들리는 것을 바라보았다.",
+    "events": []
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 13,
+    "text": "하린은 공구 주머니에서 고무망치를 꺼내 그에게 건넸다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "하린",
+      "object": "고무망치",
+      "from": "공구 주머니"
+     },
+     {
+      "type": "give",
+      "character": "하린",
+      "to": "태준",
+      "object": "고무망치"
+     }
+    ],
+    "rule": "hand_full",
+    "difficulty": "implicit",
+    "cause": 8,
+    "note": "하린은 왼손에 폴대, 오른손에 랜턴을 들고 있다"
+   },
+   {
+    "sentence": 15,
+    "text": "땀이 밴 태준은 플리스를 벗어 텐트 지붕 위에 걸쳐 두었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "태준",
+      "item": "플리스",
+      "free_hands_needed": 1,
+      "to": "텐트 지붕"
+     }
+    ],
+    "rule": "layer_order",
+    "difficulty": "implicit",
+    "cause": 1,
+    "note": "배낭을 아직 멘 채라 배낭 끈 아래의 플리스를 벗을 수 없다"
+   },
+   {
+    "sentence": 26,
+    "text": "태준은 장작을 가지러 주차장 쪽으로 성큼성큼 걸어갔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "태준",
+      "away_from": "하린"
+     }
+    ],
+    "rule": "contact_kept",
+    "difficulty": "implicit",
+    "cause": 23,
+    "note": "하린이 아직 뒤에서 태준의 허리를 끌어안고 있다"
+   }
+  ]
+ },
+ {
+  "id": "v3d05",
+  "title": "신부 대기실",
+  "source": "original",
+  "patterns": [
+   "hidden_side",
+   "facing_mismatch",
+   "state_mismatch"
+  ],
+  "traps": [
+   "등 뒤의 혜진이 거울 속 은비의 얼굴을 봄",
+   "등 뒤에서 굳은 어깨만 내려다봄",
+   "맡긴 부케를 입장 직전에 돌려받음"
+  ],
+  "characters": {
+   "은비": {},
+   "혜진": {},
+   "사진작가": {}
+  },
+  "initial_state": {
+   "은비": {},
+   "혜진": {},
+   "사진작가": {}
+  },
+  "sentences": [
+   {
+    "text": "예식을 한 시간 앞둔 신부 대기실은 꽃향기로 가득했다.",
+    "events": []
+   },
+   {
+    "text": "은비는 드레스 자락을 가지런히 펴고 커다란 거울 앞 의자에 앉아 있었다.",
+    "events": []
+   },
+   {
+    "text": "문이 열리고 혜진이 쇼핑백을 든 채 들어왔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "혜진",
+      "object": "쇼핑백"
+     }
+    ]
+   },
+   {
+    "text": "은비는 문 쪽에 등을 둔 채 거울 속의 친구에게 손을 흔들었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은비",
+      "facing": {
+       "혜진": "back"
+      }
+     },
+     {
+      "type": "use",
+      "character": "은비",
+      "free_hands_needed": 1,
+      "action": "손을 흔듦"
+     }
+    ]
+   },
+   {
+    "text": "혜진은 쇼핑백을 소파에 내려놓고 은비의 등 뒤로 다가가 섰다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "혜진",
+      "object": "쇼핑백",
+      "to": "소파"
+     }
+    ]
+   },
+   {
+    "text": "거울 속 은비의 얼굴은 화장 아래로도 창백했다.",
+    "events": []
+   },
+   {
+    "text": "\"긴장돼?\"",
+    "events": []
+   },
+   {
+    "text": "\"조금. 아니, 많이.\"",
+    "events": []
+   },
+   {
+    "text": "혜진은 주머니에서 진주 귀걸이 상자를 꺼내 뚜껑을 열었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "혜진",
+      "object": "귀걸이 상자"
+     },
+     {
+      "type": "use",
+      "character": "혜진",
+      "free_hands_needed": 1,
+      "action": "뚜껑을 엶"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 상자를 화장대에 놓고 귀걸이를 하나씩 집어 은비의 귓불에 걸어 주었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "혜진",
+      "object": "귀걸이 상자",
+      "to": "화장대"
+     },
+     {
+      "type": "wear",
+      "character": "은비",
+      "item": "귀걸이",
+      "zone": "head"
+     }
+    ]
+   },
+   {
+    "text": "은비는 고개를 살짝 기울여 귀걸이가 흔들리는 모양을 거울로 확인했다.",
+    "events": []
+   },
+   {
+    "text": "목에 카메라를 건 사진작가가 대기실로 들어왔다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "사진작가",
+      "item": "카메라",
+      "zone": "neck"
+     }
+    ]
+   },
+   {
+    "text": "\"신부님, 그대로 계세요. 뒷모습부터 몇 장 찍을게요.\"",
+    "events": []
+   },
+   {
+    "text": "작가는 두 손으로 카메라를 받쳐 들고 은비의 등 뒤에서 셔터를 눌렀다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "사진작가",
+      "object": "카메라",
+      "hand": "both"
+     },
+     {
+      "type": "use",
+      "character": "사진작가",
+      "free_hands_needed": 0,
+      "action": "셔터를 누름",
+      "with": "카메라"
+     }
+    ]
+   },
+   {
+    "text": "혜진은 은비의 뒤에 선 채 베일 끝이 구겨지지 않도록 두 손으로 펼쳐 들었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "혜진",
+      "free_hands_needed": 2,
+      "action": "베일을 펼침"
+     }
+    ]
+   },
+   {
+    "text": "은비는 거울을 보며 숨을 길게 들이쉬었다.",
+    "events": []
+   },
+   {
+    "text": "\"베일 너무 길지 않아?\" 은비가 거울 속 혜진에게 물었다.",
+    "events": []
+   },
+   {
+    "text": "\"딱 좋아. 걸을 때 내가 뒤에서 잡아 줄게.\"",
+    "events": []
+   },
+   {
+    "text": "작가는 창가로 자리를 옮겨 다른 각도를 살폈다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "사진작가",
+      "to": "창가"
+     }
+    ]
+   },
+   {
+    "text": "혜진은 베일을 내려놓고 은비의 어깨에 흘러내린 머리카락 한 올을 손끝으로 정리했다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "혜진",
+      "free_hands_needed": 1,
+      "action": "머리카락을 정리함"
+     }
+    ]
+   },
+   {
+    "text": "은비의 어깨가 미세하게 떨리고 있었다.",
+    "events": []
+   },
+   {
+    "text": "혜진은 은비의 등 뒤에서 그녀의 굳은 어깨를 말없이 내려다보았다.",
+    "events": []
+   },
+   {
+    "text": "\"은비야, 나 좀 봐.\"",
+    "events": []
+   },
+   {
+    "text": "은비가 의자에서 일어나 혜진 쪽으로 천천히 돌아섰다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "은비",
+      "toward": "혜진"
+     }
+    ]
+   },
+   {
+    "text": "혜진은 친구의 촉촉해진 눈가를 보고 그만 웃음을 터뜨렸다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "혜진",
+      "target": "은비",
+      "part": "face"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 팔을 벌려 은비를 꼭 끌어안았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "혜진",
+      "target": "은비",
+      "kind": "hug"
+     }
+    ]
+   },
+   {
+    "text": "은비는 혜진의 어깨에 턱을 묻은 채 키득거렸다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은비",
+      "facing": {
+       "혜진": "front"
+      }
+     }
+    ]
+   },
+   {
+    "text": "작가가 그 순간을 놓치지 않고 셔터를 눌렀다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "사진작가",
+      "free_hands_needed": 0,
+      "action": "셔터를 누름",
+      "with": "카메라"
+     }
+    ]
+   },
+   {
+    "text": "혜진이 팔을 풀자 은비는 소파 위에 놓인 부케를 두 손으로 집어 들었다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "혜진",
+      "target": "은비"
+     },
+     {
+      "type": "grab",
+      "character": "은비",
+      "object": "부케",
+      "hand": "both"
+     }
+    ]
+   },
+   {
+    "text": "은비는 드레스 자락을 한 번 더 내려다보았다.",
+    "events": []
+   },
+   {
+    "text": "\"부케 잠깐만 들어 줘. 장갑 좀 고쳐 끼게.\"",
+    "events": []
+   },
+   {
+    "text": "은비는 부케를 혜진에게 건네고 레이스 장갑의 손목 단추를 채웠다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "은비",
+      "to": "혜진",
+      "object": "부케"
+     },
+     {
+      "type": "use",
+      "character": "은비",
+      "free_hands_needed": 2,
+      "action": "장갑 단추를 채움"
+     }
+    ]
+   },
+   {
+    "text": "진행자가 문을 두드리며 입장할 시간이 되었다고 알렸다.",
+    "events": []
+   },
+   {
+    "text": "은비는 빈 두 손을 가슴 앞에 모으고 깊게 숨을 쉬었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "은비",
+      "free_hands_needed": 2,
+      "action": "손을 모음"
+     }
+    ]
+   },
+   {
+    "text": "혜진이 부케를 다시 건네주자 은비는 고개를 끄덕였다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "혜진",
+      "to": "은비",
+      "object": "부케"
+     }
+    ]
+   },
+   {
+    "text": "그리고 그녀는 문을 향해 첫걸음을 내디뎠다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "은비",
+      "to": "문"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 21,
+    "text": "혜진은 은비의 등 뒤에서 그녀가 입술을 잘근잘근 깨무는 것을 말없이 내려다보았다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "혜진",
+      "target": "은비",
+      "part": "face"
+     }
+    ],
+    "rule": "hidden_side",
+    "difficulty": "implicit",
+    "cause": 3,
+    "note": "은비는 문 쪽, 곧 혜진 쪽에 등을 두고 앉아 있다. 거울 속이 아니면 입술은 보이지 않는다"
+   },
+   {
+    "sentence": 26,
+    "text": "은비는 혜진의 가슴에 등을 기댄 채 키득거렸다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은비",
+      "facing": {
+       "혜진": "back"
+      }
+     }
+    ],
+    "rule": "facing_mismatch",
+    "difficulty": "implicit",
+    "cause": 25,
+    "note": "돌아서서 마주 안겼으니 은비의 앞이 혜진을 향한다"
+   },
+   {
+    "sentence": 33,
+    "text": "은비는 부케를 꼭 쥔 채 깊게 숨을 쉬었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은비",
+      "holds": "부케"
+     }
+    ],
+    "rule": "state_mismatch",
+    "difficulty": "implicit",
+    "cause": 31,
+    "note": "부케는 장갑을 고치려고 혜진에게 맡겼다"
+   }
+  ]
+ },
+ {
+  "id": "v3d06",
+  "title": "주방 마감",
+  "source": "original",
+  "patterns": [
+   "hand_full",
+   "item_location",
+   "layer_order",
+   "tool_missing"
+  ],
+  "traps": [
+   "냄비를 양손에 든 채 어깨로 문을 밂",
+   "고무장갑을 먼저 벗고 그 안의 면장갑을 뺌",
+   "행주를 쥔 채 비어 있는 왼손으로 칼을 집음"
+  ],
+  "characters": {
+   "강태수": {},
+   "민서": {},
+   "오정숙": {}
+  },
+  "initial_state": {
+   "강태수": {},
+   "민서": {},
+   "오정숙": {}
+  },
+  "sentences": [
+   {
+    "text": "밤 열 시, 마지막 손님이 나가자 주방장 강태수는 허리춤에 달린 창고 열쇠를 풀어 벽걸이 서랍에 넣었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "강태수",
+      "object": "창고 열쇠",
+      "from": "허리춤"
+     },
+     {
+      "type": "release",
+      "character": "강태수",
+      "object": "창고 열쇠",
+      "to": "벽걸이 서랍"
+     }
+    ]
+   },
+   {
+    "text": "\"오늘은 다들 일찍 들어가자.\" 그가 화구 앞의 민서와 개수대 앞의 오정숙을 번갈아 보며 말했다.",
+    "events": []
+   },
+   {
+    "text": "오정숙은 면장갑을 끼고 그 위에 분홍색 고무장갑을 겹쳐 꼈다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "오정숙",
+      "item": "면장갑",
+      "zone": "hands"
+     },
+     {
+      "type": "wear",
+      "character": "오정숙",
+      "item": "고무장갑",
+      "zone": "hands"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 오른손에 수세미를 쥐고 왼손으로 냄비 손잡이를 붙든 채 눌어붙은 자국을 문지르기 시작했다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "오정숙",
+      "hand": "right",
+      "object": "수세미"
+     },
+     {
+      "type": "use",
+      "character": "오정숙",
+      "hand": "left",
+      "free_hands_needed": 1,
+      "action": "냄비 손잡이를 붙듦"
+     }
+    ]
+   },
+   {
+    "text": "민서는 도마 위에 남은 대파를 마저 썬 다음 행주로 칼날을 훔쳤다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민서",
+      "hand": "right",
+      "object": "칼"
+     },
+     {
+      "type": "use",
+      "character": "민서",
+      "hand": "left",
+      "free_hands_needed": 1,
+      "action": "대파를 누름"
+     },
+     {
+      "type": "use",
+      "character": "민서",
+      "hand": "left",
+      "free_hands_needed": 1,
+      "action": "행주로 칼날을 닦음"
+     }
+    ]
+   },
+   {
+    "text": "칼날을 불빛에 한 번 비춰 본 그녀는 칼을 벽의 자석 칼꽂이에 붙였다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민서",
+      "object": "칼",
+      "to": "자석 칼꽂이"
+     }
+    ]
+   },
+   {
+    "text": "그러고는 두 손으로 대파 통을 들어 냉장고 맨 아래 칸에 밀어 넣었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민서",
+      "hand": "both",
+      "object": "대파 통"
+     },
+     {
+      "type": "release",
+      "character": "민서",
+      "object": "대파 통",
+      "to": "냉장고 맨 아래 칸"
+     }
+    ]
+   },
+   {
+    "text": "강태수는 화구 위의 육수 냄비 손잡이를 양손으로 잡고 끙 하며 들어 올렸다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "강태수",
+      "hand": "both",
+      "object": "육수 냄비"
+     }
+    ]
+   },
+   {
+    "text": "냄비가 생각보다 무거워서 그는 잠시 숨을 고르며 허리를 폈다.",
+    "events": []
+   },
+   {
+    "text": "\"주방장님, 그거 제가 들게요.\" 민서가 다가왔지만 강태수는 고개를 저었다.",
+    "events": []
+   },
+   {
+    "text": "그는 냄비를 든 채 어깨로 냉장실 문을 밀어 열고 들어가 안쪽 선반에 냄비를 올려 두었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "강태수",
+      "free_hands_needed": 0,
+      "action": "어깨로 문을 밂"
+     },
+     {
+      "type": "release",
+      "character": "강태수",
+      "object": "육수 냄비",
+      "to": "냉장실 선반"
+     }
+    ]
+   },
+   {
+    "text": "냉장실에서 나온 그는 앞치마에 손을 문질러 닦았다.",
+    "events": []
+   },
+   {
+    "text": "오정숙은 마지막 냄비를 건조대에 엎어 놓고 수세미를 개수대 모서리에 올려 두었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "오정숙",
+      "object": "수세미",
+      "to": "개수대 모서리"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 고무장갑을 벗어 수도꼭지에 걸고, 땀에 젖은 면장갑도 빼서 앞치마 주머니에 넣었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "오정숙",
+      "item": "고무장갑",
+      "to": "수도꼭지"
+     },
+     {
+      "type": "take_off",
+      "character": "오정숙",
+      "item": "면장갑",
+      "to": "앞치마 주머니"
+     }
+    ]
+   },
+   {
+    "text": "민서는 기름 튄 조리복 소매를 걷어 올리고 오른손에 쥔 행주로 스테인리스 작업대를 훔쳤다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민서",
+      "hand": "right",
+      "object": "행주"
+     }
+    ]
+   },
+   {
+    "text": "작업대 끝에 붙은 테이프 자국은 아무리 문질러도 잘 지워지지 않았다.",
+    "events": []
+   },
+   {
+    "text": "민서는 행주를 쥔 채 왼손으로 칼꽂이의 칼을 떼어 내 칼등으로 테이프 자국을 긁어냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민서",
+      "hand": "left",
+      "object": "칼",
+      "from": "자석 칼꽂이"
+     },
+     {
+      "type": "use",
+      "character": "민서",
+      "free_hands_needed": 0,
+      "action": "칼등으로 자국을 긁음",
+      "with": "칼"
+     }
+    ]
+   },
+   {
+    "text": "다 긁어낸 뒤 그녀는 칼을 칼꽂이에 도로 붙이고 행주를 개수대 옆 걸이에 널었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민서",
+      "object": "칼",
+      "to": "자석 칼꽂이"
+     },
+     {
+      "type": "release",
+      "character": "민서",
+      "object": "행주",
+      "to": "개수대 옆 걸이"
+     }
+    ]
+   },
+   {
+    "text": "강태수는 출입문 옆 게시판 앞에 서서 내일 들어올 식자재 목록을 훑어보았다.",
+    "events": []
+   },
+   {
+    "text": "\"내일 아침에 생선이 들어오니까 냉동 창고 자리를 비워 둬야 해.\"",
+    "events": []
+   },
+   {
+    "text": "오정숙이 앞치마를 벗어 의자 등받이에 걸며 창고 안쪽 상자들은 아까 한쪽으로 옮겨 놨다고 대답했다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "오정숙",
+      "item": "앞치마",
+      "to": "의자 등받이"
+     }
+    ]
+   },
+   {
+    "text": "강태수는 민서에게 창고 정리를 같이 하자고 손짓했다.",
+    "events": []
+   },
+   {
+    "text": "민서는 개수대에서 두 손을 비벼 씻고 그의 뒤를 따랐다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "민서",
+      "free_hands_needed": 2,
+      "action": "두 손을 씻음"
+     }
+    ]
+   },
+   {
+    "text": "강태수는 벽걸이 서랍에서 창고 열쇠를 꺼내 쥐고 민서와 함께 뒤편 복도로 나섰다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "강태수",
+      "object": "창고 열쇠",
+      "from": "벽걸이 서랍"
+     }
+    ]
+   },
+   {
+    "text": "냉동 창고는 복도 끝, 형광등 하나가 깜박이는 자리에 있었다.",
+    "events": []
+   },
+   {
+    "text": "그는 열쇠로 자물쇠를 열고 무거운 철문을 어깨로 밀었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "강태수",
+      "free_hands_needed": 0,
+      "action": "자물쇠를 엶",
+      "with": "창고 열쇠"
+     },
+     {
+      "type": "use",
+      "character": "강태수",
+      "free_hands_needed": 0,
+      "action": "어깨로 철문을 밂"
+     }
+    ]
+   },
+   {
+    "text": "차가운 김이 쏟아져 나오자 민서가 복도 벽에 걸린 손전등을 내려 켜고 안쪽을 비췄다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민서",
+      "object": "손전등",
+      "from": "복도 벽"
+     },
+     {
+      "type": "use",
+      "character": "민서",
+      "free_hands_needed": 0,
+      "action": "손전등을 켬",
+      "with": "손전등"
+     }
+    ]
+   },
+   {
+    "text": "선반 아래쪽에는 오정숙이 옮겨 둔 상자들이 가지런히 쌓여 있었다.",
+    "events": []
+   },
+   {
+    "text": "강태수는 열쇠를 바지 주머니에 찔러 넣고 맨 위의 고기 상자를 두 손으로 끌어내렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "강태수",
+      "object": "창고 열쇠",
+      "to": "바지 주머니"
+     },
+     {
+      "type": "grab",
+      "character": "강태수",
+      "hand": "both",
+      "object": "고기 상자"
+     }
+    ]
+   },
+   {
+    "text": "민서는 손전등을 입에 문 채 두 손으로 그 아래 새우 상자를 받쳐 들었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민서",
+      "object": "손전등",
+      "to": "민서의 입"
+     },
+     {
+      "type": "grab",
+      "character": "민서",
+      "hand": "both",
+      "object": "새우 상자"
+     }
+    ]
+   },
+   {
+    "text": "두 사람은 상자들을 복도 쪽 선반에 내려놓아 창고 앞쪽에 빈자리를 만들었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "강태수",
+      "object": "고기 상자",
+      "to": "복도 선반"
+     },
+     {
+      "type": "release",
+      "character": "민서",
+      "object": "새우 상자",
+      "to": "복도 선반"
+     }
+    ]
+   },
+   {
+    "text": "강태수가 철문을 닫고 다시 꺼낸 열쇠로 자물쇠를 채우자, 주방 쪽에서 오정숙이 불을 끄는 소리가 들렸다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "강태수",
+      "object": "창고 열쇠"
+     },
+     {
+      "type": "use",
+      "character": "강태수",
+      "free_hands_needed": 0,
+      "action": "자물쇠를 채움",
+      "with": "창고 열쇠"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 10,
+    "text": "그는 냄비를 든 채 냉장실 문손잡이를 잡아 돌려 열고 들어가 안쪽 선반에 냄비를 올려 두었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "강태수",
+      "free_hands_needed": 1,
+      "action": "문손잡이를 잡아 돌림"
+     },
+     {
+      "type": "release",
+      "character": "강태수",
+      "object": "육수 냄비",
+      "to": "냉장실 선반"
+     }
+    ],
+    "rule": "hand_full",
+    "difficulty": "implicit",
+    "cause": 7,
+    "note": "강태수는 육수 냄비를 양손으로 들고 있어 문손잡이를 잡을 손이 없다"
+   },
+   {
+    "sentence": 13,
+    "text": "그녀는 땀에 젖은 면장갑을 빼서 앞치마 주머니에 넣고, 고무장갑은 수도꼭지에 걸어 두었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "오정숙",
+      "item": "면장갑",
+      "to": "앞치마 주머니"
+     },
+     {
+      "type": "take_off",
+      "character": "오정숙",
+      "item": "고무장갑",
+      "to": "수도꼭지"
+     }
+    ],
+    "rule": "layer_order",
+    "difficulty": "implicit",
+    "cause": 2,
+    "note": "면장갑 위에 고무장갑을 겹쳐 꼈으니 고무장갑부터 벗어야 한다"
+   },
+   {
+    "sentence": 16,
+    "text": "민서는 행주를 쥔 채 칼등으로 테이프 자국을 긁어냈다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "민서",
+      "free_hands_needed": 0,
+      "action": "칼등으로 자국을 긁음",
+      "with": "칼"
+     }
+    ],
+    "rule": "tool_missing",
+    "difficulty": "implicit",
+    "cause": 5,
+    "note": "칼은 자석 칼꽂이에 붙여 두었고 손에는 행주만 있다"
+   },
+   {
+    "sentence": 23,
+    "text": "강태수는 앞치마 주머니에서 창고 열쇠를 꺼내 쥐고 민서와 함께 뒤편 복도로 나섰다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "강태수",
+      "object": "창고 열쇠",
+      "from": "앞치마 주머니"
+     }
+    ],
+    "rule": "item_location",
+    "difficulty": "implicit",
+    "cause": 0,
+    "note": "창고 열쇠는 처음에 벽걸이 서랍에 넣었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d07",
+  "title": "하산길",
+  "source": "original",
+  "patterns": [
+   "contact_kept",
+   "facing_mismatch",
+   "hidden_side"
+  ],
+  "traps": [
+   "남은 스틱을 쥔 채 등에 업힘",
+   "뒤를 돌아보지 않고 말함",
+   "업힌 채 앞사람의 얼굴이 아닌 뒷목을 봄"
+  ],
+  "characters": {
+   "박경수": {},
+   "세진": {},
+   "윤호": {}
+  },
+  "initial_state": {
+   "박경수": {},
+   "세진": {},
+   "윤호": {}
+  },
+  "sentences": [
+   {
+    "text": "해가 능선 너머로 기울 무렵 산악회 대장 박경수가 하산을 서두르자고 했고, 맨 뒤의 윤호는 묵직한 배낭을 고쳐 멨다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "윤호",
+      "item": "배낭",
+      "zone": "torso",
+      "side": "back"
+     }
+    ]
+   },
+   {
+    "text": "세진은 등산 스틱을 양손에 하나씩 쥐고 젖은 바위 비탈을 조심스럽게 내려섰다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "세진",
+      "hand": "left",
+      "object": "왼쪽 스틱"
+     },
+     {
+      "type": "grab",
+      "character": "세진",
+      "hand": "right",
+      "object": "오른쪽 스틱"
+     }
+    ]
+   },
+   {
+    "text": "돌부리에 걸린 그녀의 몸이 앞으로 쏠리자, 바로 아래에 있던 박경수가 돌아서며 그녀의 손목을 낚아챘다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "박경수",
+      "toward": "세진"
+     },
+     {
+      "type": "touch",
+      "character": "박경수",
+      "target": "세진",
+      "kind": "grip",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "그 바람에 그녀가 놓친 스틱 하나가 데굴데굴 굴러 덤불 속으로 사라졌다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "세진",
+      "object": "오른쪽 스틱",
+      "to": "덤불 속"
+     }
+    ]
+   },
+   {
+    "text": "\"괜찮아요?\" 박경수가 물었지만, 세진은 비어 버린 오른손으로 발목을 감싸 쥐며 얼굴을 찡그렸다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "세진",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "발목을 감싸 쥠"
+     }
+    ]
+   },
+   {
+    "text": "박경수는 그녀의 손목을 놓고 비탈 아래로 몇 걸음 내려가 뒤따라오던 윤호를 불렀다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "박경수",
+      "object": "@세진"
+     },
+     {
+      "type": "move",
+      "character": "박경수",
+      "away_from": "세진"
+     }
+    ]
+   },
+   {
+    "text": "숨을 몰아쉬며 내려온 윤호는 세진의 발목을 살피더니 자기 배낭을 벗어 박경수에게 건넸다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "윤호",
+      "item": "배낭"
+     },
+     {
+      "type": "give",
+      "character": "윤호",
+      "to": "박경수",
+      "object": "배낭"
+     }
+    ]
+   },
+   {
+    "text": "그러고는 세진에게 등을 보이며 비탈길에 쪼그려 앉았다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "윤호",
+      "away_from": "세진"
+     }
+    ]
+   },
+   {
+    "text": "세진은 남은 스틱 하나를 왼손에 쥔 채 윤호의 등에 업혔다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "윤호",
+      "target": "세진",
+      "kind": "carry_back"
+     }
+    ]
+   },
+   {
+    "text": "윤호는 두 팔로 그녀의 다리를 받쳐 들고 천천히 일어섰다.",
+    "events": []
+   },
+   {
+    "text": "박경수는 윤호의 배낭을 한쪽 어깨에 걸쳐 메고 두 사람에게 등을 돌려 앞장서 내려갔다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "박경수",
+      "item": "배낭",
+      "zone": "torso"
+     },
+     {
+      "type": "turn",
+      "character": "박경수",
+      "away_from": "윤호"
+     },
+     {
+      "type": "turn",
+      "character": "박경수",
+      "away_from": "세진"
+     }
+    ]
+   },
+   {
+    "text": "해가 지자 숲길은 금세 어둑해졌다.",
+    "events": []
+   },
+   {
+    "text": "윤호의 숨소리가 점점 거칠어졌고, 세진은 미안한 마음에 입술을 깨물었다.",
+    "events": []
+   },
+   {
+    "text": "\"조금만 더 가면 약수터예요.\" 앞서 걷던 박경수가 뒤를 돌아보지도 않고 말했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "박경수",
+      "facing": {
+       "윤호": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "박경수는 걸음을 늦추지 않은 채 허리춤에서 헤드랜턴을 꺼내 이마에 썼다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "박경수",
+      "object": "헤드랜턴",
+      "from": "허리춤"
+     },
+     {
+      "type": "wear",
+      "character": "박경수",
+      "item": "헤드랜턴",
+      "zone": "head"
+     }
+    ]
+   },
+   {
+    "text": "불빛이 흔들릴 때마다 나무뿌리가 뱀처럼 드러났다가 사라졌다.",
+    "events": []
+   },
+   {
+    "text": "세진은 스틱을 쥔 손으로 윤호의 어깨를 짚으며 몸을 조금 일으켰다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "세진",
+      "free_hands_needed": 0,
+      "action": "어깨를 짚음"
+     }
+    ]
+   },
+   {
+    "text": "그녀의 눈에 들어온 것은 윤호의 뒷목을 타고 흘러내리는 땀줄기였다.",
+    "events": []
+   },
+   {
+    "text": "\"내려 줘요. 이제 걸을 수 있어요.\"",
+    "events": []
+   },
+   {
+    "text": "\"가만히 있어. 거의 다 왔어.\" 윤호는 앞만 본 채 대꾸했다.",
+    "events": []
+   },
+   {
+    "text": "잠시 뒤 박경수가 갈림길에서 걸음을 멈추고 주머니에서 접힌 지도를 꺼내 헤드랜턴 불빛에 비춰 보았다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "박경수",
+      "object": "지도",
+      "from": "주머니"
+     }
+    ]
+   },
+   {
+    "text": "그는 한동안 지도를 들여다보다가 주머니에 도로 넣고 왼쪽 길을 손으로 가리켰다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "박경수",
+      "object": "지도",
+      "to": "주머니"
+     }
+    ]
+   },
+   {
+    "text": "윤호는 고개를 끄덕이고는 세진을 추스르며 왼쪽 길로 접어들었다.",
+    "events": []
+   },
+   {
+    "text": "얼마 지나지 않아 약수터 옆 나무 벤치가 불빛 속에 드러났다.",
+    "events": []
+   },
+   {
+    "text": "세진은 윤호의 젖은 머리칼 너머로 다가오는 벤치를 내려다보았다.",
+    "events": []
+   },
+   {
+    "text": "윤호가 벤치 앞에서 무릎을 굽히자, 세진은 벤치에 엉덩이를 걸치며 그의 등에서 내려왔다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "윤호",
+      "target": "세진"
+     }
+    ]
+   },
+   {
+    "text": "윤호는 그제야 허리를 펴고 돌아서서 세진을 마주 보았다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "윤호",
+      "toward": "세진"
+     }
+    ]
+   },
+   {
+    "text": "그는 그녀의 발치에 무릎을 꿇고 앉아 두 손으로 등산화 끈을 풀었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "윤호",
+      "free_hands_needed": 2,
+      "action": "등산화 끈을 풂"
+     }
+    ]
+   },
+   {
+    "text": "박경수가 약수를 받은 컵을 내밀자, 세진은 스틱을 벤치에 기대 놓고 두 손으로 컵을 받았다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "박경수",
+      "object": "컵",
+      "from": "약수터"
+     },
+     {
+      "type": "release",
+      "character": "세진",
+      "object": "왼쪽 스틱",
+      "to": "벤치"
+     },
+     {
+      "type": "give",
+      "character": "박경수",
+      "to": "세진",
+      "object": "컵",
+      "to_hand": "both"
+     }
+    ]
+   },
+   {
+    "text": "\"부기가 금방 빠지진 않겠네.\" 윤호가 세진의 얼굴을 올려다보며 말하자, 그녀는 컵을 쥔 채 겨우 웃어 보였다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "윤호",
+      "target": "세진",
+      "part": "face"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 5,
+    "text": "박경수는 그녀의 손목을 쥔 채 비탈 아래로 몇 걸음 앞서 내려가 뒤따라오던 윤호를 불렀다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "박경수",
+      "away_from": "세진"
+     }
+    ],
+    "rule": "contact_kept",
+    "difficulty": "explicit",
+    "cause": 2,
+    "note": "세진의 손목을 쥔 채로는 그녀에게서 멀어질 수 없다"
+   },
+   {
+    "sentence": 21,
+    "text": "그는 뒤따라온 윤호와 마주 선 채 지도를 들여다보다가 주머니에 도로 넣고 왼쪽 길을 손으로 가리켰다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "박경수",
+      "facing": {
+       "윤호": "front"
+      }
+     },
+     {
+      "type": "release",
+      "character": "박경수",
+      "object": "지도",
+      "to": "주머니"
+     }
+    ],
+    "rule": "facing_mismatch",
+    "difficulty": "implicit",
+    "cause": 10,
+    "note": "박경수는 두 사람에게 등을 돌려 앞장섰고 그 뒤로 돌아선 적이 없다"
+   },
+   {
+    "sentence": 24,
+    "text": "세진은 땀에 젖은 윤호의 얼굴이 하얗게 질려 있는 것을 보고 가슴이 철렁했다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "세진",
+      "target": "윤호",
+      "part": "face"
+     }
+    ],
+    "rule": "hidden_side",
+    "difficulty": "implicit",
+    "cause": 8,
+    "note": "세진은 윤호의 등에 업혀 있어 그의 얼굴을 볼 수 없다"
+   }
+  ]
+ },
+ {
+  "id": "v3d08",
+  "title": "수하물 벨트",
+  "source": "original",
+  "patterns": [
+   "hand_full",
+   "not_worn",
+   "space_full"
+  ],
+  "traps": [
+   "봉투를 왼손에 든 채 빈 오른손으로 캐리어를 끎",
+   "백팩을 앞으로 멘 사람을 뒤에서 안음",
+   "양손에 짐을 든 채 어깨로 문을 밂"
+  ],
+  "characters": {
+   "하은": {},
+   "정순": {},
+   "도윤": {}
+  },
+  "initial_state": {
+   "하은": {},
+   "정순": {},
+   "도윤": {}
+  },
+  "sentences": [
+   {
+    "text": "새벽 비행기에서 내린 하은은 어머니 정순과 함께 3번 수하물 벨트 앞에 섰다.",
+    "events": []
+   },
+   {
+    "text": "정순은 면세점에서 산 화장품 봉투와 술 봉투를 양손에 하나씩 들고 있었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정순",
+      "hand": "left",
+      "object": "화장품 봉투"
+     },
+     {
+      "type": "grab",
+      "character": "정순",
+      "hand": "right",
+      "object": "술 봉투"
+     }
+    ]
+   },
+   {
+    "text": "하은은 손에 쥐고 있던 여권을 재킷 안주머니에 넣고 지퍼를 끝까지 올렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "하은",
+      "object": "여권",
+      "to": "재킷 안주머니"
+     },
+     {
+      "type": "use",
+      "character": "하은",
+      "free_hands_needed": 1,
+      "action": "지퍼를 올림"
+     }
+    ]
+   },
+   {
+    "text": "사람들이 몰려들자 그녀는 등에 멘 백팩을 가슴 앞으로 돌려 메고 끈을 조였다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "하은",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "back"
+     },
+     {
+      "type": "wear",
+      "character": "하은",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "front"
+     }
+    ]
+   },
+   {
+    "text": "벨트가 덜컹 소리를 내며 돌기 시작했다.",
+    "events": []
+   },
+   {
+    "text": "정순은 술 봉투를 발치에 내려놓고, 머리에 쓴 챙 넓은 모자를 벗어 화장품 봉투에 쑤셔 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정순",
+      "object": "술 봉투",
+      "to": "발치"
+     },
+     {
+      "type": "wear",
+      "character": "정순",
+      "item": "모자",
+      "zone": "head"
+     },
+     {
+      "type": "take_off",
+      "character": "정순",
+      "item": "모자",
+      "free_hands_needed": 1,
+      "to": "화장품 봉투"
+     }
+    ]
+   },
+   {
+    "text": "\"덥지도 않으세요?\" 하은이 묻자 정순은 비행기 안이 추웠다며 웃었다.",
+    "events": []
+   },
+   {
+    "text": "전광판을 올려다보던 하은이 벨트 위로 밀려 나오는 남색 캐리어를 발견했다.",
+    "events": []
+   },
+   {
+    "text": "그녀는 두 손으로 캐리어 손잡이를 잡아 벨트 밖 바닥으로 끌어 내렸다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "하은",
+      "hand": "both",
+      "object": "남색 캐리어"
+     },
+     {
+      "type": "release",
+      "character": "하은",
+      "object": "남색 캐리어",
+      "to": "바닥"
+     }
+    ]
+   },
+   {
+    "text": "캐리어의 긴 손잡이를 뽑아 올린 하은은 오른손으로 그것을 붙잡았다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "하은",
+      "hand": "right",
+      "object": "남색 캐리어"
+     }
+    ]
+   },
+   {
+    "text": "정순의 빨간 캐리어는 한참이 지나서야 모습을 드러냈다.",
+    "events": []
+   },
+   {
+    "text": "정순은 화장품 봉투를 왼손에 든 채 오른손으로 빨간 캐리어를 끌어 내렸다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정순",
+      "hand": "right",
+      "object": "빨간 캐리어"
+     }
+    ]
+   },
+   {
+    "text": "그때 출구 쪽에서 남편 도윤이 손을 흔들며 달려왔다.",
+    "events": []
+   },
+   {
+    "text": "도윤은 하은의 뒤로 돌아가 그녀를 와락 끌어안았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "도윤",
+      "target": "하은",
+      "kind": "back_hug"
+     }
+    ]
+   },
+   {
+    "text": "\"보고 싶었어.\" 그가 그녀의 어깨에 턱을 얹고 속삭였다.",
+    "events": []
+   },
+   {
+    "text": "하은은 캐리어 손잡이를 쥔 채 웃음을 터뜨렸다.",
+    "events": []
+   },
+   {
+    "text": "도윤은 팔을 풀고 장모에게 고개를 숙여 인사했다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "도윤",
+      "target": "하은"
+     },
+     {
+      "type": "turn",
+      "character": "도윤",
+      "toward": "정순"
+     }
+    ]
+   },
+   {
+    "text": "정순은 화장품 봉투를 사위에게 건네고 빈손으로 그의 팔을 토닥였다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "정순",
+      "to": "도윤",
+      "object": "화장품 봉투"
+     },
+     {
+      "type": "use",
+      "character": "정순",
+      "free_hands_needed": 1,
+      "action": "팔을 토닥임"
+     }
+    ]
+   },
+   {
+    "text": "도윤은 화장품 봉투를 빨간 캐리어 손잡이에 걸고, 발치의 술 봉투를 집어 든 다음 장모에게서 캐리어를 받아 쥐었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "도윤",
+      "object": "화장품 봉투",
+      "to": "빨간 캐리어 손잡이"
+     },
+     {
+      "type": "grab",
+      "character": "도윤",
+      "object": "술 봉투",
+      "from": "발치"
+     },
+     {
+      "type": "grab",
+      "character": "도윤",
+      "object": "빨간 캐리어"
+     }
+    ]
+   },
+   {
+    "text": "정순은 캐리어 손잡이에 걸린 화장품 봉투에서 모자를 꺼내 다시 눌러쓰고 앞장섰다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정순",
+      "object": "모자",
+      "from": "화장품 봉투"
+     },
+     {
+      "type": "wear",
+      "character": "정순",
+      "item": "모자",
+      "zone": "head"
+     }
+    ]
+   },
+   {
+    "text": "하은은 백팩을 다시 등 뒤로 돌려 메고 남색 캐리어를 끌며 그 뒤를 따랐다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "하은",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "back"
+     }
+    ]
+   },
+   {
+    "text": "양손에 짐을 든 도윤은 어깨로 출구 유리문을 밀어 열었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "도윤",
+      "free_hands_needed": 0,
+      "action": "어깨로 문을 밂"
+     }
+    ]
+   },
+   {
+    "text": "바깥의 새벽 공기는 생각보다 찼다.",
+    "events": []
+   },
+   {
+    "text": "정순은 깊게 숨을 들이마시며 역시 집 공기가 좋다고 말했다.",
+    "events": []
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 11,
+    "text": "정순은 화장품 봉투를 왼손에 든 채 발치의 술 봉투까지 오른손에 집어 들고, 두 손으로 빨간 캐리어를 벨트에서 끌어 내렸다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "정순",
+      "holds": "화장품 봉투"
+     },
+     {
+      "type": "grab",
+      "character": "정순",
+      "hand": "right",
+      "object": "술 봉투",
+      "from": "발치"
+     },
+     {
+      "type": "grab",
+      "character": "정순",
+      "hand": "both",
+      "object": "빨간 캐리어"
+     }
+    ],
+    "rule": "hand_full",
+    "difficulty": "explicit",
+    "cause": 1,
+    "note": "왼손에 화장품 봉투, 오른손에 술 봉투를 든 채로는 두 손을 쓸 수 없다"
+   },
+   {
+    "sentence": 13,
+    "text": "도윤은 하은의 앞으로 달려들어 그녀를 와락 끌어안았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "도윤",
+      "target": "하은",
+      "kind": "hug"
+     }
+    ],
+    "rule": "space_full",
+    "difficulty": "implicit",
+    "cause": 3,
+    "note": "하은은 백팩을 가슴 앞으로 돌려 멨다"
+   },
+   {
+    "sentence": 19,
+    "text": "정순은 쓰고 있던 모자를 벗어 부채질을 하며 앞장섰다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "정순",
+      "item": "모자",
+      "zone": "head"
+     }
+    ],
+    "rule": "not_worn",
+    "difficulty": "implicit",
+    "cause": 5,
+    "note": "모자는 아까 벗어 화장품 봉투에 넣었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d09",
+  "title": "꽃바구니 배달",
+  "source": "original",
+  "patterns": [
+   "item_location",
+   "state_mismatch"
+  ],
+  "traps": [
+   "바구니를 든 채 팔꿈치로 호출 버튼을 누름",
+   "두 손이 바구니로 차서 발끝으로 문을 두드림"
+  ],
+  "characters": {
+   "현철": {},
+   "박씨": {},
+   "미정": {}
+  },
+  "initial_state": {
+   "현철": {},
+   "박씨": {},
+   "미정": {}
+  },
+  "sentences": [
+   {
+    "text": "헬멧을 눌러쓴 현철이 꽃바구니를 실은 배달 오토바이를 오피스텔 정문 앞에 세웠다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "현철",
+      "item": "헬멧",
+      "zone": "head"
+     }
+    ]
+   },
+   {
+    "text": "그는 헬멧을 벗어 오토바이 핸들에 걸고 손가락으로 눌린 머리를 털었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "현철",
+      "item": "헬멧",
+      "free_hands_needed": 1,
+      "to": "오토바이 핸들"
+     }
+    ]
+   },
+   {
+    "text": "주머니에서 휴대폰을 꺼내 주문서의 호수를 다시 확인한 그는 휴대폰을 조끼 가슴 주머니에 넣었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "현철",
+      "object": "휴대폰"
+     },
+     {
+      "type": "release",
+      "character": "현철",
+      "object": "휴대폰",
+      "to": "조끼 가슴 주머니"
+     }
+    ]
+   },
+   {
+    "text": "그러고는 짐칸에서 꽃바구니를 두 손으로 조심스럽게 꺼내 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "현철",
+      "hand": "both",
+      "object": "꽃바구니",
+      "from": "짐칸"
+     }
+    ]
+   },
+   {
+    "text": "바구니 안에서 분홍 작약과 하얀 리시안셔스가 바람에 흔들렸다.",
+    "events": []
+   },
+   {
+    "text": "정문 유리문 앞에서 그는 바구니를 든 채 팔꿈치로 호출 버튼을 눌렀다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "현철",
+      "free_hands_needed": 0,
+      "action": "팔꿈치로 버튼을 누름"
+     }
+    ]
+   },
+   {
+    "text": "경비실 창문이 열리고 경비원 박씨가 고개를 내밀었다.",
+    "events": []
+   },
+   {
+    "text": "\"1204호 꽃 배달입니다.\"",
+    "events": []
+   },
+   {
+    "text": "박씨는 밖으로 나와 목에 건 출입 카드를 문에 대어 열어 주었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "박씨",
+      "object": "출입 카드"
+     },
+     {
+      "type": "use",
+      "character": "박씨",
+      "free_hands_needed": 0,
+      "action": "문을 엶",
+      "with": "출입 카드"
+     }
+    ]
+   },
+   {
+    "text": "\"엘리베이터가 점검 중이라 계단으로 가셔야 할 텐데요.\"",
+    "events": []
+   },
+   {
+    "text": "현철은 품 안의 바구니를 내려다보며 한숨을 쉬었다.",
+    "events": []
+   },
+   {
+    "text": "박씨는 출입 카드를 놓아 다시 가슴께로 늘어뜨리고 복도 안쪽의 화물용 엘리베이터를 가리켰다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "박씨",
+      "object": "출입 카드",
+      "to": "박씨의 가슴께"
+     }
+    ]
+   },
+   {
+    "text": "\"저쪽 화물용은 돌아갑니다. 제가 눌러 드리죠.\"",
+    "events": []
+   },
+   {
+    "text": "화물용 엘리베이터에 오른 현철은 바구니를 바닥에 내려놓고 조끼 가슴 주머니에서 휴대폰을 꺼냈다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "현철",
+      "object": "꽃바구니",
+      "to": "엘리베이터 바닥"
+     },
+     {
+      "type": "grab",
+      "character": "현철",
+      "object": "휴대폰",
+      "from": "조끼 가슴 주머니"
+     }
+    ]
+   },
+   {
+    "text": "그는 수령인 미정에게 곧 도착한다는 문자를 보냈다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "현철",
+      "free_hands_needed": 0,
+      "action": "문자를 보냄",
+      "with": "휴대폰"
+     }
+    ]
+   },
+   {
+    "text": "엘리베이터가 12층에서 멈추자 그는 휴대폰을 조끼 주머니에 넣고 다시 두 손으로 바구니를 들었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "현철",
+      "object": "휴대폰",
+      "to": "조끼 가슴 주머니"
+     },
+     {
+      "type": "grab",
+      "character": "현철",
+      "hand": "both",
+      "object": "꽃바구니",
+      "from": "엘리베이터 바닥"
+     }
+    ]
+   },
+   {
+    "text": "복도 끝 1204호 앞에 선 그는 초인종 대신 발끝으로 문 아래쪽을 툭툭 두드렸다.",
+    "events": []
+   },
+   {
+    "text": "문이 열리고 잠옷 위에 카디건을 걸친 미정이 나왔다.",
+    "events": []
+   },
+   {
+    "text": "\"어머, 정말 예쁘다.\"",
+    "events": []
+   },
+   {
+    "text": "현철은 눌린 머리를 매만질 틈도 없이 꾸벅 고개를 숙였다.",
+    "events": []
+   },
+   {
+    "text": "그가 바구니를 내밀자 미정은 두 팔로 바구니를 받아 안았다.",
+    "events": [
+     {
+      "type": "give",
+      "character": "현철",
+      "to": "미정",
+      "object": "꽃바구니",
+      "to_hand": "both"
+     }
+    ]
+   },
+   {
+    "text": "\"리본 쪽에 카드도 하나 들어 있어요.\"",
+    "events": []
+   },
+   {
+    "text": "미정은 바구니를 신발장 위에 내려놓고 리본에 매달린 작은 카드를 떼어 냈다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "미정",
+      "object": "꽃바구니",
+      "to": "신발장 위"
+     },
+     {
+      "type": "grab",
+      "character": "미정",
+      "object": "카드"
+     }
+    ]
+   },
+   {
+    "text": "카드를 읽어 내려가던 그녀의 눈가가 붉어졌다.",
+    "events": []
+   },
+   {
+    "text": "현철은 조끼 주머니에서 휴대폰을 꺼내 신발장 위의 바구니를 배달 완료 사진으로 찍었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "현철",
+      "object": "휴대폰",
+      "from": "조끼 가슴 주머니"
+     },
+     {
+      "type": "use",
+      "character": "현철",
+      "free_hands_needed": 0,
+      "action": "사진을 찍음",
+      "with": "휴대폰"
+     }
+    ]
+   },
+   {
+    "text": "복도 창으로 들어온 햇빛이 작약 꽃잎 위에 머물러 있었다.",
+    "events": []
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 13,
+    "text": "화물용 엘리베이터에 오른 현철은 바구니를 바닥에 내려놓고 바지 뒷주머니에서 휴대폰을 꺼냈다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "현철",
+      "object": "꽃바구니",
+      "to": "엘리베이터 바닥"
+     },
+     {
+      "type": "grab",
+      "character": "현철",
+      "object": "휴대폰",
+      "from": "바지 뒷주머니"
+     }
+    ],
+    "rule": "item_location",
+    "difficulty": "implicit",
+    "cause": 2,
+    "note": "휴대폰은 조끼 가슴 주머니에 넣었다"
+   },
+   {
+    "sentence": 19,
+    "text": "현철은 헬멧을 쓴 채로 꾸벅 고개를 숙였다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "현철",
+      "wears": "헬멧"
+     }
+    ],
+    "rule": "state_mismatch",
+    "difficulty": "implicit",
+    "cause": 1,
+    "note": "헬멧은 정문 앞에서 벗어 오토바이 핸들에 걸어 두었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d10",
+  "title": "출근길 2호선",
+  "source": "original",
+  "patterns": [
+   "contact_kept",
+   "facing_mismatch",
+   "hidden_side"
+  ],
+  "traps": [
+   "백팩을 앞으로 돌려 멘 뒤에 등을 기댐",
+   "등을 떼고도 소매는 계속 쥠",
+   "고개만 돌리고 몸은 등을 보인 채 둠"
+  ],
+  "characters": {
+   "지훈": {},
+   "은비": {},
+   "석규": {}
+  },
+  "initial_state": {
+   "지훈": {},
+   "은비": {},
+   "석규": {}
+  },
+  "sentences": [
+   {
+    "text": "월요일 아침 2호선 열차는 문이 닫히기도 전에 이미 꽉 차 있었다.",
+    "events": []
+   },
+   {
+    "text": "지훈은 왼손으로 천장 손잡이를 잡고, 오른손에는 뚜껑 덮인 커피 컵을 들고 있었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "지훈",
+      "hand": "left",
+      "object": "손잡이"
+     },
+     {
+      "type": "grab",
+      "character": "지훈",
+      "hand": "right",
+      "object": "커피 컵"
+     }
+    ]
+   },
+   {
+    "text": "그의 바로 앞에는 같은 회사 디자인팀의 은비가 그에게 등을 보이고 서 있었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "은비",
+      "facing": {
+       "지훈": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "등에 멘 백팩이 자꾸 지훈의 가슴을 밀어서 그녀는 연신 고개를 숙였다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "은비",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "back"
+     }
+    ]
+   },
+   {
+    "text": "결국 은비는 백팩을 몸 앞으로 돌려 안듯이 멨다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "은비",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "front"
+     }
+    ]
+   },
+   {
+    "text": "열차가 커브를 돌며 크게 흔들리자 은비가 뒤로 휘청이며 지훈의 가슴에 등을 부딪쳤다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "지훈",
+      "target": "은비",
+      "kind": "lean"
+     }
+    ]
+   },
+   {
+    "text": "지훈은 커피가 쏟아지지 않게 오른손을 높이 쳐들었다.",
+    "events": []
+   },
+   {
+    "text": "\"죄송해요, 선배.\" 은비는 고개를 돌리지도 못한 채 말했다.",
+    "events": []
+   },
+   {
+    "text": "그녀는 오른손을 뒤로 뻗어 지훈의 재킷 소매를 붙잡았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "은비",
+      "target": "지훈",
+      "kind": "grip",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "지훈은 그녀의 정수리 너머로 창밖의 어두운 터널 벽을 바라보았다.",
+    "events": []
+   },
+   {
+    "text": "옆에 선 중년의 석규는 두 사람에게 등을 돌리고 신문을 두 손으로 반 접어 펼쳤다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "석규",
+      "away_from": "지훈"
+     },
+     {
+      "type": "turn",
+      "character": "석규",
+      "away_from": "은비"
+     },
+     {
+      "type": "grab",
+      "character": "석규",
+      "hand": "both",
+      "object": "신문"
+     }
+    ]
+   },
+   {
+    "text": "신문 모서리가 지훈의 커피 컵을 스칠 듯 흔들렸다.",
+    "events": []
+   },
+   {
+    "text": "다음 역에서 사람들이 우르르 내리자 차 안에 조금 숨 쉴 틈이 생겼다.",
+    "events": []
+   },
+   {
+    "text": "은비는 지훈에게서 등을 떼고 몸을 바로 세웠지만, 소매를 쥔 손은 놓지 않았다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "은비",
+      "target": "지훈"
+     },
+     {
+      "type": "touch",
+      "character": "은비",
+      "target": "지훈",
+      "kind": "grip",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "지훈은 그 틈에 커피를 한 모금 마셨다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "지훈",
+      "free_hands_needed": 0,
+      "action": "커피를 마심",
+      "with": "커피 컵"
+     }
+    ]
+   },
+   {
+    "text": "석규가 신문을 넘기다 말고 고개만 살짝 돌려 지훈 쪽을 흘끗 보았다.",
+    "events": []
+   },
+   {
+    "text": "그러고는 등을 보인 채로 다시 신문에 눈을 박고 헛기침을 했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "석규",
+      "facing": {
+       "지훈": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "\"강남역이에요, 선배.\" 은비가 말했다.",
+    "events": []
+   },
+   {
+    "text": "열차가 멈추고 문이 열렸다.",
+    "events": []
+   },
+   {
+    "text": "은비가 지훈의 소매를 놓고 앞장서서 사람들 틈을 비집고 승강장으로 내렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "은비",
+      "object": "@지훈"
+     },
+     {
+      "type": "move",
+      "character": "은비",
+      "away_from": "지훈"
+     }
+    ]
+   },
+   {
+    "text": "지훈도 손잡이를 놓고 커피 컵을 든 채 그 뒤를 따라 내렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "지훈",
+      "object": "손잡이"
+     },
+     {
+      "type": "move",
+      "character": "지훈",
+      "to": "승강장"
+     }
+    ]
+   },
+   {
+    "text": "승강장에 선 은비가 돌아서서 지훈을 기다렸다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "은비",
+      "toward": "지훈"
+     }
+    ]
+   },
+   {
+    "text": "지훈은 그녀의 얼굴을 보고서야 앞으로 멘 백팩의 지퍼가 열려 있다는 것을 알아챘다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "지훈",
+      "target": "은비",
+      "part": "face"
+     }
+    ]
+   },
+   {
+    "text": "\"지퍼 열렸어.\" 그가 턱으로 가리키자 은비는 얼굴을 붉히며 한 손으로 지퍼를 올렸다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "은비",
+      "free_hands_needed": 1,
+      "action": "지퍼를 올림"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 9,
+    "text": "지훈은 자기 가슴에 등을 기댄 그녀가 입술을 꼭 깨무는 것을 내려다보았다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "지훈",
+      "target": "은비",
+      "part": "face"
+     }
+    ],
+    "rule": "hidden_side",
+    "difficulty": "explicit",
+    "cause": 5,
+    "note": "은비는 지훈에게 등을 기대고 있어 지훈이 그녀의 입술을 볼 수 없다"
+   },
+   {
+    "sentence": 16,
+    "text": "그러고는 지훈과 마주 선 채로 신문을 내리고 헛기침을 했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "석규",
+      "facing": {
+       "지훈": "front"
+      }
+     }
+    ],
+    "rule": "facing_mismatch",
+    "difficulty": "implicit",
+    "cause": 10,
+    "note": "석규는 두 사람에게 등을 돌렸고 고개만 돌렸을 뿐 몸을 돌린 적이 없다"
+   },
+   {
+    "sentence": 19,
+    "text": "은비가 앞장서서 사람들 틈을 비집고 승강장으로 내렸다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "은비",
+      "away_from": "지훈"
+     }
+    ],
+    "rule": "contact_kept",
+    "difficulty": "implicit",
+    "cause": 13,
+    "note": "은비는 아직 지훈의 소매를 쥐고 있다"
+   }
+  ]
+ },
+ {
+  "id": "v3d11",
+  "title": "폐관 전 서고",
+  "source": "original",
+  "patterns": [
+   "hand_full",
+   "tool_missing",
+   "item_location"
+  ],
+  "traps": [
+   "왼손에 사전을 든 채 오른손 검지로 라벨을 짚음",
+   "팔꿈치를 붙든 채 함께 걸어감(멀어지지 않음)"
+  ],
+  "characters": {
+   "윤재": {},
+   "혜린": {},
+   "박 선생": {}
+  },
+  "initial_state": {
+   "윤재": {},
+   "혜린": {},
+   "박 선생": {}
+  },
+  "sentences": [
+   {
+    "text": "폐관 한 시간 전, 사서 윤재는 반납 카트를 오른손으로 끌고 지하 서고로 내려갔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "right",
+      "object": "카트"
+     }
+    ]
+   },
+   {
+    "text": "서고 철문 앞에서 그는 카트를 세우고, 왼손에 쥔 열쇠 꾸러미로 자물쇠를 돌렸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "윤재",
+      "hand": "right",
+      "object": "카트",
+      "to": "철문 앞"
+     },
+     {
+      "type": "state",
+      "character": "윤재",
+      "holds": "열쇠 꾸러미"
+     },
+     {
+      "type": "use",
+      "character": "윤재",
+      "free_hands_needed": 0,
+      "action": "자물쇠를 돌림",
+      "with": "열쇠 꾸러미"
+     }
+    ]
+   },
+   {
+    "text": "문이 열리자 그는 열쇠 꾸러미를 앞치마 주머니에 넣고 다시 카트 손잡이를 잡았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "윤재",
+      "object": "열쇠 꾸러미",
+      "to": "앞치마 주머니"
+     },
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "right",
+      "object": "카트",
+      "from": "철문 앞"
+     }
+    ]
+   },
+   {
+    "text": "서고 안은 서늘했고, 형광등 몇 개가 늦게 깜박이며 켜졌다.",
+    "events": []
+   },
+   {
+    "text": "안쪽 열람 책상에서는 동료 혜린이 먼저 와서 오래된 향토지 묶음을 노끈으로 묶고 있었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "혜린",
+      "free_hands_needed": 2,
+      "action": "노끈을 묶음"
+     }
+    ]
+   },
+   {
+    "text": "혜린은 매듭을 짓고, 쥐고 있던 가위를 책상 위 연필꽂이에 꽂아 두었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "혜린",
+      "holds": "가위"
+     },
+     {
+      "type": "release",
+      "character": "혜린",
+      "object": "가위",
+      "to": "연필꽂이"
+     }
+    ]
+   },
+   {
+    "text": "\"카트 이쪽으로 대 줘요. 7번 서가부터 꽂으면 돼요.\"",
+    "events": []
+   },
+   {
+    "text": "윤재는 카트를 7번 서가 앞에 붙여 세우고 손잡이에서 손을 뗐다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "윤재",
+      "hand": "right",
+      "object": "카트",
+      "to": "7번 서가 앞"
+     }
+    ]
+   },
+   {
+    "text": "그는 왼손으로 카트 맨 위 칸의 두꺼운 지역사 사전을 꺼내 들고, 오른손 검지로 청구기호 라벨을 따라 읽었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "left",
+      "object": "지역사 사전",
+      "from": "카트"
+     },
+     {
+      "type": "use",
+      "character": "윤재",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "라벨을 짚음"
+     }
+    ]
+   },
+   {
+    "text": "사전을 제자리에 밀어 넣자 서가 사이로 오래된 종이 냄새가 훅 끼쳤다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "윤재",
+      "hand": "left",
+      "object": "지역사 사전",
+      "to": "7번 서가"
+     }
+    ]
+   },
+   {
+    "text": "그때 철문 쪽에서 지팡이 짚는 소리가 들렸다.",
+    "events": []
+   },
+   {
+    "text": "열람 신청을 해 두었던 박 선생이 직원의 안내를 받아 서고 입구에 서 있었다.",
+    "events": []
+   },
+   {
+    "text": "윤재는 카트 손잡이를 다시 오른손으로 붙들고 입구 쪽으로 돌아섰다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "right",
+      "object": "카트",
+      "from": "7번 서가 앞"
+     },
+     {
+      "type": "turn",
+      "character": "윤재",
+      "toward": "박 선생"
+     }
+    ]
+   },
+   {
+    "text": "박 선생은 지팡이를 왼팔에 걸고, 외투 안주머니에서 접은 신청서를 꺼내 내밀었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "박 선생",
+      "object": "신청서",
+      "from": "외투 안주머니"
+     }
+    ]
+   },
+   {
+    "text": "윤재는 왼손으로 신청서를 받아 펼쳤다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "left",
+      "object": "신청서"
+     }
+    ]
+   },
+   {
+    "text": "\"1974년판 군지 말씀이시죠? 9번 서가 아래 칸에 있을 겁니다.\"",
+    "events": []
+   },
+   {
+    "text": "혜린이 일어나 박 선생 옆으로 다가가 그의 팔꿈치를 가볍게 붙들었다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "혜린",
+      "to": "서고 입구"
+     },
+     {
+      "type": "touch",
+      "character": "혜린",
+      "target": "박 선생",
+      "kind": "grip"
+     }
+    ]
+   },
+   {
+    "text": "윤재는 신청서를 카트 위에 내려놓고, 9번 서가 아래 칸에서 군지 두 권을 왼손으로 꺼냈다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "윤재",
+      "hand": "left",
+      "object": "신청서",
+      "to": "카트 위"
+     },
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "left",
+      "object": "군지",
+      "from": "9번 서가"
+     }
+    ]
+   },
+   {
+    "text": "군지는 표지가 바스러질 듯 낡아 있었다.",
+    "events": []
+   },
+   {
+    "text": "윤재는 카트 손잡이를 놓고 두 권을 박 선생에게 조심스레 건넸다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "윤재",
+      "hand": "right",
+      "object": "카트",
+      "to": "9번 서가 앞"
+     },
+     {
+      "type": "give",
+      "character": "윤재",
+      "to": "박 선생",
+      "object": "군지"
+     }
+    ]
+   },
+   {
+    "text": "\"고맙소. 이걸 찾느라 십 년을 돌아다녔지.\"",
+    "events": []
+   },
+   {
+    "text": "혜린은 박 선생의 팔꿈치를 붙든 채 그를 열람 책상까지 천천히 이끌었다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "혜린",
+      "to": "열람 책상"
+     },
+     {
+      "type": "move",
+      "character": "박 선생",
+      "to": "열람 책상"
+     }
+    ]
+   },
+   {
+    "text": "박 선생이 의자에 앉자 혜린은 그제야 팔꿈치에서 손을 뗐다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "혜린",
+      "object": "@박 선생"
+     }
+    ]
+   },
+   {
+    "text": "혜린은 책상 위 향토지 묶음을 두 손으로 들어 카트 아래 칸에 옮겨 실었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "혜린",
+      "hand": "both",
+      "object": "향토지 묶음"
+     },
+     {
+      "type": "release",
+      "character": "혜린",
+      "hand": "both",
+      "object": "향토지 묶음",
+      "to": "카트 아래 칸"
+     }
+    ]
+   },
+   {
+    "text": "묶음 하나의 노끈이 길게 풀려 바닥에 끌렸다.",
+    "events": []
+   },
+   {
+    "text": "혜린은 연필꽂이에서 가위를 뽑아 늘어진 노끈 끝을 싹둑 잘라 냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "혜린",
+      "object": "가위",
+      "from": "연필꽂이"
+     },
+     {
+      "type": "use",
+      "character": "혜린",
+      "free_hands_needed": 1,
+      "action": "노끈을 자름",
+      "with": "가위"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 가위를 다시 연필꽂이에 꽂고 박 선생 맞은편에 앉았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "혜린",
+      "object": "가위",
+      "to": "연필꽂이"
+     },
+     {
+      "type": "move",
+      "character": "혜린",
+      "to": "맞은편 의자"
+     }
+    ]
+   },
+   {
+    "text": "박 선생은 돋보기를 꺼내 쓰고 군지의 첫 장을 조심스럽게 넘겼다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "박 선생",
+      "item": "돋보기",
+      "zone": "head"
+     },
+     {
+      "type": "use",
+      "character": "박 선생",
+      "free_hands_needed": 1,
+      "action": "장을 넘김"
+     }
+    ]
+   },
+   {
+    "text": "윤재는 남은 반납 도서를 마저 꽂으려고 카트 쪽으로 돌아갔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "윤재",
+      "to": "카트"
+     }
+    ]
+   },
+   {
+    "text": "마지막 칸까지 비우고 나니 벽시계는 폐관 십 분 전을 가리키고 있었다.",
+    "events": []
+   },
+   {
+    "text": "윤재는 앞치마 주머니에서 열쇠 꾸러미를 꺼내 들고 철문 쪽으로 걸어갔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "object": "열쇠 꾸러미",
+      "from": "앞치마 주머니"
+     },
+     {
+      "type": "move",
+      "character": "윤재",
+      "to": "철문"
+     }
+    ]
+   },
+   {
+    "text": "\"선생님, 오늘은 여기까지입니다. 군지는 내일 아침에 다시 꺼내 두겠습니다.\"",
+    "events": []
+   },
+   {
+    "text": "박 선생은 돋보기를 벗어 외투 안주머니에 넣고, 군지를 덮어 혜린에게 돌려주었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "박 선생",
+      "item": "돋보기",
+      "to": "외투 안주머니"
+     },
+     {
+      "type": "give",
+      "character": "박 선생",
+      "to": "혜린",
+      "object": "군지"
+     }
+    ]
+   },
+   {
+    "text": "혜린은 군지를 품에 안고 지팡이 소리를 따라 천천히 철문 쪽으로 걸었다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "혜린",
+      "to": "철문"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 17,
+    "text": "윤재는 9번 서가 아래 칸으로 허리를 굽혀 군지 두 권을 왼손으로 꺼냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "hand": "left",
+      "object": "군지",
+      "from": "9번 서가"
+     }
+    ],
+    "rule": "hand_full",
+    "difficulty": "implicit",
+    "cause": 14,
+    "note": "왼손에는 아직 신청서가 있고 오른손은 카트 손잡이를 잡고 있다"
+   },
+   {
+    "sentence": 25,
+    "text": "혜린은 가위로 늘어진 노끈 끝을 싹둑 잘라 냈다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "혜린",
+      "free_hands_needed": 1,
+      "action": "노끈을 자름",
+      "with": "가위"
+     }
+    ],
+    "rule": "tool_missing",
+    "difficulty": "implicit",
+    "cause": 5,
+    "note": "가위는 연필꽂이에 꽂아 두었고 두 손은 묶음을 내려놓아 비어 있다"
+   },
+   {
+    "sentence": 30,
+    "text": "윤재는 사무용 책상 서랍에서 열쇠 꾸러미를 꺼내 들고 철문 쪽으로 걸어갔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "윤재",
+      "object": "열쇠 꾸러미",
+      "from": "사무용 책상 서랍"
+     },
+     {
+      "type": "move",
+      "character": "윤재",
+      "to": "철문"
+     }
+    ],
+    "rule": "item_location",
+    "difficulty": "implicit",
+    "cause": 2,
+    "note": "열쇠 꾸러미는 앞치마 주머니에 넣었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d12",
+  "title": "리프트 승강장",
+  "source": "original",
+  "patterns": [
+   "contact_kept",
+   "layer_order",
+   "facing_mismatch"
+  ],
+  "traps": [
+   "폴을 왼손에 쥔 채 오른손만 씀",
+   "뒷모습만 보고 바인딩을 알아챔",
+   "고개만 끄덕이고 돌아서지 않음"
+  ],
+  "characters": {
+   "태오": {},
+   "수빈": {},
+   "한 씨": {}
+  },
+  "initial_state": {
+   "태오": {},
+   "수빈": {},
+   "한 씨": {}
+  },
+  "sentences": [
+   {
+    "text": "오전 아홉 시, 리프트 승강장 앞 대기 줄은 벌써 펜스를 따라 두 번 꺾여 있었다.",
+    "events": []
+   },
+   {
+    "text": "줄 끝에 선 태오는 얇은 터치 속장갑 위에 두툼한 스키 장갑을 덧끼고, 스키 폴 두 자루를 왼손에 모아 쥐었다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "태오",
+      "item": "속장갑",
+      "zone": "hands"
+     },
+     {
+      "type": "wear",
+      "character": "태오",
+      "item": "스키 장갑",
+      "zone": "hands"
+     },
+     {
+      "type": "grab",
+      "character": "태오",
+      "hand": "left",
+      "object": "스키 폴"
+     }
+    ]
+   },
+   {
+    "text": "그는 오른손으로 고글을 헬멧 위로 밀어 올리고 슬로프 꼭대기를 올려다보았다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태오",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "고글을 밀어 올림"
+     }
+    ]
+   },
+   {
+    "text": "뒤에 선 수빈은 패딩 지퍼를 턱밑까지 올리고, 그 위에 작은 배낭을 둘러멨다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "수빈",
+      "item": "패딩",
+      "zone": "torso"
+     },
+     {
+      "type": "wear",
+      "character": "수빈",
+      "item": "배낭",
+      "zone": "torso",
+      "side": "back"
+     }
+    ]
+   },
+   {
+    "text": "스노보드 바인딩에 왼발만 끼운 그녀는 오른발로 눈을 밀며 한 걸음씩 따라붙었다.",
+    "events": []
+   },
+   {
+    "text": "\"줄 진짜 길다. 올라가기 전에 물이라도 마실걸.\"",
+    "events": []
+   },
+   {
+    "text": "그때 수빈의 보드 끝이 앞사람 스키에 걸리면서 그녀가 크게 휘청였다.",
+    "events": []
+   },
+   {
+    "text": "태오가 오른손을 뻗어 그녀의 팔뚝을 단단히 붙잡았다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "태오",
+      "target": "수빈",
+      "kind": "grip",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "수빈은 그의 팔에 몸을 맡긴 채 숨을 고르고, 엇갈린 보드를 똑바로 돌려놓았다.",
+    "events": []
+   },
+   {
+    "text": "그녀가 중심을 잡자 태오는 팔뚝에서 손을 떼고 개찰구 쪽으로 먼저 미끄러져 갔다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "태오",
+      "hand": "right",
+      "object": "@수빈"
+     },
+     {
+      "type": "move",
+      "character": "태오",
+      "away_from": "수빈"
+     }
+    ]
+   },
+   {
+    "text": "개찰구 앞에서 태오는 휴대폰 화면을 누르려고 오른손 스키 장갑을 이로 물어 벗었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "태오",
+      "item": "스키 장갑",
+      "free_hands_needed": 0
+     }
+    ]
+   },
+   {
+    "text": "그는 가슴 주머니에서 휴대폰을 꺼내, 속장갑 낀 손가락으로 시즌권 바코드를 띄워 단말기에 댔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "태오",
+      "hand": "right",
+      "object": "휴대폰",
+      "from": "가슴 주머니"
+     },
+     {
+      "type": "use",
+      "character": "태오",
+      "free_hands_needed": 0,
+      "action": "바코드를 댐",
+      "with": "휴대폰"
+     }
+    ]
+   },
+   {
+    "text": "초록 불이 켜지고 차단봉이 돌아가자, 그는 휴대폰을 주머니에 도로 넣고 스키 장갑을 다시 꼈다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "태오",
+      "hand": "right",
+      "object": "휴대폰",
+      "to": "가슴 주머니"
+     },
+     {
+      "type": "wear",
+      "character": "태오",
+      "item": "스키 장갑",
+      "zone": "hands"
+     }
+    ]
+   },
+   {
+    "text": "승차 지점 옆 부스에서는 직원 한 씨가 무전기를 쥐고 줄을 정리하고 있었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "한 씨",
+      "holds": "무전기"
+     }
+    ]
+   },
+   {
+    "text": "\"배낭 메신 분은 앞으로 돌려 메 주세요. 의자에 걸립니다.\"",
+    "events": []
+   },
+   {
+    "text": "수빈은 배낭 끈을 한쪽씩 어깨에서 빼서 배낭을 가슴 앞으로 돌려 멨다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "수빈",
+      "item": "배낭",
+      "zone": "torso",
+      "side": "front"
+     }
+    ]
+   },
+   {
+    "text": "그 사이 태오는 승차 대기선 안으로 먼저 미끄러져 들어갔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "태오",
+      "to": "승차 대기선"
+     }
+    ]
+   },
+   {
+    "text": "\"얼른 와. 다음 의자 우리 거야.\"",
+    "events": []
+   },
+   {
+    "text": "수빈이 그의 왼쪽에 나란히 서자, 한 씨가 부스에서 나와 두 사람 등 뒤에 섰다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "수빈",
+      "to": "승차 대기선"
+     },
+     {
+      "type": "move",
+      "character": "한 씨",
+      "to": "대기선 뒤"
+     },
+     {
+      "type": "state",
+      "character": "태오",
+      "facing": {
+       "한 씨": "back"
+      }
+     },
+     {
+      "type": "state",
+      "character": "수빈",
+      "facing": {
+       "한 씨": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "한 씨는 두 사람의 뒷모습만 보고도 수빈의 오른발 바인딩이 비어 있는 것을 알아챘다.",
+    "events": []
+   },
+   {
+    "text": "\"오른발 바인딩 채우세요. 의자 금방 와요.\"",
+    "events": []
+   },
+   {
+    "text": "수빈은 허리를 숙여 오른발을 바인딩에 밀어 넣고 두 손으로 스트랩을 조였다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "수빈",
+      "free_hands_needed": 2,
+      "action": "스트랩을 조임"
+     }
+    ]
+   },
+   {
+    "text": "태오는 뒤돌아보지 않은 채 고개만 끄덕여 한 씨에게 고맙다는 뜻을 전했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "태오",
+      "facing": {
+       "한 씨": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "의자가 오금에 닿자 두 사람은 동시에 엉덩이를 내려 앉았다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "태오",
+      "to": "리프트 의자"
+     },
+     {
+      "type": "move",
+      "character": "수빈",
+      "to": "리프트 의자"
+     }
+    ]
+   },
+   {
+    "text": "태오는 오른손을 뻗어 머리 위 안전바를 끌어 내렸다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "태오",
+      "hand": "right",
+      "free_hands_needed": 1,
+      "action": "안전바를 내림"
+     }
+    ]
+   },
+   {
+    "text": "수빈은 가슴 앞의 배낭을 두 팔로 끌어안고 발아래로 멀어지는 승강장을 내려다보았다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "수빈",
+      "front": "배낭"
+     }
+    ]
+   },
+   {
+    "text": "한 씨는 무전기를 입에 대고 다음 의자를 불렀다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "한 씨",
+      "free_hands_needed": 0,
+      "action": "무전함",
+      "with": "무전기"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 9,
+    "text": "그녀가 중심을 잡자 태오는 팔뚝을 쥔 채로 개찰구 쪽으로 먼저 미끄러져 나가다가, 몇 걸음 가서야 손을 뗐다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "태오",
+      "away_from": "수빈"
+     },
+     {
+      "type": "release",
+      "character": "태오",
+      "hand": "right",
+      "object": "@수빈"
+     }
+    ],
+    "rule": "contact_kept",
+    "difficulty": "explicit",
+    "cause": 7,
+    "note": "팔뚝을 붙잡은 채로는 혼자 멀어질 수 없다"
+   },
+   {
+    "sentence": 10,
+    "text": "개찰구 앞에서 태오는 휴대폰 화면을 누르려고 오른손 속장갑부터 잡아당겨 벗었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "태오",
+      "item": "속장갑",
+      "free_hands_needed": 1
+     }
+    ],
+    "rule": "layer_order",
+    "difficulty": "implicit",
+    "cause": 1,
+    "note": "속장갑 위에 스키 장갑을 덧꼈다"
+   },
+   {
+    "sentence": 22,
+    "text": "태오는 한 씨를 마주 보고 고개를 끄덕여 고맙다는 뜻을 전했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "태오",
+      "facing": {
+       "한 씨": "front"
+      }
+     }
+    ],
+    "rule": "facing_mismatch",
+    "difficulty": "implicit",
+    "cause": 18,
+    "note": "한 씨는 두 사람 등 뒤에 서 있다"
+   }
+  ]
+ },
+ {
+  "id": "v3d13",
+  "title": "토요일 장보기",
+  "source": "original",
+  "patterns": [
+   "hand_full",
+   "space_full",
+   "state_mismatch"
+  ],
+  "traps": [
+   "왼손에 장바구니를 든 채 오른손으로 대파를 집음",
+   "앞으로 멘 백팩과 겹치지 않게 등 뒤에서 부딪침"
+  ],
+  "characters": {
+   "정란": {},
+   "정미": {},
+   "김 사장": {}
+  },
+  "initial_state": {
+   "정란": {},
+   "정미": {},
+   "김 사장": {}
+  },
+  "sentences": [
+   {
+    "text": "토요일 아침, 정란은 동생 정미와 함께 동네 재래시장 입구에 들어섰다.",
+    "events": []
+   },
+   {
+    "text": "정란은 등에 멘 작은 백팩에서 장지갑을 꺼내 정미에게 건넸다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "정란",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "back"
+     },
+     {
+      "type": "grab",
+      "character": "정란",
+      "object": "장지갑",
+      "from": "백팩"
+     },
+     {
+      "type": "give",
+      "character": "정란",
+      "to": "정미",
+      "object": "장지갑"
+     }
+    ]
+   },
+   {
+    "text": "\"오늘 계산은 네가 해. 나는 들고 다니기만 할게.\"",
+    "events": []
+   },
+   {
+    "text": "정미는 지갑을 받아 점퍼 안주머니에 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정미",
+      "object": "장지갑",
+      "to": "점퍼 안주머니"
+     }
+    ]
+   },
+   {
+    "text": "사람이 몰리는 골목에 들어서자 정란은 소매치기를 조심하느라 백팩을 가슴 앞으로 돌려 멨다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "정란",
+      "item": "백팩",
+      "zone": "torso",
+      "side": "front"
+     }
+    ]
+   },
+   {
+    "text": "첫 가게는 단골 채소전이었다.",
+    "events": []
+   },
+   {
+    "text": "주인 김 사장이 좌판 너머로 고개를 내밀며 오늘은 대파가 좋다고 했다.",
+    "events": []
+   },
+   {
+    "text": "정란은 왼손으로 장바구니를 들고, 오른손으로 대파 한 단을 집어 무게를 가늠했다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "left",
+      "object": "장바구니"
+     },
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "right",
+      "object": "대파"
+     }
+    ]
+   },
+   {
+    "text": "\"이거 하나랑 애호박 두 개 주세요.\"",
+    "events": []
+   },
+   {
+    "text": "김 사장이 애호박을 검은 봉지에 담아 내밀자, 정란은 대파를 장바구니에 꽂고 오른손으로 봉지를 받았다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "김 사장",
+      "object": "검은 봉지"
+     },
+     {
+      "type": "release",
+      "character": "정란",
+      "hand": "right",
+      "object": "대파",
+      "to": "장바구니"
+     },
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "right",
+      "object": "검은 봉지"
+     }
+    ]
+   },
+   {
+    "text": "정미는 휴대폰을 꺼내 좌판에 붙은 계좌로 값을 보냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정미",
+      "object": "휴대폰"
+     },
+     {
+      "type": "use",
+      "character": "정미",
+      "free_hands_needed": 1,
+      "action": "화면을 누름",
+      "with": "휴대폰"
+     }
+    ]
+   },
+   {
+    "text": "송금 화면을 김 사장에게 보여 준 그녀는 휴대폰을 바지 주머니에 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정미",
+      "object": "휴대폰",
+      "to": "바지 주머니"
+     }
+    ]
+   },
+   {
+    "text": "생선전 앞은 더 붐볐다.",
+    "events": []
+   },
+   {
+    "text": "정란은 애호박 봉지를 장바구니 안에 밀어 넣었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정란",
+      "hand": "right",
+      "object": "검은 봉지",
+      "to": "장바구니"
+     }
+    ]
+   },
+   {
+    "text": "좌판 끝에는 손질을 마친 고등어가 두 마리씩 비닐에 싸여 놓여 있었다.",
+    "events": []
+   },
+   {
+    "text": "정란은 비어 있는 오른손으로 고등어 봉지 하나를 집어 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "right",
+      "object": "고등어 봉지",
+      "from": "좌판"
+     }
+    ]
+   },
+   {
+    "text": "그 사이 정미는 옆 기름집에서 참기름 한 병을 사서 품에 안고 돌아왔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정미",
+      "object": "참기름"
+     }
+    ]
+   },
+   {
+    "text": "\"언니, 이거 엄마가 사 오래.\"",
+    "events": []
+   },
+   {
+    "text": "그때 골목 뒤쪽에서 짐 실은 손수레가 밀고 들어오며 사람들이 한꺼번에 앞으로 쏠렸다.",
+    "events": []
+   },
+   {
+    "text": "언니 등 뒤에 서 있던 정미가 떠밀려 정란의 등에 가슴을 쿵 부딪쳤다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "정미",
+      "target": "정란",
+      "kind": "lean"
+     }
+    ]
+   },
+   {
+    "text": "정미는 참기름 병을 놓치지 않으려고 두 팔로 꼭 끌어안았다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "정미",
+      "holds": "참기름"
+     }
+    ]
+   },
+   {
+    "text": "손수레가 지나가자 정미는 언니 등에서 몸을 떼고 한 걸음 물러섰다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "정미",
+      "away_from": "정란"
+     }
+    ]
+   },
+   {
+    "text": "\"괜찮아? 기름병 안 깨졌어?\"",
+    "events": []
+   },
+   {
+    "text": "정란은 고등어 봉지를 장바구니에 넣고, 동생에게서 참기름 병을 받아 그 위에 눕혔다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정란",
+      "hand": "right",
+      "object": "고등어 봉지",
+      "to": "장바구니"
+     },
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "right",
+      "object": "참기름"
+     },
+     {
+      "type": "release",
+      "character": "정란",
+      "hand": "right",
+      "object": "참기름",
+      "to": "장바구니"
+     }
+    ]
+   },
+   {
+    "text": "마지막으로 들른 떡집 진열대에는 막 썰어 낸 인절미가 팩마다 담겨 있었다.",
+    "events": []
+   },
+   {
+    "text": "정미가 점퍼 안주머니에서 지갑을 꺼내 값을 치르는 동안, 정란은 빈 오른손으로 인절미 한 팩을 집어 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정미",
+      "object": "장지갑",
+      "from": "점퍼 안주머니"
+     },
+     {
+      "type": "use",
+      "character": "정미",
+      "free_hands_needed": 1,
+      "action": "지폐를 셈",
+      "with": "장지갑"
+     },
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "right",
+      "object": "인절미",
+      "from": "떡집 진열대"
+     }
+    ]
+   },
+   {
+    "text": "콩고물 냄새가 비닐 너머로 고소하게 풍겼다.",
+    "events": []
+   },
+   {
+    "text": "정란은 떡 팩을 장바구니에 넣고, 가슴 앞의 백팩 지퍼가 잘 잠겼는지 한 번 더 더듬어 본 뒤 시장을 빠져나왔다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "정란",
+      "hand": "right",
+      "object": "인절미",
+      "to": "장바구니"
+     },
+     {
+      "type": "state",
+      "character": "정란",
+      "front": "백팩"
+     },
+     {
+      "type": "move",
+      "character": "정란",
+      "to": "시장 밖"
+     }
+    ]
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 15,
+    "text": "정란은 고등어 봉지 하나를 두 손으로 받쳐 들었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "both",
+      "object": "고등어 봉지",
+      "from": "좌판"
+     }
+    ],
+    "rule": "hand_full",
+    "difficulty": "implicit",
+    "cause": 7,
+    "note": "왼손에는 장바구니를 들고 있다"
+   },
+   {
+    "sentence": 19,
+    "text": "맞은편에 서 있던 정미가 떠밀려 언니와 가슴을 정면으로 부딪쳤다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "정미",
+      "target": "정란",
+      "kind": "press"
+     }
+    ],
+    "rule": "space_full",
+    "difficulty": "implicit",
+    "cause": 4,
+    "note": "정란은 백팩을 가슴 앞으로 돌려 멨다"
+   },
+   {
+    "sentence": 25,
+    "text": "정란은 쥐고 있던 장지갑을 열어 값을 치르고, 빈 오른손으로 인절미 한 팩을 집어 들었다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "정란",
+      "holds": "장지갑"
+     },
+     {
+      "type": "grab",
+      "character": "정란",
+      "hand": "right",
+      "object": "인절미",
+      "from": "떡집 진열대"
+     }
+    ],
+    "rule": "state_mismatch",
+    "difficulty": "implicit",
+    "cause": 1,
+    "note": "장지갑은 처음에 정미에게 건넸다. 정란의 왼손은 장바구니, 오른손은 비어 있다"
+   }
+  ]
+ },
+ {
+  "id": "v3d14",
+  "title": "환갑 사진",
+  "source": "original",
+  "patterns": [
+   "facing_mismatch",
+   "contact_kept",
+   "hidden_side",
+   "not_worn"
+  ],
+  "traps": [
+   "코트를 먼저 벗고 그 안의 니트 조끼를 벗음",
+   "등 돌린 사람의 얼굴을 거울로 봄"
+  ],
+  "characters": {
+   "명수": {},
+   "경숙": {},
+   "준혁": {},
+   "오 실장": {}
+  },
+  "initial_state": {
+   "명수": {},
+   "경숙": {},
+   "준혁": {},
+   "오 실장": {}
+  },
+  "sentences": [
+   {
+    "text": "아버지 명수의 환갑을 맞아 세 식구는 오래된 동네 사진관의 문을 밀고 들어섰다.",
+    "events": []
+   },
+   {
+    "text": "사진가 오 실장이 삼각대를 펼치다 말고 고개를 들어 반갑게 인사했다.",
+    "events": []
+   },
+   {
+    "text": "어머니 경숙은 목에 실크 스카프를 두르고 그 위로 겨울 코트를 걸치고 있었다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "경숙",
+      "item": "스카프",
+      "zone": "neck"
+     },
+     {
+      "type": "wear",
+      "character": "경숙",
+      "item": "코트",
+      "zone": "torso"
+     }
+    ]
+   },
+   {
+    "text": "서른을 갓 넘긴 아들 준혁은 셔츠와 니트 조끼 위에 긴 코트를 입고 있었다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "준혁",
+      "item": "셔츠",
+      "zone": "torso"
+     },
+     {
+      "type": "wear",
+      "character": "준혁",
+      "item": "니트 조끼",
+      "zone": "torso"
+     },
+     {
+      "type": "wear",
+      "character": "준혁",
+      "item": "코트",
+      "zone": "torso"
+     }
+    ]
+   },
+   {
+    "text": "\"겉옷은 저쪽 옷걸이에 거시고요, 스카프도 풀어 주시면 화면이 깔끔합니다.\"",
+    "events": []
+   },
+   {
+    "text": "준혁은 코트를 벗어 옷걸이에 걸고, 그 안에 받쳐 입었던 니트 조끼까지 벗어 코트 위에 걸쳤다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "준혁",
+      "item": "코트",
+      "to": "옷걸이"
+     },
+     {
+      "type": "take_off",
+      "character": "준혁",
+      "item": "니트 조끼",
+      "to": "옷걸이"
+     }
+    ]
+   },
+   {
+    "text": "경숙도 코트를 벗어 걸고, 스카프를 풀어 핸드백 안에 접어 넣었다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "경숙",
+      "item": "코트",
+      "to": "옷걸이"
+     },
+     {
+      "type": "take_off",
+      "character": "경숙",
+      "item": "스카프",
+      "to": "핸드백"
+     }
+    ]
+   },
+   {
+    "text": "명수는 거울 앞에 서서 두 손으로 넥타이 매듭을 만지작거렸다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "명수",
+      "free_hands_needed": 2,
+      "action": "넥타이 매듭을 만짐"
+     }
+    ]
+   },
+   {
+    "text": "오 실장은 배경지 앞에 등받이 의자 하나를 놓고 명수를 그 자리에 앉혔다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "명수",
+      "to": "등받이 의자"
+     }
+    ]
+   },
+   {
+    "text": "\"어머님은 아버님 오른쪽 뒤에, 아드님은 왼쪽 뒤에 서 주세요.\"",
+    "events": []
+   },
+   {
+    "text": "경숙과 준혁이 의자 뒤 양옆으로 가서 섰다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "경숙",
+      "to": "의자 오른쪽 뒤"
+     },
+     {
+      "type": "move",
+      "character": "준혁",
+      "to": "의자 왼쪽 뒤"
+     }
+    ]
+   },
+   {
+    "text": "경숙은 오른손을 남편 어깨에 가만히 얹었다.",
+    "events": [
+     {
+      "type": "touch",
+      "character": "경숙",
+      "target": "명수",
+      "kind": "grip",
+      "hand": "right"
+     }
+    ]
+   },
+   {
+    "text": "준혁은 두 손을 앞으로 모아 쥐고 어색하게 웃었다.",
+    "events": []
+   },
+   {
+    "text": "오 실장은 카메라 뒤에서 한쪽 눈을 감고 뷰파인더를 들여다보았다.",
+    "events": []
+   },
+   {
+    "text": "\"아버님, 턱을 조금만 당기시고요. 좋습니다.\"",
+    "events": []
+   },
+   {
+    "text": "셔터가 연달아 터졌다.",
+    "events": []
+   },
+   {
+    "text": "\"이번에는 편하게 한 장 가 보죠. 아드님이 아버님을 뒤에서 안아 보세요.\"",
+    "events": []
+   },
+   {
+    "text": "경숙이 남편 어깨에서 손을 떼고 한 걸음 옆으로 비켜섰다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "경숙",
+      "hand": "right",
+      "object": "@명수"
+     },
+     {
+      "type": "move",
+      "character": "경숙",
+      "away_from": "명수"
+     }
+    ]
+   },
+   {
+    "text": "명수가 의자에서 일어서자 준혁이 뒤로 다가가 아버지의 가슴께를 두 팔로 감싸 안았다.",
+    "events": [
+     {
+      "type": "move",
+      "character": "명수",
+      "to": "배경지 앞"
+     },
+     {
+      "type": "touch",
+      "character": "준혁",
+      "target": "명수",
+      "kind": "back_hug"
+     }
+    ]
+   },
+   {
+    "text": "명수는 아들의 팔에 등을 맡긴 채 쑥스러운 듯 헛기침을 했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "명수",
+      "facing": {
+       "준혁": "back"
+      }
+     }
+    ]
+   },
+   {
+    "text": "경숙이 그 모습을 보고 손뼉을 치며 웃었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "경숙",
+      "free_hands_needed": 2,
+      "action": "손뼉을 침"
+     }
+    ]
+   },
+   {
+    "text": "오 실장은 몇 장을 더 찍은 뒤 모니터를 확인하려고 카메라 옆으로 몸을 기울였다.",
+    "events": []
+   },
+   {
+    "text": "준혁은 아버지를 안았던 팔을 풀고, 돌아서서 오 실장 쪽으로 걸어가 모니터를 들여다보았다.",
+    "events": [
+     {
+      "type": "untouch",
+      "character": "준혁",
+      "target": "명수"
+     },
+     {
+      "type": "turn",
+      "character": "준혁",
+      "away_from": "명수"
+     },
+     {
+      "type": "move",
+      "character": "준혁",
+      "to": "카메라 옆"
+     }
+    ]
+   },
+   {
+    "text": "명수는 배경지 앞에 홀로 남아 넥타이를 고쳐 맸다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "명수",
+      "free_hands_needed": 2,
+      "action": "넥타이를 고쳐 맴"
+     }
+    ]
+   },
+   {
+    "text": "\"아버님 한 장만 따로 찍을게요. 이번엔 뒷모습부터 갑니다.\"",
+    "events": []
+   },
+   {
+    "text": "명수는 카메라에 등을 보이며 돌아서서, 벽에 붙은 전신 거울을 마주 보았다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "명수",
+      "away_from": "오 실장"
+     }
+    ]
+   },
+   {
+    "text": "셔터 소리가 몇 번 이어졌다.",
+    "events": []
+   },
+   {
+    "text": "오 실장은 거울 속에 비친 명수의 웃는 얼굴을 보고 셔터를 한 번 더 눌렀다.",
+    "events": []
+   },
+   {
+    "text": "\"됐습니다. 어머님, 스카프 한 번 다시 해 보실래요? 색이 고와서요.\"",
+    "events": []
+   },
+   {
+    "text": "경숙은 핸드백에서 스카프를 꺼내 목에 느슨하게 둘렀다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "경숙",
+      "object": "스카프",
+      "from": "핸드백"
+     },
+     {
+      "type": "wear",
+      "character": "경숙",
+      "item": "스카프",
+      "zone": "neck"
+     }
+    ]
+   },
+   {
+    "text": "마지막으로 세 식구가 나란히 서서 찍은 사진이 모니터에 떠오르자, 명수가 먼저 좋다며 웃었다.",
+    "events": []
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 19,
+    "text": "명수는 아들과 마주 선 채 쑥스러운 듯 헛기침을 했다.",
+    "events": [
+     {
+      "type": "state",
+      "character": "명수",
+      "facing": {
+       "준혁": "front"
+      }
+     }
+    ],
+    "rule": "facing_mismatch",
+    "difficulty": "implicit",
+    "cause": 18,
+    "note": "준혁이 뒤에서 안았으니 명수는 아들에게 등을 보이고 있다"
+   },
+   {
+    "sentence": 22,
+    "text": "준혁은 아버지를 뒤에서 끌어안은 채 몸을 홱 돌려 모니터 쪽을 보다가, 그제야 팔을 풀고 그쪽으로 걸어갔다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "준혁",
+      "away_from": "명수"
+     },
+     {
+      "type": "untouch",
+      "character": "준혁",
+      "target": "명수"
+     },
+     {
+      "type": "move",
+      "character": "준혁",
+      "to": "카메라 옆"
+     }
+    ],
+    "rule": "contact_kept",
+    "difficulty": "explicit",
+    "cause": 18,
+    "note": "뒤에서 안은 채로는 등을 돌릴 수 없다"
+   },
+   {
+    "sentence": 27,
+    "text": "오 실장은 명수가 입꼬리를 올리며 웃는 얼굴을 뷰파인더로 보고 셔터를 한 번 더 눌렀다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "오 실장",
+      "target": "명수",
+      "part": "face"
+     }
+    ],
+    "rule": "hidden_side",
+    "difficulty": "implicit",
+    "cause": 25,
+    "note": "명수는 카메라에 등을 보이고 있다"
+   },
+   {
+    "sentence": 29,
+    "text": "경숙은 목에 두른 스카프를 한 번 풀었다가 느슨하게 다시 둘렀다.",
+    "events": [
+     {
+      "type": "take_off",
+      "character": "경숙",
+      "item": "스카프",
+      "zone": "neck"
+     },
+     {
+      "type": "wear",
+      "character": "경숙",
+      "item": "스카프",
+      "zone": "neck"
+     }
+    ],
+    "rule": "not_worn",
+    "difficulty": "implicit",
+    "cause": 6,
+    "note": "스카프는 아까 풀어 핸드백에 넣었다"
+   }
+  ]
+ },
+ {
+  "id": "v3d15",
+  "title": "집들이 부엌",
+  "source": "original",
+  "patterns": [
+   "tool_missing",
+   "item_location",
+   "hidden_side"
+  ],
+  "traps": [
+   "칼을 쥔 채 왼손으로 양파를 누름",
+   "등 돌린 사람의 어깨만 보고 알아챔"
+  ],
+  "characters": {
+   "서윤": {},
+   "민규": {},
+   "다은": {}
+  },
+  "initial_state": {
+   "서윤": {},
+   "민규": {},
+   "다은": {}
+  },
+  "sentences": [
+   {
+    "text": "집들이 날 오후, 서윤은 새로 이사한 집 부엌에서 앞치마를 두르고 끈을 등 뒤로 질끈 묶었다.",
+    "events": [
+     {
+      "type": "wear",
+      "character": "서윤",
+      "item": "앞치마",
+      "zone": "torso"
+     },
+     {
+      "type": "use",
+      "character": "서윤",
+      "free_hands_needed": 2,
+      "action": "끈을 묶음"
+     }
+    ]
+   },
+   {
+    "text": "아일랜드 식탁 앞에는 먼저 온 민규가 의자에 걸터앉아 양파 껍질을 벗기고 있었다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "민규",
+      "free_hands_needed": 2,
+      "action": "양파 껍질을 벗김"
+     }
+    ]
+   },
+   {
+    "text": "\"칼은 도마 옆에 있어. 다 까면 채 썰어 줘.\"",
+    "events": []
+   },
+   {
+    "text": "서윤은 민규에게 등을 돌리고 가스레인지 앞에 서서, 냄비에 물을 받아 불에 올렸다.",
+    "events": [
+     {
+      "type": "turn",
+      "character": "서윤",
+      "away_from": "민규"
+     },
+     {
+      "type": "use",
+      "character": "서윤",
+      "free_hands_needed": 2,
+      "action": "냄비를 불에 올림"
+     }
+    ]
+   },
+   {
+    "text": "민규는 오른손으로 도마 옆의 칼을 집고, 왼손으로 양파를 눌러 가며 썰기 시작했다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민규",
+      "hand": "right",
+      "object": "칼",
+      "from": "도마 옆"
+     },
+     {
+      "type": "use",
+      "character": "민규",
+      "hand": "left",
+      "free_hands_needed": 1,
+      "action": "양파를 누름"
+     }
+    ]
+   },
+   {
+    "text": "\"뭐 만드는데? 냄새부터 벌써 좋다.\"",
+    "events": []
+   },
+   {
+    "text": "\"소고기뭇국이랑 잡채. 잡채는 네 손이 좀 필요해.\"",
+    "events": []
+   },
+   {
+    "text": "서윤은 가스레인지 옆 냉장고 문을 열어 소고기 팩을 꺼냈다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "서윤",
+      "object": "소고기",
+      "from": "냉장고"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 소고기를 냄비에 털어 넣고, 소금을 한 꼬집 뿌린 뒤 소금 통을 가스레인지 옆 양념 선반에 올려 두었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "서윤",
+      "object": "소고기",
+      "to": "냄비"
+     },
+     {
+      "type": "grab",
+      "character": "서윤",
+      "object": "소금 통"
+     },
+     {
+      "type": "release",
+      "character": "서윤",
+      "object": "소금 통",
+      "to": "양념 선반"
+     }
+    ]
+   },
+   {
+    "text": "그때 현관 도어록 소리가 나더니 다은이 커다란 화분을 두 팔로 안고 들어왔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "다은",
+      "hand": "both",
+      "object": "화분"
+     },
+     {
+      "type": "move",
+      "character": "다은",
+      "to": "현관"
+     }
+    ]
+   },
+   {
+    "text": "\"집들이 선물! 해 잘 드는 데 둬.\"",
+    "events": []
+   },
+   {
+    "text": "다은은 화분을 거실 창가에 내려놓고, 손을 씻으러 부엌 싱크대로 왔다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "다은",
+      "hand": "both",
+      "object": "화분",
+      "to": "거실 창가"
+     },
+     {
+      "type": "move",
+      "character": "다은",
+      "to": "싱크대"
+     }
+    ]
+   },
+   {
+    "text": "그녀는 서윤 옆에 나란히 서서 수도꼭지를 틀고 두 손을 비볐다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "다은",
+      "free_hands_needed": 2,
+      "action": "손을 비빔"
+     }
+    ]
+   },
+   {
+    "text": "민규는 양파를 다 썰고 칼을 도마 위에 가지런히 내려놓았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민규",
+      "hand": "right",
+      "object": "칼",
+      "to": "도마 위"
+     }
+    ]
+   },
+   {
+    "text": "그는 왼손으로 당근 하나를 집어 도마 위에 눕혔다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민규",
+      "hand": "left",
+      "object": "당근"
+     },
+     {
+      "type": "release",
+      "character": "민규",
+      "hand": "left",
+      "object": "당근",
+      "to": "도마 위"
+     }
+    ]
+   },
+   {
+    "text": "\"당근은 얇게 채 썰어. 잡채에 들어가는 거니까.\"",
+    "events": []
+   },
+   {
+    "text": "민규는 도마 위의 칼을 다시 집어 당근을 가늘게 채 썰었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "민규",
+      "object": "칼",
+      "from": "도마 위"
+     },
+     {
+      "type": "use",
+      "character": "민규",
+      "free_hands_needed": 1,
+      "action": "당근을 채 썲",
+      "with": "칼"
+     }
+    ]
+   },
+   {
+    "text": "다은은 손을 닦고 서윤 어깨 너머로 냄비를 들여다보았다.",
+    "events": []
+   },
+   {
+    "text": "\"간 내가 볼게. 소금 어디 있어?\"",
+    "events": []
+   },
+   {
+    "text": "\"선반 위에.\" 서윤이 국자로 거품을 걷어 내며 대답했다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "서윤",
+      "object": "국자"
+     },
+     {
+      "type": "use",
+      "character": "서윤",
+      "free_hands_needed": 0,
+      "action": "거품을 걷어 냄",
+      "with": "국자"
+     }
+    ]
+   },
+   {
+    "text": "다은은 양념 선반에서 소금 통을 꺼내 국물에 조금 털어 넣었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "다은",
+      "object": "소금 통",
+      "from": "양념 선반"
+     },
+     {
+      "type": "use",
+      "character": "다은",
+      "free_hands_needed": 0,
+      "action": "소금을 넣음",
+      "with": "소금 통"
+     }
+    ]
+   },
+   {
+    "text": "서윤은 국자로 국물을 조금 떠서 맛을 보았다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "서윤",
+      "free_hands_needed": 0,
+      "action": "맛을 봄",
+      "with": "국자"
+     }
+    ]
+   },
+   {
+    "text": "민규는 서윤의 어깨가 움찔 올라가는 것만 보고도 국이 짜졌다는 걸 알아챘다.",
+    "events": []
+   },
+   {
+    "text": "\"아, 둘이 소금을 두 번 넣었네.\"",
+    "events": []
+   },
+   {
+    "text": "다은이 웃으며 소금 통을 선반에 돌려놓고, 컵에 물을 받아 냄비에 부었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "다은",
+      "object": "소금 통",
+      "to": "양념 선반"
+     },
+     {
+      "type": "grab",
+      "character": "다은",
+      "object": "컵"
+     },
+     {
+      "type": "use",
+      "character": "다은",
+      "free_hands_needed": 0,
+      "action": "물을 부음",
+      "with": "컵"
+     }
+    ]
+   },
+   {
+    "text": "서윤은 국자를 냄비 가장자리에 걸쳐 두고, 앞치마에 손을 닦은 뒤 돌아서서 민규 쪽을 보았다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "서윤",
+      "object": "국자",
+      "to": "냄비 가장자리"
+     },
+     {
+      "type": "turn",
+      "character": "서윤",
+      "toward": "민규"
+     }
+    ]
+   },
+   {
+    "text": "민규는 칼을 내려놓고, 채 썬 당근을 왼손으로 접시에 쓸어 담아 그녀에게 내밀었다.",
+    "events": [
+     {
+      "type": "release",
+      "character": "민규",
+      "object": "칼",
+      "to": "도마 위"
+     },
+     {
+      "type": "grab",
+      "character": "민규",
+      "hand": "left",
+      "object": "접시"
+     }
+    ]
+   },
+   {
+    "text": "\"이 정도면 돼?\"",
+    "events": []
+   },
+   {
+    "text": "서윤은 접시를 받아 들고 고개를 끄덕였다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "서윤",
+      "object": "접시"
+     }
+    ]
+   },
+   {
+    "text": "거실 창가에 놓인 화분 잎사귀 위로 늦은 오후 햇살이 내려앉았다.",
+    "events": []
+   }
+  ],
+  "errors": [
+   {
+    "sentence": 16,
+    "text": "민규는 손에 익은 칼질로 당근을 가늘게 채 썰어 나갔다.",
+    "events": [
+     {
+      "type": "use",
+      "character": "민규",
+      "free_hands_needed": 1,
+      "action": "당근을 채 썲",
+      "with": "칼"
+     }
+    ],
+    "rule": "tool_missing",
+    "difficulty": "implicit",
+    "cause": 13,
+    "note": "칼은 도마 위에 내려놓았고 두 손은 비어 있다"
+   },
+   {
+    "sentence": 20,
+    "text": "다은은 찬장 문을 열어 소금 통을 꺼내 국물에 조금 털어 넣었다.",
+    "events": [
+     {
+      "type": "grab",
+      "character": "다은",
+      "object": "소금 통",
+      "from": "찬장"
+     },
+     {
+      "type": "use",
+      "character": "다은",
+      "free_hands_needed": 0,
+      "action": "소금을 넣음",
+      "with": "소금 통"
+     }
+    ],
+    "rule": "item_location",
+    "difficulty": "implicit",
+    "cause": 8,
+    "note": "소금 통은 서윤이 양념 선반에 올려 두었다"
+   },
+   {
+    "sentence": 22,
+    "text": "민규는 서윤이 국물을 맛보고 미간을 찡그리는 얼굴을 보고 국이 짜졌다는 걸 알아챘다.",
+    "events": [
+     {
+      "type": "see",
+      "character": "민규",
+      "target": "서윤",
+      "part": "face"
+     }
+    ],
+    "rule": "hidden_side",
+    "difficulty": "implicit",
+    "cause": 3,
+    "note": "서윤은 처음부터 민규에게 등을 돌리고 가스레인지 앞에 서 있다"
+   }
+  ]
+ }
+]
