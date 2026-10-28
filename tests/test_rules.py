@@ -365,6 +365,50 @@ class ItemRules(unittest.TestCase):
                          [(2, "hand_full")])
 
 
+class DevRunGaps(unittest.TestCase):
+    """Gaps that the first v3 dev run showed. The model events in these tests are valid readings."""
+
+    def test_one_pole_in_each_hand(self):
+        # "스틱을 양손에 하나씩 쥐었다 ... 스틱 하나를 놓쳤다": two objects with one name.
+        grab = [ev("grab", "세진", hand="left", object="스틱"), ev("grab", "세진", hand="right", object="스틱")]
+        sentences = [grab, [ev("release", "세진", hand="right", object="스틱", to="덤불")],
+                     [ev("state", "세진", holds="스틱")], [ev("use", "세진", hand="right", free_hands_needed=1)]]
+        self.assertEqual(rules_of({"세진": EMPTY}, sentences), [])
+        # A release without a hand also lets go of one of the two.
+        sentences[1] = [ev("release", "세진", object="스틱")]
+        self.assertEqual(rules_of({"세진": EMPTY}, sentences[:3]), [])
+
+    def test_a_two_handed_object_still_frees_both_hands(self):
+        sentences = [[ev("grab", "도현", hand="both", object="상자")],
+                     [ev("release", "도현", hand="right", object="상자")],
+                     [ev("use", "도현", free_hands_needed=2)]]
+        self.assertEqual(rules_of({"도현": EMPTY}, sentences), [])
+
+    def test_one_hand_grip_of_an_object_in_both_hands(self):
+        # "두 손으로 캐리어를 잡아 ... 오른손으로 손잡이를 붙잡았다": the left hand is free again.
+        sentences = [[ev("grab", "하은", hand="both", object="캐리어")],
+                     [ev("grab", "하은", hand="right", object="캐리어")],
+                     [ev("grab", "하은", hand="left", object="여권")]]
+        self.assertEqual(rules_of({"하은": EMPTY}, sentences), [])
+
+    def test_a_backpack_that_a_state_put_on_the_back_moves_to_the_front(self):
+        sentences = [[ev("state", "은비", wears="백팩", back="백팩")],
+                     [ev("wear", "은비", item="백팩", zone="torso", side="front")],
+                     [ev("touch", "지훈", target="은비", kind="lean")]]
+        self.assertEqual(rules_of({"은비": {}, "지훈": EMPTY}, sentences), [])
+
+    def test_a_known_zone_does_not_hide_a_new_item(self):
+        start = {"은비": {"worn": {"head": ["귀걸이"]}}}
+        self.assertEqual(rules_of(start, [[ev("state", "은비", wears="레이스 장갑")]]), [])
+
+    def test_an_item_taken_off_to_a_place_is_not_worn(self):
+        start = {"현철": {"worn": {"head": ["헬멧"]}, "hands": {"left": None, "right": None}}}
+        sentences = [[ev("take_off", "현철", item="헬멧", to="핸들")], [ev("state", "현철", wears="헬멧")]]
+        self.assertEqual(rules_of(start, sentences), [(1, "state_mismatch")])
+        sentences[0].append(ev("grab", "현철", object="헬멧", **{"from": "핸들"}))
+        self.assertEqual(rules_of(start, sentences), [(1, "state_mismatch")])
+
+
 class FreeHands(unittest.TestCase):
     def test_counts(self):
         states, _ = rules.run_scene({"지호": {"hands": {"left": "컵", "right": None}}},

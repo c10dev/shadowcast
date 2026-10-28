@@ -95,6 +95,10 @@ def same_place(a, b):
     return bool(words(a) & words(b))
 
 
+def _other(hand):
+    return "right" if hand == "left" else "left"
+
+
 def person(name):
     return "@" + name
 
@@ -120,6 +124,9 @@ class Scene:
         self.loose = set()
         # Pairs (who, "@other") that an untouch ended. A later release of that person repeats it.
         self.let_go = set()
+        # Pairs (who, object) where each hand holds its own object with the same name
+        # ("a pole in each hand"). Other objects in both hands are one object held with two hands.
+        self.pairs = set()
 
     # ----- state helpers -----
 
@@ -249,6 +256,12 @@ class Scene:
         if e.get("from") and obj in self.items and not same_place(self.items[obj], e["from"]):
             return "item_location", f"'{obj}' is at '{self.items[obj]}', not '{e['from']}'"
         held = {h for giver, h in self.holders(obj) if giver == who}
+        hands = self.body(who)["hands"]
+        if hand in HANDS and held == set(HANDS) and hands["left"] == hands["right"] \
+                and (who, hands[hand]) not in self.pairs:
+            # A one-hand grip of an object that both hands hold: the other hand lets go.
+            hands[_other(hand)] = None
+            return None
         if (held and hand == "any") or hand in held or (hand == "both" and held == set(HANDS)):
             return None  # already in this hand (the person took it in a give just before)
         # A grab of an object in another person's hand is a handoff: the other hand lets go.
@@ -258,6 +271,10 @@ class Scene:
         err = self._take_hands(who, hand, 2 if hand == "both" else 1, obj)
         if err:
             return "hand_full", f"cannot grab '{obj}': {err}"
+        if hand != "both" and hands["left"] == hands["right"] == obj:
+            self.pairs.add((who, obj))  # a second object of the same name in the other hand
+        else:
+            self.pairs.discard((who, obj))
         self.items.pop(obj, None)
         self.failed.discard(obj)
         self.loose.discard(obj)
@@ -284,6 +301,10 @@ class Scene:
             if hands[hand] is None:
                 return f"{who}: {hand} hand is already empty"
             held = hands[hand]
+            if (who, held) in self.pairs:  # one of two objects with the same name
+                self.pairs.discard((who, held))
+                hands[hand] = None
+                return None
             for h in HANDS:  # a two-handed object frees both hands
                 if hands[h] == held:
                     hands[h] = None
@@ -303,6 +324,9 @@ class Scene:
                 matches = [h for h in HANDS if hands[h] == UNKNOWN][:1]  # it was in the unknown hand
         if not matches:
             return f"{who}: does not hold '{obj}', holds {hands}"
+        if len(matches) == 2 and (who, hands["right"]) in self.pairs:
+            self.pairs.discard((who, hands["right"]))
+            matches = ["right"]  # one of two objects with the same name; which hand is unknown
         for h in matches:
             hands[h] = None
         return None
@@ -401,6 +425,8 @@ class Scene:
             if err:
                 return err
         if side in SIDES:
+            # The item leaves the other side, also when a state event put it there without a zone.
+            self._clear_sides(who, item)
             err = self._side_take(who, side, item)
             if err:
                 return "space_full", f"cannot wear '{item}' on the {side}: {err}"
@@ -517,8 +543,14 @@ class Scene:
                     h = next(h for h in HANDS if hands[h] == UNKNOWN)
                     hands[h] = obj
         item = self.name(e.get("wears"))
-        if item and self.worn_by(who, item) is None and body["worn"]:
-            return "state_mismatch", f"text says {who} wears '{item}', worn {body['worn']}"
+        if item and self.worn_by(who, item) is None:
+            # A known zone does not tell about the other zones, so an item never named before
+            # can be worn. An item that was taken off, put down, or is in a hand is not worn.
+            off = item in self.items or item in self.loose or any(
+                hands[h] not in (None, UNKNOWN) and not is_person(hands[h]) and _same(hands[h], item)
+                for hands in [body["hands"]] for h in HANDS)
+            if off:
+                return "state_mismatch", f"text says {who} wears '{item}', worn {body['worn']}"
         for side in SIDES:
             value = e.get(side)
             if value:
