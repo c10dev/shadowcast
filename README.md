@@ -1,188 +1,173 @@
 # shadowcast
 
-소설 본문(벽에 비친 그림자)에서 장면의 물리 상태를 되살려, 몸 · 손 · 옷 · 물건이 앞뒤 문장과 맞는지 검사하는 엔진과 그 측정 세트.
+한국어: [README.ko.md](README.ko.md)
 
-이름은 플라톤의 동굴 비유에서 왔다. 죄수는 벽의 그림자만 보고 실제 물체를 짐작한다. 모델도 본문만 받고 그 뒤의 장면(누가 어느 쪽을 향했는지, 손에 무엇을 쥐었는지, 무엇을 무엇 위에 걸쳤는지)을 짐작해야 한다. shadowcast 는 그림자에서 물체를 되살리는 일을 한다.
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/)
 
-## 풀려는 문제
+Prose is the shadow on the cave wall. shadowcast rebuilds the scene behind it and finds blocking, contact, and object continuity errors in fiction. It is a rule engine and a benchmark for LLM checkers.
 
-AI 가 쓴 본문은 문장마다 그럴듯하지만, 모델이 몸 상태를 따로 기억하지 않아 동작이 이어지지 않는다. 예:
+The name comes from Plato's cave. The prisoners see only shadows on the wall and guess the real objects. A model also gets only the text. It must guess the scene behind the text: who faces which way, what each hand holds, and which clothes are on top of which. shadowcast rebuilds the objects from the shadows.
 
-- 상대를 마주 보고 안긴 인물이 다음 문장에서 등을 기댄 자세가 된다.
-- 백팩을 멘 채 끈을 내리지 않고 그 아래 셔츠를 벗는다.
-- 상대가 가슴에 바짝 붙어 있는데 그 사이로 백팩을 앞으로 돌려 멘다.
-- 한 팔로 사람을 받치고 다른 손으로 손잡이를 잡은 채 두 손을 써서 외투를 벗는다.
+The scene data and the prompts are in Korean. The code, the rules, and the metrics do not depend on the language.
 
-## 성격
+## Why it matters
 
-- 독립 공개 프로젝트다. 특정 집필 도구의 코드나 데이터 형식에 기대지 않는다.
-- 첫 사용자는 [Canon](https://github.com/c10dev/canon)(AI 소설 집필 도구)이다. Canon 과 잇는 코드는 Canon 저장소에 둔다.
+Each sentence of AI-written prose can look correct. But the model does not keep a separate record of the body state, so the actions do not connect. Examples:
 
-## 산출물
+- Two characters hug face to face. In the next sentence, one of them leans back against the other.
+- A character takes off a shirt but does not take off the backpack on top of it first.
+- A person stands pressed against a character's chest. Then the character swings a backpack to the front, into the space between them.
+- One arm holds up a person, and the other hand holds a strap. Then the character uses both hands to take off a coat.
 
-1. **측정 세트**: 정상판과 오류판의 정답이 있는 장면 모음과 채점기. 어떤 모델과 방식이 나은지 가르는 기준이다.
-2. **엔진**: 장면 상태 추출 스키마, 규칙 판정기, 모델 어댑터(Gemini, 로컬, Claude).
-3. **Canon 연결부**: Canon 검수 시험의 장면 상태표 방식(`scene`) 뒤에 판정기를 붙이는 얇은 층. Canon 저장소에 둔다.
+A reader sees these errors at once. Language models often do not.
 
-## 범위
+## How it works
 
-| 넣음 | 뺌 |
+shadowcast tracks five state channels for each character in one scene:
+
+| Channel | Example |
 |---|---|
-| 한 장면 안의 손 점유, 향한 쪽, 착용 겹침 순서, 몸 사이 자리, 물건 자리 | 개연성, 목적과 행동의 모순 |
-| 나중에: 인물의 키를 쓴 높이 축 | 문체, 과장 표현 |
-| 상태 추출과 규칙 판정, 측정과 채점 | 화와 화 사이의 긴 상태(집필 도구가 맡는다), 좌표 · 3D 자세 · 이미지 |
+| Hands | The left hand holds an umbrella. The right hand is free. |
+| Facing | A shows the back to B. |
+| Worn layers | Shirt, then jacket, then backpack on the torso. |
+| Body front and back space | A person or a box is in front of the chest. |
+| Object places | The key is in the inner pocket of the bag. |
 
-## 모델 역할
+The benchmark compares three conditions:
 
-| 모델 | 역할 |
-|---|---|
-| Claude (Opus, Sonnet) | 상한 측정, 정답 만들기 도우미, 어려운 세트 검증 |
-| Gemini | 실제로 쓸 목표 모델. 성공 기준은 이 모델로 잰다 |
-| 로컬 (gemma 등) | 싼 검사 후보. 모자라면 추출기 학습(합성 데이터 + LoRA)을 시험한다 |
-
-## 단계
-
-| 단계 | 할 일 | 끝났다고 보는 때 |
+| Condition | Model input | Who judges |
 |---|---|---|
-| 0 | [hand-check](hand-check/) v1: 손 점유만, 직접 쓴 짧은 장면 40개(80항목) | 끝남. 아래 "지금까지" |
-| 1 | 측정 세트 v2: [장면 형식 v2 와 규칙 판정기](docs/scene-format.md)와 규칙별 시범 장면 11개, [v2 실행기](docs/scene-format.md#모델로-돌리기)(시범 장면 세 모델 결과 있음), 실제 소설 문단, 긴 본문(20문장 이상) · 여러 인물(3명 이상), 칸 넓히기(향한 쪽 · 착용 겹침 · 몸 사이 자리 · 물건 자리), 쓰기 모델이 실제로 낸 오류 수집 | 가장 강한 모델도 만점을 받지 못하고, 조건 A · B · C 가 갈린다 |
-| 2 | 모델 사다리: 세 모델 × 조건 A · B · C | 모델 · 조건마다 재현율 · 헛경보율 · 비용 표가 나온다 |
-| 3 | 엔진: 2단계 결과로 고른다. C 가 앞서면 규칙 판정기를 넓히고, B 가 앞서면 상태표와 검사 프롬프트로 간다 | 목표 모델로 성공 기준을 넘는다 |
-| 4 | Canon 연결: 검수 시험에서 실제 검수 선택 기능으로 | Canon 검수 시험에서 지금 검수보다 동선 갈래의 찾은 비율이 높다 |
+| A | The text only | The model |
+| B | The text and the start state of the scene | The model |
+| C | The text, the start state, and the lists of characters and objects | The model extracts events. `shadowcast/rules.py` judges them. |
 
-조건 A · B · C 는 [hand-check](hand-check/README.md) 와 같다.
+Each scene has a clean version and one or more error versions. Each error version changes one sentence. The rule engine then finds a violation such as `hand_full`, `layer_order`, `hidden_side`, or `contact_kept`. The event types, the rules, and the data format are in [docs/scene-format.md](docs/scene-format.md).
 
-- A: 문단만 주고 모델이 판정한다.
-- B: 문단과 장면 시작 상태를 주고 모델이 판정한다.
-- C: 모델은 이벤트만 추출하고 규칙 코드가 판정한다.
+## Quick start
 
-## 성공 기준 (제안값, 확정 전)
+1. Make a virtual environment.
 
-실제 문단 세트, 목표 모델 Gemini 기준:
+   ```bash
+   python3 -m venv .venv
+   ```
 
-- 재현율 0.8 이상
-- 헛경보율 0.1 이하. 작가가 경고를 믿으려면 헛경보가 적어야 한다.
-- 화 하나 검사 비용이 Canon 검수 1회 비용을 넘지 않는다.
+2. Install the model SDKs. The gold and baseline backends need only the standard library.
 
-숫자에는 아직 근거 데이터가 없다. 1 · 2단계 결과를 보고 고친다.
+   ```bash
+   .venv/bin/pip install -r hand-check/requirements.txt
+   ```
 
-## 지금까지
+3. Check the data. Clean versions must give no violation. Error versions must give a violation only in the error sentence.
 
-hand-check v1, 80항목(정상판 40, 오류판 40), 2026-10-27. 칸은 조건 A / B / C 순서다.
+   ```bash
+   .venv/bin/python -m shadowcast validate data/*.json
+   ```
 
-| 모델 | 정확도 | 재현율 | 헛경보율 | 추출 정확도(C) |
+4. Check the pipeline with the gold answers. All metrics must be 1.00.
+
+   ```bash
+   .venv/bin/python -m shadowcast run --backend gold
+   ```
+
+5. Run the tests.
+
+   ```bash
+   .venv/bin/python -m unittest discover -s tests
+   ```
+
+Model runs cost money. Start with `--limit 2` to see the cost and the output format.
+
+```bash
+.venv/bin/python -m shadowcast run --backend gemini --limit 2
+```
+
+```bash
+.venv/bin/python -m shadowcast run --backend anthropic --model claude-sonnet-5-5
+```
+
+Put the keys in a `.env` file at the top of the repository. The runner reads it, and `.gitignore` keeps it out of git. Variables that the shell already sets win.
+
+```
+ANTHROPIC_API_KEY=...
+GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/service-account.json
+GEMINI_API_KEY=...
+```
+
+- With a service account file, the Gemini backend uses Vertex AI. Without it, the backend uses `GEMINI_API_KEY`.
+- Keep the key file outside the repository.
+- Results go to `results/run-v2-*.json`. The response cache goes to `results/cache/`. The cache key includes the full prompt, so a prompt change makes new calls.
+
+## Results
+
+Cells are condition A / B / C. "Recall" is the part of error versions that the model found. "False alarm" is the part of clean versions that the model marked as an error.
+
+### Stage 0: hand-check v1
+
+40 short scenes, 80 items (40 clean, 40 error), hand occupancy only, 2026-10-27.
+
+| Model | Accuracy | Recall | False alarm | C extraction |
 |---|---|---|---|---|
 | Claude Opus 5.5 | 1.00 / 1.00 / 0.975 | 1.00 / 1.00 / 1.00 | 0.00 / 0.00 / 0.05 | 0.967 |
 | Gemini 4 Argon | 1.00 / 1.00 / 0.975 | 1.00 / 1.00 / 1.00 | 0.00 / 0.00 / 0.05 | 0.976 |
 | Claude Sonnet 5.5 | 0.925 / 0.912 / 0.887 | 1.00 / 1.00 / 0.975 | 0.15 / 0.175 / 0.20 | 0.919 |
-| 기준선 "항상 오류 없음" | 0.50 | 0.00 | 0.00 | |
+| Baseline "never an error" | 0.50 | 0.00 | 0.00 | |
 
-- 목표 모델 Gemini 가 Opus 와 같은 점수를 냈다. 3~5문장짜리 직접 쓴 장면은 목표 모델에게도 너무 쉽다. 이 세트로는 "모델이 직접 판정"과 "코드가 판정"을 가를 수 없다. 그래서 1단계에서 세트를 어렵게 만든다.
-- Sonnet 은 오류판을 거의 다 찾았지만 정상판 40개 중 6~8개를 오류로 짚었다.
-- 세 모델 모두 조건 C 가 가장 낮다. Opus 와 Gemini 의 C 헛경보(Opus `s27` · `s28`, Gemini `s27` · `s39` 정상판)는 추출이 문장을 그대로 옮겼는데 v1 규칙 판정기가 막은 것이다.
-  - `s27`: 받는 사람만 쓰인 건네받기에서 준 사람의 손이 비지 않았다.
-  - `s39`: 시작 상태에 없는 인물이 물건을 내밀었다.
-  - `s28`: 쥔 물건(달걀)과 놓은 물건(껍데기)의 이름이 달랐다.
-- 규칙 판정기 v2(`shadowcast/rules.py`)는 건네받기에서 준 손을 비우고, 시작 상태 밖을 "모름"으로 두고, 장면의 `aliases` 로 이름을 잇는다. 같은 C 추출 결과(캐시)를 v2 로 다시 채점하면 틀린 항목이 Gemini 2 → 0, Opus 2 → 1(`s28`, v1 데이터에 `aliases` 가 없음), Sonnet 9 → 8 이다. Sonnet 은 `s27-clean` 만 풀렸다. 나머지 8개의 원인은 아직 보지 않았다.
-- Gemini 전체 실행(240회)의 토큰은 입력 155,858, 출력 29,402 다. 생각 토큰은 0 으로 보고됐다. 2026-10-27 가격(100만 토큰당 입력 2달러, 출력 10달러)으로 계산하면 약 0.6달러다. hand-check 의 Claude 백엔드는 토큰 수를 남기지 않는다. v2 실행기(`shadowcast/backends.py`)는 Claude 토큰 수도 `meta.usage` 에 남긴다.
+These scenes were too easy. The target model scored the same as Opus, so the set could not separate the conditions.
 
-### v2 시범 장면: 세 모델
+### Stage 1: v2 pilot scenes
 
-`data/scenes-v2-pilot.json` 11장면, 37항목(정상판 11, 오류판 26: 드러난 오류 13, 숨은 오류 13), 2026-10-27, effort `medium`, 모델당 111회. 호출은 모두 성공했고, 요청한 모델이 모두 응답했다(Claude 대체 모델 응답 없음). 세 모델 모두 `p06-error3` 를 고친 데이터(`1a95749`)로 돌렸다. C 숫자는 같은 캐시를 지금 판정기로 다시 채점한 값이다(`results/run-v2-20261027-1718*` 세 파일). 새 호출은 없었다. 칸은 조건 A / B / C 순서다.
+11 scenes, 37 items (11 clean, 26 error: 13 explicit, 13 implicit), all five channels, effort `medium`, 2026-10-27.
 
-| 모델 | 정확도 | 재현율(26) | 헛경보율(11) | 위치 | 규칙 이름 |
-|---|---|---|---|---|---|
-| Gemini 4 Argon | 0.973 / 0.973 / 1.00 | 1.00 / 1.00 / 1.00 | 0.091 / 0.091 / 0.00 | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / 0.962 |
-| Claude Opus 5.5 | 0.973 / 1.00 / 0.919 | 0.962 / 1.00 / 0.962 | 0.00 / 0.00 / 0.182 | 0.962 / 1.00 / 0.962 | 0.960 / 0.962 / 1.00 |
-| Claude Sonnet 5.5 | 0.919 / 0.946 / 0.865 | 0.923 / 0.962 / 0.923 | 0.091 / 0.091 / 0.273 | 0.885 / 0.962 / 0.846 | 0.957 / 0.920 / 0.773 |
-| 기준선 "항상 오류 없음" | 0.297 | 0.00 | 0.00 | | |
-
-| 모델 | C 추출 정확도(정상판): 손 / 향한 쪽 / 몸 앞뒤 / 착용 | 토큰 입력 / 출력 | 비용(2026-10-27 가격) |
+| Model | Accuracy | Recall (26) | False alarm (11) |
 |---|---|---|---|
-| Gemini 4 Argon | 0.963 / 1.00 / 1.00 / 1.00 | 150,264 / 39,812 | 약 0.70달러 |
-| Claude Opus 5.5 | 0.981 / 1.00 / 0.978 / 0.90 | 236,907 / 82,942 | 약 2.61달러 |
-| Claude Sonnet 5.5 | 0.925 / 0.646 / 0.865 / 1.00 | 236,907 / 64,927 | 약 1.12달러 |
+| Gemini 4 Argon | 0.973 / 0.973 / 1.00 | 1.00 / 1.00 / 1.00 | 0.091 / 0.091 / 0.00 |
+| Claude Opus 5.5 | 0.973 / 1.00 / 0.919 | 0.962 / 1.00 / 0.962 | 0.00 / 0.00 / 0.182 |
+| Claude Sonnet 5.5 | 0.919 / 0.946 / 0.865 | 0.923 / 0.962 / 0.923 | 0.091 / 0.091 / 0.273 |
+| Baseline "never an error" | 0.297 | 0.00 | 0.00 |
 
-- 가격은 100만 토큰당 입력 / 출력 달러다: Gemini 2 / 10, Opus 5.5 4 / 20, Sonnet 5.5 2 / 10. Claude 출력 토큰에는 생각 토큰이 들어 있다. Gemini 는 생각 토큰을 0 으로 보고했다. 같은 프롬프트가 Claude 에서 입력 토큰 약 1.58배다.
-- 정상판 11개가 모두 함정을 가지므로 함정 헛경보율은 헛경보율과 같다.
-- 드러난 오류 / 숨은 오류 재현율이 1.00 이 아닌 칸: Opus A 숨은 0.92, Opus C 드러난 0.92, Sonnet A 0.92 / 0.92, Sonnet B 숨은 0.92, Sonnet C 0.92 / 0.92.
-- 이제 조건이 갈린다. 다만 모델마다 방향이 다르다. Gemini 는 C 가 가장 높고(1.00), Claude 두 모델은 C 가 가장 낮다. 차이는 판정이 아니라 추출에서 난다. Sonnet 은 향한 쪽 추출이 0.646 이다.
-- 단계 1의 끝난 조건 가운데 "가장 강한 모델도 만점을 받지 못한다"는 맞다(Opus A 0.973, C 0.919). 하지만 시범 장면에서 B 는 Opus 가 만점이고, Gemini C 도 만점이다. 시범 장면은 여전히 쉽다.
-- 제안 성공 기준(재현율 0.8 이상, 헛경보율 0.1 이하)은 목표 모델 Gemini 의 C 가 시범 장면에서 넘는다. 실제 문단 세트에서는 아직 재지 않았다.
+Then two lines went into the extraction prompt, and condition C ran again. Cells are C before / after the change.
 
-틀린 항목과 원인. 모델이 놓치거나 잘못 짚은 것은 정답 데이터를 고치지 않고 그대로 둔다.
-
-- 판정(A · B)
-  - `p07-clean`(Gemini A · B): 함정 "우산을 쥔 손으로 어깨를 짚음"을 `hand_full` 로 짚었다.
-  - `p05-error1`(Opus · Sonnet A · B): 위치는 맞고 규칙 이름을 `item_location` 으로 골랐다. 설명은 "내려놓은 열쇠를 다시 집지 않고 썼다"로 `tool_missing` 의 뜻이다.
-  - `p11-error1`(Opus A): 향한 쪽 오류를 놓쳤다. Sonnet A 는 다른 문장(5)을 짚었다.
-  - `p06-error2`(Sonnet A · B): "어깨너머로 그녀가 입술을 깨무는 것을 내려다보았다"를 옆이나 위에서 본 모습이라 판단해 놓쳤다. Gemini 와 Opus 는 짚었다. 뒤에서 내려다보면 입술이 보일 수도 있으니 문장을 다시 볼 후보다.
-  - `p09-error1`(Sonnet A): 상자를 안은 채 가슴이 맞닿은 것을 "상자가 끼어 있어도 가능"이라 판단해 놓쳤다.
-  - `p11-clean`(Sonnet A · B), `p10-error2`(Sonnet B 규칙 이름): Sonnet 의 판정 오류다.
-  - A 에서 오류 문장과 함께 앞 문장을 덧붙여 짚은 항목이 있다(Gemini `p07-error1` · `p07-error2` · `p11-error1`, Gemini B `p07-error2`). 위치 점수에는 들어가지 않는다.
-- 추출(C)
-  - 접촉의 방향을 거꾸로 적었다(Sonnet). `lean` 은 기대는 사람이 target 인데 character 로 적었다(`p06-clean`, `p06-error2`, `p11-error3` · `p11-error4`). `carry_back` 도 업힌 사람을 character 로 적었다(`p07-clean`, `p07-error1`).
-  - 등에 닿은 접촉을 `press`(앞몸끼리)로 적었다(Sonnet `p09-clean`, `p09-error2`).
-  - `touch carry_back` 과 같은 손 동작을 `use`(빈손 2)로 또 적었다(Opus `p07-clean` · `p07-error2`). 업은 두 손이 다리를 받치는 동작을 두 번 센 것이다.
-  - "오른손으로 재킷 단추를 풀어 벗었다"를 빈손 2로 적었다(Opus `p11-clean`).
-  - "손목을 잡힌 채로 그를 지나쳐 복도 끝으로 걸어갔다"를 `move to` 로만 적고 `away_from` 을 빼서 놓쳤다(Opus · Sonnet `p04-error`). Gemini 는 `away_from` 을 적었다.
-  - "가슴으로 받아 내고, 오른손으로 어깨를 붙들었다"를 `lean` 하나로 적어 `grip` 이 빠졌다(Gemini `p11-error1` · `p11-error4`). 그래서 뒤 문장의 "오른손을 떼고"가 `not_held` 를 냈다.
-  - Sonnet `p11-error1` 은 오류 문장의 향한 쪽을 추출하지 못해 놓쳤다.
-  - 나머지 Sonnet C 규칙 이름 오답(`p01-error2`, `p11-error2`)은 추출이 다른 규칙의 위반을 먼저 낸 것이다.
-- 판정기 빈칸. 모두 고쳤고 시험을 더했다. 같은 캐시를 다시 채점하면 사라진다.
-  - 벗은 것의 자리(`df341b4`, `00a750f`): `p02` 에서 Gemini 는 벗은 뒤 쥐지 않고 놓았고, Sonnet 은 벗은 뒤 놓지 않고 두 손 행동을 했다. 이제 벗은 것은 쥐거나 입기 전까지 "손에 있을 수도 있음"이다. 손을 차지하지 않고, 쥐지 않고도 놓거나 건네거나 도구로 쓸 수 있다. 그래서 "벗은 옷을 든 채 두 손이 필요한 행동"은 잡지 못한다. 이 경우를 시험하는 정답 항목은 없다.
-  - 실패한 사건 뒤의 연쇄 위반(`e378e55`): `p10-error1` · `p02-error1` 에서 실패한 `grab` · `take_off` 뒤 같은 물건의 `release` 가 위반을 또 냈다.
-  - 같은 손으로 다시 쥠(`00a750f`): Sonnet `p10-clean` 은 칼을 오른손으로 건네받은 뒤 오른손으로 또 쥐었다.
-  - `untouch` 뒤 같은 사람을 놓음(`00a750f`): Sonnet `p04-clean`.
-  - 칸이 빠진 사건(`00a750f`): Sonnet `p04-clean` 의 대상 없는 `turn`, `p08-error2` 의 대상 없는 `see` 를 모순으로 세지 않는다. Sonnet C 에서 2건이다.
-  - 두 손으로 이미 안은 물건을 두 손으로 다시 쥠(`194e0dd`): Sonnet `p09-error2`(아래 프롬프트 재실행)는 시작 상태에서 두 팔로 안은 상자를 `grab hand both` 로 또 적었다.
-  - 고치기 전 C 정확도: Gemini 1.00, Opus 0.919, Sonnet 0.811. Sonnet 의 재현율은 0.962 에서 0.923 으로 내려갔다. `p11-error1` 의 예전 적중이 벗은 재킷을 손에 둔 규칙 탓에 다른 문장(6)에서 난 우연이었기 때문이다.
-
-### v2 시범 장면: 추출 프롬프트 두 줄을 더한 C 재실행
-
-`e136682` 에서 추출 프롬프트에 두 줄을 더했다.
-
-- "`touch` 로 적은 손 동작(업은 다리를 받침, 안은 팔)은 `use` 로 다시 적지 않는다."
-- "다른 사람에게 잡히거나 맞닿은 채 다른 곳으로 가면 `to` 와 함께 `away_from` 도 적는다."
-
-같은 37항목으로 조건 C 만 모델마다 37회 다시 불렀다(2026-10-27). 호출은 모두 성공했고, 요청한 모델이 모두 응답했다. A · B 는 프롬프트가 같아서 다시 부르지 않았다. 숫자는 지금 판정기(`194e0dd`)로 채점한 값이다(`results/run-v2-20261028-0139*` 세 파일). 그 파일의 A · B 는 위 표와 같은 캐시다. 칸은 프롬프트를 바꾸기 전 / 바꾼 뒤 순서다. "전" 값은 위 표의 C 와 같다. 지금 판정기로 다시 채점해도 바뀌지 않았다.
-
-| 모델 | 정확도 | 재현율(26) | 헛경보율(11) | 위치 | 규칙 이름 |
-|---|---|---|---|---|---|
-| Gemini 4 Argon | 1.00 / 0.973 | 1.00 / 1.00 | 0.00 / 0.091 | 1.00 / 1.00 | 0.962 / 1.00 |
-| Claude Opus 5.5 | 0.919 / 1.00 | 0.962 / 1.00 | 0.182 / 0.00 | 0.962 / 1.00 | 1.00 / 1.00 |
-| Claude Sonnet 5.5 | 0.865 / 0.730 | 0.923 / 0.808 | 0.273 / 0.455 | 0.846 / 0.731 | 0.773 / 0.789 |
-
-| 모델(바꾼 뒤) | C 추출 정확도(정상판): 손 / 향한 쪽 / 몸 앞뒤 / 착용 | 토큰 입력 / 출력(C 37회) | 비용(2026-10-27 가격) |
+| Model | Accuracy | Recall (26) | False alarm (11) |
 |---|---|---|---|
-| Gemini 4 Argon | 0.981 / 1.00 / 1.00 / 1.00 | 74,684 / 32,842 | 약 0.48달러 |
-| Claude Opus 5.5 | 0.981 / 1.00 / 1.00 / 1.00 | 110,980 / 67,192 | 약 1.79달러 |
-| Claude Sonnet 5.5 | 0.944 / 0.667 / 0.831 / 1.00 | 110,980 / 52,154 | 약 0.74달러 |
+| Gemini 4 Argon | 1.00 / 0.973 | 1.00 / 1.00 | 0.00 / 0.091 |
+| Claude Opus 5.5 | 0.919 / 1.00 | 0.962 / 1.00 | 0.182 / 0.00 |
+| Claude Sonnet 5.5 | 0.865 / 0.730 | 0.923 / 0.808 | 0.273 / 0.455 |
 
-- Opus 는 두 줄이 겨냥한 오답이 모두 사라졌다. `p04-error` 를 찾았고, `p07-clean` · `p07-error2` 에서 업은 손을 두 번 세지 않았다. `p11-clean` 의 헛경보도 사라졌다.
-- Gemini 는 헛경보 1건(`p11-clean`)이 새로 났다. 원인은 두 가지 추출 오류다. 하나는 위에 적은 `lean` · `grip` 합침이 이번에는 다른 항목에서 난 것이다. 다른 하나는 "오른쪽 옆구리로 돌려 멨다"를 `side front` 로 적은 것이다. 두 줄과 관계없는 칸이라 실행마다 달라지는 흔들림으로 본다.
-- Sonnet 은 나빠졌다. 숨은 오류 재현율이 0.69, 위치가 0.54 다(드러난 오류는 0.92 / 0.92). 틀린 항목은 세 갈래다.
-  - 프롬프트 부작용 2건. 두 번째 줄을 넓게 적용해 함께 가는 사람에게도 `away_from` 을 적었다. `p07-error1` 은 "업은 채 언덕을 내려갔다", `p11-error4` 는 "은숙을 그 자리에 앉혔다"다.
-  - 판정기 빈칸 1건. `p09-error2` 의 두 손 `grab` 이다(`194e0dd` 에서 고침). 고치기 전에는 0번 문장의 거짓 `hand_full` 이 우연히 정답 규칙 이름을 맞혔다. 고친 뒤 첫 위반은 `press` 방향 오류에서 난 `space_full` 이다. 그래서 규칙 이름 점수가 0.842 에서 0.789 로 내려갔다.
-  - 나머지는 이미 적은 추출 오류가 다른 항목에서 다시 난 것이다. `see` 를 놓침(`p01-error1`, `p06-error2`), 뒷모습을 바라본 것을 `see` 로 적음(`p01-clean`), "마주 본 채"를 `turn` 으로 적음(`p01-error2`), 컵을 쥔 것을 빠뜨림(`p05-error2`, `p05-error3`), 양파를 옮긴 것을 빈손 1의 `use` 로 적음(`p10-clean`, `p10-error2`), `lean` 방향과 백팩 자리(`p11-error1` · `p11-error2` · `p11-error3`)다.
-- 모델마다 C 를 한 번씩만 불렀다. 그래서 Sonnet 의 셋째 갈래가 프롬프트 탓인지 흔들림인지 아직 가를 수 없다.
+- The conditions now give different results, but the direction changes with the model.
+- The differences come from event extraction, not from the rules.
+- The pilot scenes are still easy. Each model ran once per condition, so the run-to-run variance is not known yet.
+- Token counts, costs, and the cause of each wrong item are in [README.ko.md](README.ko.md#지금까지) (in Korean).
 
-다음에 고칠 추출 프롬프트 후보. 프롬프트를 바꾸면 C 를 모델마다 37회 다시 불러야 하므로 아직 바꾸지 않았다.
+## Roadmap
 
-- 둘째 줄을 좁힌다: "상대는 그 자리에 남고 혼자 멀어질 때만 `away_from` 을 적는다. 업거나 데리고 함께 가면 적지 않는다."
+| Stage | Work | Done when |
+|---|---|---|
+| 0 | hand-check v1: hand occupancy only, 40 short scenes | Done |
+| 1 | Benchmark v2: scene format v2, rule engine, pilot scenes, real fiction paragraphs, long texts (20 or more sentences) with 3 or more characters, real errors from writer models | The strongest model does not get a full score, and conditions A, B, and C give different results |
+| 2 | Model ladder: three models × conditions A, B, and C | A table of recall, false alarm rate, and cost for each model and condition |
+| 3 | Engine: choose from the stage 2 results. If C wins, extend the rule engine. If B wins, use a state table and a check prompt. | The target model meets the success criteria |
+| 4 | Connection to [Canon](https://github.com/c10dev/canon), an AI fiction writing tool | The check finds more blocking errors than the current Canon review |
 
-## 데이터 원칙
+Proposed success criteria on real paragraphs with Gemini, the target model: recall 0.8 or more, false alarm rate 0.1 or less, and a check cost per chapter at or below one Canon review. These numbers are not final.
 
-- 공개 저장소라서 다른 사람의 소설 본문이나 집필 도구 사용자의 원고를 넣지 않는다. 직접 쓴 문단이나 공개해도 되는 문단만 넣는다.
-- 쓰기 모델이 실제로 낸 오류는 문장을 다시 써서 같은 유형의 오류만 옮긴다.
-- API 키는 `.env` 에 두고 커밋하지 않는다(`.gitignore`).
+## Data principles
 
-## 폴더
+- This repository is public. It does not contain private manuscripts or text from other people's novels. It contains only paragraphs that we wrote or that are free to publish.
+- It does not contain sexual content or characters who look like minors.
+- A real error from a writer model goes in only as a rewritten sentence with the same type of error.
+- API keys stay in `.env`, and git does not track it.
 
-| 폴더 | 내용 |
+## Folders
+
+| Folder | Contents |
 |---|---|
-| [hand-check/](hand-check/) | 0단계 실험: 손 점유 모순 검출, 조건 A · B · C 비교 |
-| [shadowcast/](shadowcast/) | 엔진: 장면 형식 v2(`scenes.py`), 규칙 판정기(`rules.py`), v2 판정 · 추출 프롬프트(`prompts.py`), 모델 백엔드(`backends.py`), 실행기(`runner.py`). 명령은 `python3 -m shadowcast validate` · `run` |
-| [data/](data/) | v2 장면 데이터: 형식 예시 1개(`scenes-v2-example.json`), 규칙별 시범 장면 11개(`scenes-v2-pilot.json`) |
-| [tests/](tests/) | 규칙 시험(`python3 -m unittest discover -s tests`) |
-| [docs/](docs/) | [장면 형식 v2](docs/scene-format.md) |
+| [shadowcast/](shadowcast/) | Engine: scene format v2 (`scenes.py`), rule engine (`rules.py`), judge and extraction prompts (`prompts.py`), model backends (`backends.py`), runner (`runner.py`) |
+| [data/](data/) | v2 scene data: one format example (`scenes-v2-example.json`) and 11 pilot scenes (`scenes-v2-pilot.json`) |
+| [docs/](docs/) | [Scene format v2](docs/scene-format.md) (in Korean) |
+| [tests/](tests/) | Unit tests for the rules, prompts, scenes, and runner |
+| [hand-check/](hand-check/) | Stage 0 experiment: hand occupancy errors in conditions A, B, and C |
+
+## License
+
+[Apache License 2.0](LICENSE)
