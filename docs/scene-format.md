@@ -31,7 +31,7 @@ python3 -m unittest discover -s tests
 | `initial_state` | `{이름: 몸}`. 아래 "상태" |
 | `items` | `{물건: 자리}`. 손이나 몸에 없는 물건의 처음 자리 |
 | `sentences` | `[{"text", "events"}]` |
-| `errors` | `[{"sentence", "text", "events", "rule", "difficulty", "note"}]`. 오류 하나가 오류판 하나가 된다. 정상판에서 그 문장만 바꾼다. `difficulty` 는 `explicit`(오류 문장 하나만 보고 어긋남이 보임) 또는 `implicit`(앞 문장을 기억해야 보임)이다. 한 장면 안에서도 오류판마다 다를 수 있어서 오류마다 단다. v1 장면은 장면의 난이도가 그 하나뿐인 오류로 옮겨 간다 |
+| `errors` | `[{"sentence", "text", "events", "rule", "difficulty", "note"}]`. 오류 하나가 오류판 하나가 된다. 정상판에서 그 문장만 바꾼다. `difficulty` 는 `explicit`(오류 문장 하나만 보고 어긋남이 보임) 또는 `implicit`(앞 문장을 기억해야 보임)이다. 한 장면 안에서도 오류판마다 다를 수 있어서 오류마다 단다. v1 장면은 장면의 난이도가 그 하나뿐인 오류로 옮겨 간다. `cause` 는 독자가 기억해야 하는 상태를 정한 앞 문장 번호다(있으면 오류 문장보다 앞이어야 한다). 실행기는 오류 문장과 `cause` 의 거리로 재현율을 나눈다 |
 
 장면 하나에 오류를 여럿 둘 수 있다. 긴 장면 하나가 정상판 1개와 오류판 여러 개가 된다. 항목 이름은 오류가 하나면 `<id>-error`, 여럿이면 `<id>-error1`, `<id>-error2` … 다.
 
@@ -132,13 +132,16 @@ hand-check v1 의 조건 C 헛경보 세 가지를 고쳤다.
 
 ## 모델로 돌리기
 
-`shadowcast/runner.py` 가 v2 장면으로 조건 A · B · C 를 돌린다. 조건은 hand-check 와 같다.
+`shadowcast/runner.py` 가 v2 장면으로 조건 A · B · C · D 를 돌린다. A · B · C 는 hand-check 와 같다.
 
 | 조건 | 모델 입력 | 판정 |
 |---|---|---|
 | A | 문단만 | 모델이 직접 판정하고 규칙 이름도 고른다 |
 | B | 문단 + 장면 시작 상태(손 · 향한 쪽 · 착용 · 몸 앞뒤 · 물건 자리 · 다른 이름) | 모델이 직접 판정 |
 | C | 문단 + 시작 상태 + 인물 · 물건 목록 | 모델은 사건만 뽑고 `rules.py` 가 판정 |
+| D | 문단 + 인물 목록(`characters` 와 시작 상태의 이름) | 모델은 사건만 뽑고 `rules.py` 가 "모름" 상태에서 판정 |
+
+D 는 Canon 이 실제로 줄 수 있는 입력이다. 시작 상태에만 원인이 있는 오류는 D 에서 원래 보이지 않는다. 그래서 gold 백엔드도 D 에서 재현율이 1.00 이 아니다(시범 장면 0.69). gold D 의 재현율이 그 세트에서 D 가 낼 수 있는 상한이다. 정상판에서 gold D 가 헛경보를 내면 판정기가 "모름"을 잘못 다루는 것이다.
 
 ```bash
 python3 -m shadowcast run --backend gold                # 파이프라인 점검: 모든 지표가 1.00 이어야 한다
@@ -146,8 +149,10 @@ python3 -m shadowcast run --backend baseline            # "항상 오류 없음"
 python3 -m shadowcast run --backend gemini --limit 2    # 앞의 장면 2개만. 비용과 출력 형식부터 본다
 python3 -m shadowcast run --backend gemini
 python3 -m shadowcast run --backend anthropic --model claude-sonnet-5-5
+python3 -m shadowcast run --backend gemini --conditions A,B,C,D --trial 2   # 같은 설정을 다시 부른다(반복 안정성)
 ```
 
+- `--trial` 이 2 이상이면 캐시 키에 반복 번호가 들어가 새로 부른다. 1 은 예전 캐시 키를 그대로 쓴다. 결과 파일 이름 끝에 `-trial2` 가 붙는다.
 - 데이터는 기본이 `data/scenes-v2-pilot.json` 이다. `--data` 로 여러 파일을 줄 수 있다(예: v1 `hand-check/data/scenes.json`).
 - 백엔드는 `shadowcast/backends.py` 에 있다(anthropic, gemini, ollama). Gemini 인증은 hand-check 와 같다. 키는 저장소 맨 위 `.env`, 없으면 `hand-check/.env` 에서 읽는다.
 - 결과는 `results/run-v2-*.json`, 응답 캐시는 `results/cache/` 다. 캐시 키는 전체 프롬프트라서 프롬프트나 데이터를 고치면 새로 부른다.
@@ -162,8 +167,10 @@ python3 -m shadowcast run --backend anthropic --model claude-sonnet-5-5
 |---|---|
 | accuracy, precision, recall, false_alarm_rate, localization | hand-check 와 같다 |
 | rule_accuracy | 오류를 맞는 문장에서 찾은 것 가운데 규칙 이름까지 맞힌 비율. C 는 첫 위반의 규칙 |
-| by_difficulty, by_rule | 오류판을 난이도와 규칙으로 나눈 재현율과 위치 |
-| extraction (C) | 정상판에서 문장마다 정답 상태와 견준 칸별 정확도: `hands`(빈손 수), `facing`, `worn`(부위마다 맨 바깥), `space`(몸 앞뒤) |
+| by_difficulty, by_rule, by_distance | 오류판을 난이도, 규칙, `cause` 거리(`near` 15문장 이하, `far` 15문장 넘음, `-` 없음)로 나눈 재현율, 재현율의 95% 구간, 위치 |
+| recall_ci, false_alarm_ci | 재현율과 헛경보율의 Wilson 95% 구간 `[아래, 위]` |
+| false_alarms_per_100_clean_sentences | 정상판 문장 100개당 헛경보. 정상판에서 짚은 문장마다 1로 센다. 문장 없이 오류라고만 하면 1로 센다. `clean_sentences` 는 분모 |
+| extraction (C, D) | 정상판에서 문장마다 정답 상태와 견준 칸별 정확도: `hands`(빈손 수), `facing`, `worn`(부위마다 맨 바깥), `space`(몸 앞뒤) |
 | trap_false_alarm_rate | 함정이 있는 정상판을 오류로 잘못 판정한 비율 |
 
 ## 아직 없는 것
