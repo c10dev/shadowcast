@@ -45,6 +45,8 @@ class HandRules(unittest.TestCase):
     def test_two_arm_hold_takes_both_hands(self):
         start = {"지후": {"hands": {"left": "상자", "right": "상자"}}}
         self.assertEqual(rules_of(start, [[ev("grab", "지후", hand="right", object="볼펜")]]), [(0, "hand_full")])
+        # A two-arm grab of the box that the person already holds with both arms does nothing.
+        self.assertEqual(rules_of(start, [[ev("grab", "지후", hand="both", object="상자")]]), [])
         self.assertEqual(rules_of(start, [[ev("release", "지후", hand="both", object="상자"),
                                            ev("grab", "지후", hand="right", object="볼펜")]]), [])
 

@@ -248,7 +248,8 @@ class Scene:
         hand = e.get("hand") or "any"
         if e.get("from") and obj in self.items and not same_place(self.items[obj], e["from"]):
             return "item_location", f"'{obj}' is at '{self.items[obj]}', not '{e['from']}'"
-        if any(giver == who and hand in ("any", h) for giver, h in self.holders(obj)):
+        held = {h for giver, h in self.holders(obj) if giver == who}
+        if (held and hand == "any") or hand in held or (hand == "both" and held == set(HANDS)):
             return None  # already in this hand (the person took it in a give just before)
         # A grab of an object in another person's hand is a handoff: the other hand lets go.
         for giver, h in self.holders(obj):

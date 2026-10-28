@@ -54,7 +54,7 @@ python3 -m unittest discover -s tests
 
 | 사건 | 칸 | 하는 일 |
 |---|---|---|
-| `grab` | `hand`, `object`, `from`? | 물건을 쥔다. 다른 사람 손에 있던 물건이면 그 손이 빈다(건네받기). 그 손(`any` 면 어느 손이든)에 이미 쥔 물건이면 아무것도 바꾸지 않는다 |
+| `grab` | `hand`, `object`, `from`? | 물건을 쥔다. 다른 사람 손에 있던 물건이면 그 손이 빈다(건네받기). 그 손(`any` 면 어느 손이든, `both` 면 두 손 모두)에 이미 쥔 물건이면 아무것도 바꾸지 않는다 |
 | `release` | `hand`, `object`, `to`? | 물건을 놓는다. `object` 가 `"@이름"` 이면 그 사람을 잡은 손만 놓고, 몸의 접촉(기대기 등)은 그대로 둔다. `untouch` 로 이미 접촉을 끝낸 사람을 놓으면 아무 일도 없다 |
 | `give` | `to`, `object`, `hand`?, `to_hand`? | 물건을 다른 사람에게 건넨다 |
 | `use` | `hand`, `free_hands_needed`, `action`?, `with`? | 손이 필요한 행동. `with` 는 쥐고 있어야 하는 도구 |
