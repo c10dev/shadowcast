@@ -139,6 +139,22 @@ Then two lines went into the extraction prompt, and condition C ran again. Cells
 - The pilot scenes are still easy. Each model ran once per condition, so the run-to-run variance is not known yet.
 - Token counts, costs, and the cause of each wrong item are in [README.ko.md](README.ko.md#지금까지) (in Korean).
 
+### Checking set v3
+
+40 long scenes (24 to 36 sentences), 162 items: dev 15 scenes and 61 items, test 25 scenes and 101 items. Condition D gives the character list only, with no start state. Effort `medium`, 2026-10-28. Cells are condition A / B / C / D.
+
+Test, one run with the prompts and the checker fixed at `3365c5a`:
+
+| Model | Accuracy | Recall (76) | False alarm (25) |
+|---|---|---|---|
+| Claude Opus 5.5 | 0.99 / 0.98 / - / 0.75 | 0.99 / 0.97 / - / 0.88 | 0.00 / 0.00 / - / 0.64 |
+| Claude Sonnet 5.5 | 0.86 / 0.83 / 0.73 / not complete | 0.93 / 0.93 / 0.89 / not complete | 0.36 / 0.48 / 0.76 / not complete |
+
+- Opus C did not run, because of cost. Sonnet D stopped at the budget limit after 86 of 101 items.
+- In long scenes, conditions C and D give many false alarms. One extraction error in a scene of 30 sentences makes the full clean item wrong.
+- Gemini, the target model, did not run on v3 yet.
+- Dev results, repeat runs, and costs are in [README.ko.md](README.ko.md#v3-세트-dev-와-test) (in Korean).
+
 ## Roadmap
 
 | Stage | Work | Done when |
