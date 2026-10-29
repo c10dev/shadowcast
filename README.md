@@ -141,18 +141,19 @@ Then two lines went into the extraction prompt, and condition C ran again. Cells
 
 ### Checking set v3
 
-40 long scenes (24 to 36 sentences), 162 items: dev 15 scenes and 61 items, test 25 scenes and 101 items. Condition D gives the character list only, with no start state. Effort `medium`, 2026-10-28. Cells are condition A / B / C / D.
+40 long scenes (24 to 36 sentences), 162 items: dev 15 scenes and 61 items, test 25 scenes and 101 items. Condition D gives the character list only, with no start state. Effort `medium`, 2026-10-28 to 29. Cells are condition A / B / C / D.
 
 Test, one run with the prompts and the checker fixed at `3365c5a`:
 
 | Model | Accuracy | Recall (76) | False alarm (25) |
 |---|---|---|---|
 | Claude Opus 5.5 | 0.99 / 0.98 / - / 0.75 | 0.99 / 0.97 / - / 0.88 | 0.00 / 0.00 / - / 0.64 |
-| Claude Sonnet 5.5 | 0.86 / 0.83 / 0.73 / not complete | 0.93 / 0.93 / 0.89 / not complete | 0.36 / 0.48 / 0.76 / not complete |
+| Claude Sonnet 5.5 | 0.87 / 0.83 / 0.73 / 0.74 | 0.95 / 0.93 / 0.89 / 0.91 | 0.36 / 0.48 / 0.76 / 0.76 |
+| Gemini 4 Argon | 0.97 / 0.98 / 0.79 / 0.81 | 0.97 / 0.97 / 0.86 / 0.87 | 0.04 / 0.00 / 0.40 / 0.36 |
 
-- Opus C did not run, because of cost. Sonnet D stopped at the budget limit after 86 of 101 items.
+- Opus C did not run, because of cost.
 - In long scenes, conditions C and D give many false alarms. One extraction error in a scene of 30 sentences makes the full clean item wrong.
-- Gemini, the target model, did not run on v3 yet.
+- Gemini, the target model, gets recall 0.87 in condition D. Its false alarm rate of 0.36 is more than the proposed limit of 0.1.
 - Dev results, repeat runs, and costs are in [README.ko.md](README.ko.md#v3-세트-dev-와-test) (in Korean).
 
 ## Roadmap
