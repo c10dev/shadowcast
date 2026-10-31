@@ -12,6 +12,7 @@ Results: results/run-*.json. Responses are cached in results/cache/ by the full 
 
 import hashlib
 import json
+import math
 import os
 import sys
 import time
@@ -24,6 +25,8 @@ DEFAULT_DATA = [ROOT / "data" / "scenes-v2-pilot.json"]
 RESULTS = ROOT / "results"
 ENV_FILES = [ROOT / ".env", ROOT / "hand-check" / ".env"]
 MODEL_BACKENDS = tuple(backends.BACKENDS)
+CONDITIONS = ("A", "B", "C", "D")
+FAR = 15  # an error is "far" when its cause is more than this many sentences back
 
 
 def load_env(paths=ENV_FILES):
@@ -118,18 +121,26 @@ def judge(args, backend, item, with_state):
     return backend.call(prompts.JUDGE_SYSTEM, prompts.judge_prompt(item, with_state), prompts.JUDGE_SCHEMA)
 
 
-def extract(args, backend, item):
+def unknown_start(item):
+    """The item as condition D sees it: the characters are known, their bodies and the object places are not."""
+    return {**item, "initial_state": {who: {} for who in prompts.character_names(item)},
+            "items": None, "aliases": None}
+
+
+def extract(args, backend, item, with_state=True):
     if args.backend == "gold":
         return {"sentences": [{"index": i, "events": [prompts.flatten(e) for e in ev]}
                               for i, ev in enumerate(item["events"])]}, {}
     if args.backend == "baseline":
         return {"sentences": [{"index": i, "events": []} for i in range(len(item["sentences"]))]}, {}
-    return backend.call(prompts.EXTRACT_SYSTEM, prompts.extract_prompt(item), prompts.EXTRACT_SCHEMA)
+    return backend.call(prompts.EXTRACT_SYSTEM, prompts.extract_prompt(item, with_state), prompts.EXTRACT_SCHEMA)
 
 
 def predict(args, backend, item, cond, cache):
     # The cache key holds the full prompt, so editing a prompt or the data forces a new call.
     tag = f"v2|{args.backend}|{args.model}|{args.effort}|{cond}|{item['item_id']}"
+    if getattr(args, "trial", 1) > 1:
+        tag += f"|trial{args.trial}"  # a repeat run makes new calls; trial 1 keeps the old cache keys
     if cond in ("A", "B"):
         rec = cached(cache, tag + "|" + prompts.JUDGE_SYSTEM + "|" + prompts.judge_prompt(item, cond == "B"),
                      lambda: judge(args, backend, item, with_state=(cond == "B")))
@@ -138,8 +149,11 @@ def predict(args, backend, item, cond, cache):
         return {"has_error": bool(out.get("has_error")),
                 "sentences": [i for i in out.get("sentences", []) if isinstance(i, int)],
                 "rule": rule, "reason": out.get("reason", ""), "meta": rec["meta"]}
-    rec = cached(cache, tag + "|" + prompts.EXTRACT_SYSTEM + "|" + prompts.extract_prompt(item),
-                 lambda: extract(args, backend, item))
+    with_state = cond == "C"
+    rec = cached(cache, tag + "|" + prompts.EXTRACT_SYSTEM + "|" + prompts.extract_prompt(item, with_state),
+                 lambda: extract(args, backend, item, with_state))
+    if not with_state:
+        item = unknown_start(item)  # judge and compare from the same unknown start
     events = events_from_extraction(rec["output"], item)
     states, violations = rules.run_scene(item.get("initial_state"), events, item.get("items"), item.get("aliases"))
     gold_states, _ = rules.run_scene(item.get("initial_state"), item["events"], item.get("items"), item.get("aliases"))
@@ -156,6 +170,27 @@ def predict(args, backend, item, cond, cache):
 
 
 # ---------- scoring ----------
+
+def wilson(k, n, z=1.96):
+    """Wilson 95% interval for k successes in n trials, as [low, high]."""
+    if not n:
+        return [0.0, 1.0]
+    p = k / n
+    center = (p + z * z / (2 * n)) / (1 + z * z / n)
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
+    return [max(0.0, center - half), min(1.0, center + half)]
+
+
+def flagged_sentences(pred):
+    """Warnings that an author sees: one per flagged sentence, at least one when the item is flagged."""
+    return max(1, len(set(pred["sentences"]))) if pred["has_error"] else 0
+
+
+def distance_group(row):
+    if row.get("cause") is None:
+        return "-"
+    return "far" if row["error_sentence"] - row["cause"] > FAR else "near"
+
 
 def score(rows, cond):
     tp = sum(r["gold"] and r["pred"]["has_error"] for r in rows)
@@ -177,8 +212,14 @@ def score(rows, cond):
         # Of the errors found at the right sentence, how many name the right rule.
         "rule_accuracy": sum(r["pred"]["rule"] == r["rule"] for r in located) / len(located) if located else 0.0,
         "always_no_error_accuracy": n_clean / len(rows) if rows else 0.0,
+        "recall_ci": wilson(tp, n_err),
+        "false_alarm_ci": wilson(fp, n_clean),
     }
-    if cond == "C":
+    clean_sentences = sum(r["n_sentences"] for r in rows if not r["gold"])
+    clean_flags = sum(flagged_sentences(r["pred"]) for r in rows if not r["gold"])
+    out["clean_sentences"] = clean_sentences
+    out["false_alarms_per_100_clean_sentences"] = 100 * clean_flags / clean_sentences if clean_sentences else 0.0
+    if cond in ("C", "D"):
         totals = {}
         for r in rows:
             if r["gold"]:
@@ -187,14 +228,16 @@ def score(rows, cond):
                 tm, tt = totals.get(ch, (0, 0))
                 totals[ch] = (tm + m, tt + t)
         out["extraction"] = {ch: (m / t if t else None) for ch, (m, t) in sorted(totals.items())}
-    for field in ("difficulty", "rule"):
+    for field, key_of in (("difficulty", lambda r: r["difficulty"] or "-"), ("rule", lambda r: r["rule"] or "-"),
+                          ("distance", distance_group)):
         groups = {}
         for r in rows:
             if r["gold"]:
-                groups.setdefault(r[field] or "-", []).append(r)
+                groups.setdefault(key_of(r), []).append(r)
         out[f"by_{field}"] = {
             key: {"n_error": len(g),
                   "recall": sum(r["pred"]["has_error"] for r in g) / len(g),
+                  "recall_ci": wilson(sum(r["pred"]["has_error"] for r in g), len(g)),
                   "localization": sum(r["pred"]["has_error"] and r["error_sentence"] in r["pred"]["sentences"]
                                       for r in g) / len(g)}
             for key, g in sorted(groups.items())
@@ -221,9 +264,13 @@ def run(args):
         args.model = backend.model
     results = Path(args.results) if args.results else RESULTS
     cache = results / "cache"
-    report = {"backend": args.backend, "model": args.model, "effort": args.effort,
+    report = {"backend": args.backend, "model": args.model, "effort": args.effort, "trial": args.trial,
               "data": [str(p) for p in paths], "time": time.strftime("%Y-%m-%d %H:%M:%S"), "conditions": {}}
-    for cond in args.conditions.split(","):
+    conds = args.conditions.split(",")
+    if any(c not in CONDITIONS for c in conds):
+        print(f"Unknown condition in '{args.conditions}'. Use {', '.join(CONDITIONS)}.", file=sys.stderr)
+        return 1
+    for cond in conds:
         rows = []
         for it in items:
             try:
@@ -233,12 +280,14 @@ def run(args):
                         "channels": {}, "meta": {}}
                 print(f"[{cond}] {it['item_id']}: {e}", file=sys.stderr)
             rows.append({"item_id": it["item_id"], "gold": it["error_sentence"] is not None,
-                         "error_sentence": it["error_sentence"], "rule": it["rule"],
+                         "error_sentence": it["error_sentence"], "rule": it["rule"], "cause": it["cause"],
+                         "n_sentences": len(it["sentences"]),
                          "difficulty": it["difficulty"], "traps": it["traps"] or [], "pred": pred})
         report["conditions"][cond] = {"metrics": score(rows, cond), "rows": rows}
 
     results.mkdir(parents=True, exist_ok=True)
-    name = f"run-v2-{time.strftime('%Y%m%d-%H%M%S')}-{args.backend}-{args.model or 'none'}.json".replace("/", "_")
+    trial = f"-trial{args.trial}" if args.trial > 1 else ""
+    name = f"run-v2-{time.strftime('%Y%m%d-%H%M%S')}-{args.backend}-{args.model or 'none'}{trial}.json".replace("/", "_")
     (results / name).write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     print_report(report, len(items))
     print(f"saved: {results / name}")
@@ -257,9 +306,15 @@ def print_report(report, n_items):
         if "extraction" in res["metrics"]:
             print(f"extraction ({cond}): " + "  ".join(
                 f"{ch} {v:.2f}" if v is not None else f"{ch} -" for ch, v in res["metrics"]["extraction"].items()))
+    print("95% Wilson intervals and false alarms per 100 clean sentences")
+    for cond, res in report["conditions"].items():
+        m = res["metrics"]
+        print(f"{cond:<5} recall {m['recall']:.2f} [{m['recall_ci'][0]:.2f}, {m['recall_ci'][1]:.2f}]"
+              f"  false alarm {m['false_alarm_rate']:.2f} [{m['false_alarm_ci'][0]:.2f}, {m['false_alarm_ci'][1]:.2f}]"
+              f"  per 100 clean sentences {m['false_alarms_per_100_clean_sentences']:.2f} (of {m['clean_sentences']})")
     print("\nerror items by group (recall / localization)")
     first = next(iter(report["conditions"].values()))["metrics"]
-    for field in ("difficulty", "rule"):
+    for field in ("difficulty", "distance", "rule"):
         for key in first[f"by_{field}"]:
             cells = []
             for cond, res in report["conditions"].items():

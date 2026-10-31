@@ -14,6 +14,7 @@ A scene is one JSON object. A file holds a list of scenes.
                      Each error makes one error item: the clean text with one sentence replaced.
                      difficulty: "explicit" (the error sentence alone shows the conflict)
                      or "implicit" (the reader must remember an earlier sentence).
+                     cause (optional): the earlier sentence that set the state the reader must remember.
 
 A v1 scene (hand-check/data/scenes.json) has "error" (one object) instead of "errors".
 load() converts it to v2.
@@ -79,7 +80,7 @@ def expand(scene):
     events = [s.get("events", []) for s in scene["sentences"]]
     base = {k: scene.get(k) for k in ("id", "title", "patterns", "traps", *SCENE_FIELDS)}
     items = [{**base, "item_id": f"{scene['id']}-clean", "variant": "clean", "difficulty": None,
-              "sentences": texts, "events": events, "error_sentence": None, "rule": None}]
+              "sentences": texts, "events": events, "error_sentence": None, "rule": None, "cause": None}]
     errors = scene.get("errors", [])
     for j, err in enumerate(errors, 1):
         i = err["sentence"]
@@ -88,7 +89,7 @@ def expand(scene):
                       "sentences": texts[:i] + [err["text"]] + texts[i + 1:],
                       "events": events[:i] + [err.get("events", [])] + events[i + 1:],
                       "error_sentence": i, "rule": err.get("rule"), "difficulty": err.get("difficulty"),
-                      "note": err.get("note", "")})
+                      "cause": err.get("cause"), "note": err.get("note", "")})
     return items
 
 
@@ -115,6 +116,9 @@ def check_events(scene):
             problems.append(f"{scene['id']} error {j}: sentence {err.get('sentence')} is out of range")
         if err.get("difficulty") not in (None, "explicit", "implicit"):
             problems.append(f"{scene['id']} error {j}: difficulty must be explicit or implicit")
+        cause = err.get("cause")
+        if cause is not None and not (isinstance(cause, int) and 0 <= cause < err.get("sentence", -1)):
+            problems.append(f"{scene['id']} error {j}: cause {cause} must be an earlier sentence")
     return problems
 
 

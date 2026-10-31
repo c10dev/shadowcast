@@ -68,6 +68,12 @@ class Prompts(unittest.TestCase):
         self.assertIn("인물: 민준, 유나", text)
         self.assertIn("물건 목록: 손잡이, 셔츠, 백팩, 통지서, 물병", text)
 
+    def test_condition_d_gives_the_characters_only(self):
+        text = prompts.extract_prompt(self.item(), with_state=False)
+        self.assertIn("인물: 민준, 유나", text)
+        self.assertNotIn("장면 시작 상태", text)
+        self.assertNotIn("물건 목록", text)
+
     def test_object_list_does_not_leak_gold_events(self):
         # 휴대폰 first appears in p07 error 2 events; the list must not name it.
         self.assertNotIn("휴대폰", prompts.extract_prompt(self.item("p07-error2")).split("문단")[0])
