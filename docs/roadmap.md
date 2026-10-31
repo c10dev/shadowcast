@@ -4,66 +4,80 @@
 
 The current goal is **checking**: rebuild the physical state of a scene from prose and find continuity errors in movement, contact, and objects. This document sets the exit criteria for checking and the milestones after it.
 
-Status: plan. Decisions 1 to 5 below are settled. Cost and size numbers marked "estimate" are not measured.
+Status: plan. Decisions 1 to 5 below are settled. Cost and size numbers marked "estimate" are not measured. The status of each exit criterion is from the set v3 runs. "proposed: met" means that the numbers in the source meet the target. The owner has not accepted it yet. Checking is not done: real writer-model errors are missing, and the false alarm limits fail in condition D.
 
 ## Where we are
 
-Pilot set v2: `data/scenes-v2-pilot.json`, 11 scenes, 37 items (11 clean, 26 error), 4 to 7 sentences, 1 or 2 characters. Accuracy per condition (A / B / C):
+Set v3: `data/scenes-v3-dev.json` (15 scenes, 61 items) and `data/scenes-v3-test.json` (25 scenes, 101 items). That is 40 scenes of 24 to 36 sentences and 162 items. Condition D gives the character list only, with no start state. The runs used effort `medium`, 2026-10-28 to 29.
 
-| Model | A | B | C before the prompt change | C after `e136682` |
+Test part, one run with the prompts and the checker fixed at `3365c5a`. Cells are condition A / B / C / D:
+
+| Model | Accuracy | Recall (76) | False alarm (25) | False alarms per 100 clean sentences |
 |---|---|---|---|---|
-| Gemini 4 Argon | 0.973 | 0.973 | 1.00 | not run |
-| Claude Opus 5.5 | 0.973 | 1.00 | 0.919 | 1.00 |
-| Claude Sonnet 5.5 | 0.919 | 0.946 | 0.865 | 0.730 (false alarm rate 0.455) |
+| Claude Opus 5.5 | 0.99 / 0.98 / - / 0.75 | 0.99 / 0.97 / - / 0.88 | 0.00 / 0.00 / - / 0.64 | 0.00 / 0.00 / - / 4.12 |
+| Claude Sonnet 5.5 | 0.87 / 0.83 / 0.73 / 0.74 | 0.95 / 0.93 / 0.89 / 0.91 | 0.36 / 0.48 / 0.76 / 0.76 | 1.24 / 1.65 / 5.77 / 6.46 |
+| Gemini 4 Argon | 0.97 / 0.98 / 0.79 / 0.81 | 0.97 / 0.97 / 0.86 / 0.87 | 0.04 / 0.00 / 0.40 / 0.36 | 0.41 / 0.00 / 2.88 / 1.92 |
 
-Sources: `results/run-v2-20261027-1718*` (A, B, and C before the change), `results/run-v2-20261027-173035-*` and `results/run-v2-20261027-173516-*` (C after the change).
+Sources: [README.md](../README.md#checking-set-v3), section "Checking set v3", and [README.ko.md](../README.ko.md#v3-세트-dev-와-test), section "v3 세트: dev 와 test". The per-sentence column, the dev results, the repeat runs, the Wilson intervals, and the cost are in README.ko.md only. The `results/` folder is not in git.
 
 What this tells us:
 
-- The pilot set cannot test the proposed false alarm limit of 0.1. With 0 false alarms in 11 clean items, the 95% Wilson upper bound is 0.26.
-- Conditions B and C give the model the gold initial state. Real use in Canon has no gold initial state.
-- Two prompt lines moved Opus up and Sonnet down on the same 37 items. Prompt changes tuned on the scored items can overfit. The next set needs a dev part and a test part.
+- Gemini, the target model, has recall 0.87 in condition D (95% Wilson interval 0.77 to 0.93). This meets the limit of 0.8.
+- Gemini D has a false alarm rate of 0.36 (95% Wilson interval 0.20 to 0.55). This is more than the limit of 0.1.
+- Gemini B has 0 false alarms in 25 clean items, but the 95% Wilson upper bound is 0.13. The test part cannot show 0.1 or less yet.
+- In long scenes, conditions C and D give many false alarms. One extraction error in a scene of more than 30 sentences makes the full clean item wrong.
+- Opus C did not run on the test part, because of cost. Gemini has no repeat run yet.
+- No error item comes from a real writer model yet.
+- Claude calls for all of v3 cost about USD 88.
+
+The v2 pilot results (11 scenes, 37 items) are in the README, section "Stage 1: v2 pilot scenes".
 
 ## Exit criteria for checking
 
 ### Set v3
 
-| Item | Target |
-|---|---|
-| Scenes | 40 or more, 20 to 40 sentences each |
-| Characters | 3 or more in at least half of the scenes |
-| Clean items | 40 (about 1,000 clean sentences) |
-| Error items | 100 or more |
-| Per rule | 6 or more error items for each rule except `not_held` |
-| Difficulty | `implicit` 50% or more |
-| Memory distance | 20 or more errors whose cause is more than 15 sentences back |
-| Contact and facing | 30 or more errors |
-| Real writer-model errors | 30 or more, rewritten (see "Data rules") |
-| Split | dev 15 scenes, test 25 scenes. Prompt changes use dev only |
+The counts per rule and for contact and facing are not in a README. They come from the `errors[].rule` fields in `data/scenes-v3-dev.json` and `data/scenes-v3-test.json`.
+
+| Item | Target | Set v3 | Status | Source |
+|---|---|---|---|---|
+| Scenes | 40 or more, 20 to 40 sentences each | 40 scenes, 24 to 36 sentences | proposed: met | README.md "Checking set v3" |
+| Characters | 3 or more in at least half of the scenes | 37 of 40 scenes | proposed: met | README.ko.md "v3 세트: dev 와 test" |
+| Clean items | 40 (about 1,000 clean sentences) | 40 (15 dev, 25 test); 1,170 sentences | proposed: met | README.md "Checking set v3" (false alarm 25), README.ko.md (false alarm 15); sentence count from the two data files |
+| Error items | 100 or more | 122 | proposed: met | README.ko.md "v3 세트: dev 와 test" |
+| Per rule | 6 or more error items for each rule except `not_held` | 8 to 17 for each of the 10 rules | proposed: met | `data/scenes-v3-dev.json`, `data/scenes-v3-test.json` |
+| Difficulty | `implicit` 50% or more | 107 of 122 (88%) | proposed: met | README.ko.md "v3 세트: dev 와 test" |
+| Memory distance | 20 or more errors whose cause is more than 15 sentences back | 35 | proposed: met | README.ko.md "v3 세트: dev 와 test" |
+| Contact and facing | 30 or more errors | 33 (`contact_kept` 17, `facing_mismatch` 16) | proposed: met | `data/scenes-v3-dev.json`, `data/scenes-v3-test.json` |
+| Real writer-model errors | 30 or more, rewritten (see "Data rules") | 0 | not met | README.ko.md "v3 세트: dev 와 test" |
+| Split | dev 15 scenes, test 25 scenes. Prompt changes use dev only | dev 15, test 25. Dev fixes in `6b2b3bf` and `3365c5a`; test ran once at `3365c5a` | proposed: met | README.md "Checking set v3", README.ko.md "v3 세트: dev 와 test" |
 
 ### Condition D
 
 Add condition D: the paragraph and the character list only, with no initial state. This is what Canon can give in real use. Report D next to the best of A, B, and C.
 
+Status: proposed: met. Condition D ran on the dev and test parts for all three models. Source: README.md "Checking set v3".
+
 ### Metrics
 
-Measure on the test part with the target model Gemini, in the best condition and in condition D.
+Measure on the test part with the target model Gemini, in the best condition and in condition D. The best condition for Gemini is B (accuracy 0.98).
 
-| Metric | Limit |
-|---|---|
-| Recall | 0.8 or more. With 100 error items, 0.79 gives a 95% lower bound of 0.70 |
-| False alarm rate per clean item | 0.1 or less |
-| False alarms per 100 clean sentences | 1 or less |
-| Localization | 0.9 or more |
-| Recall per rule | 0.6 or more for each rule, so that no channel is blind |
-| Repeat stability | Accuracy changes by 0.03 or less between two runs of the same setup |
-| Cost | One episode check costs no more than one Canon review |
+| Metric | Limit | Gemini B / D | Status | Source |
+|---|---|---|---|---|
+| Recall | 0.8 or more. With 100 error items, 0.79 gives a 95% lower bound of 0.70 | 0.97 / 0.87 | proposed: met | README.md "Checking set v3" |
+| False alarm rate per clean item | 0.1 or less | 0.00 / 0.36 | not met (D) | README.md "Checking set v3" |
+| False alarms per 100 clean sentences | 1 or less | 0.00 / 1.92 | not met (D) | README.ko.md "v3 세트: dev 와 test" |
+| Localization | 0.9 or more | not reported | not measured | none |
+| Recall per rule | 0.6 or more for each rule, so that no channel is blind | not reported for Gemini | not measured | README.ko.md gives Opus D only: lowest `contact_kept` 0.64, `facing_mismatch` 0.70 |
+| Repeat stability | Accuracy changes by 0.03 or less between two runs of the same setup | Gemini has no repeat run | not measured | README.ko.md: dev repeat for Sonnet C 0.13 and D 0.09 |
+| Cost | One episode check costs no more than one Canon review | not measured per episode | not measured | README.ko.md: about USD 88 for all Claude calls on v3 |
 
 The per-sentence false alarm limit is necessary because an author sees warnings per episode, not per item. An estimate of 120 sentences per episode gives 1 or 2 false warnings per episode at the limit.
 
 ### Set validity
 
 The set must separate models: Sonnet or gemma must score at least 0.1 below Gemini. This replaces the old stage 1 condition "the strongest model does not get a full score". A full score from Gemini on a realistic set means that checking works. It does not mean that the set is too easy.
+
+Status: proposed: met. On the test part, Sonnet accuracy is 0.15 below Gemini in condition B (0.83 and 0.98) and 0.10 below in A (0.87 and 0.97). The gap is 0.06 in C and 0.07 in D. Source: README.md "Checking set v3".
 
 ## Milestones
 
