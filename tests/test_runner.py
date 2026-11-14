@@ -8,6 +8,7 @@ import types
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 from shadowcast import __main__ as cli
 from shadowcast import backends, prompts, runner
@@ -34,14 +35,14 @@ class GoldAndBaseline(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(run("--backend", "gold", "--results", d), 0)
             for cond, res in last_report(d)["conditions"].items():
-                m = res["metrics"]
+                m = res["legacy_metrics"]
                 self.assertEqual((m["accuracy"], m["localization"], m["rule_accuracy"]), (1.0, 1.0, 1.0), cond)
-            self.assertTrue(all(v == 1.0 for v in last_report(d)["conditions"]["C"]["metrics"]["extraction"].values()))
+            self.assertTrue(all(v == 1.0 for v in last_report(d)["conditions"]["C"]["legacy_metrics"]["extraction"].values()))
 
     def test_baseline_finds_nothing(self):
         with tempfile.TemporaryDirectory() as d:
             run("--backend", "baseline", "--results", d, "--conditions", "A")
-            m = last_report(d)["conditions"]["A"]["metrics"]
+            m = last_report(d)["conditions"]["A"]["legacy_metrics"]
             self.assertEqual((m["recall"], m["false_alarm_rate"]), (0.0, 0.0))
             self.assertAlmostEqual(m["accuracy"], m["always_no_error_accuracy"])
 
@@ -49,7 +50,7 @@ class GoldAndBaseline(unittest.TestCase):
         # Errors whose cause is only in the start state are out of reach in D, so recall drops below 1.
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(run("--backend", "gold", "--results", d, "--conditions", "C,D"), 0)
-            m = last_report(d)["conditions"]["D"]["metrics"]
+            m = last_report(d)["conditions"]["D"]["legacy_metrics"]
         self.assertEqual(m["false_alarm_rate"], 0.0)
         self.assertLess(m["recall"], 1.0)
         self.assertTrue(all(v == 1.0 for v in m["extraction"].values()))
@@ -71,12 +72,45 @@ class GoldAndBaseline(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             run("--backend", "gold", "--results", d, "--limit", "1")
             first = sorted(p.name for p in (Path(d) / "cache").iterdir())
-            self.assertEqual(last_report(d)["conditions"]["A"]["metrics"]["n"], 3)  # p01: clean + 2 errors
+            self.assertEqual(last_report(d)["conditions"]["A"]["metrics"]["counts"]["attempted"], 3)  # p01: clean + 2 errors
             run("--backend", "gold", "--results", d, "--limit", "1")
             self.assertEqual(sorted(p.name for p in (Path(d) / "cache").iterdir()), first)  # read from the cache
 
 
 class ExtractionScoring(unittest.TestCase):
+    def test_incomplete_duplicate_and_out_of_range_extractions_are_invalid(self):
+        from shadowcast import scenes
+        item = scenes.expand(scenes.load(runner.DEFAULT_DATA[0])[0])[0]
+        empty = [{"index": i, "events": []} for i in range(len(item["sentences"]))]
+        for rows in (empty[:-1], empty + [empty[0]], [{"index": -1, "events": []}],
+                     [{"index": True, "events": []}]):
+            with self.subTest(rows=rows), tempfile.TemporaryDirectory() as d:
+                fake = types.SimpleNamespace(call=lambda *a: ({"sentences": rows}, {}))
+                args = types.SimpleNamespace(backend="fake", model="m", effort="medium")
+                pred = runner.predict(args, fake, item, "C", Path(d))
+                self.assertEqual((pred["status"], pred["verdict"]), ("invalid_output", None))
+
+    def test_non_boolean_judge_response_is_not_coerced_to_true(self):
+        from shadowcast import scenes
+        item = scenes.expand(scenes.load(runner.DEFAULT_DATA[0])[0])[0]
+        out = {"has_error": "false", "sentences": [], "rule": "none", "reason": ""}
+        fake = types.SimpleNamespace(call=lambda *a: (out, {}))
+        args = types.SimpleNamespace(backend="fake", model="m", effort="medium")
+        with tempfile.TemporaryDirectory() as d:
+            pred = runner.predict(args, fake, item, "A", Path(d))
+        self.assertEqual((pred["status"], pred["verdict"]), ("invalid_output", None))
+
+    def test_failed_calls_do_not_earn_true_negative_credit(self):
+        with tempfile.TemporaryDirectory() as d, redirect_stderr(io.StringIO()), \
+                patch.object(runner, "judge", side_effect=RuntimeError("offline failure")):
+            self.assertEqual(run("--backend", "gold", "--results", d, "--limit", "1", "--conditions", "A"), 0)
+            report = last_report(d)
+        m = report["conditions"]["A"]["metrics"]
+        self.assertEqual(m["completion_rate"], 0)
+        self.assertEqual(m["localization"], 0)
+        self.assertIsNone(m["false_alarm_rate"])
+        self.assertEqual(m["counts"]["call_error"], m["counts"]["attempted"])
+
     def test_a_malformed_event_is_not_a_found_error(self):
         from shadowcast import scenes
         item = scenes.expand(scenes.load(runner.DEFAULT_DATA[0])[0])[0]  # p01-clean
@@ -88,6 +122,7 @@ class ExtractionScoring(unittest.TestCase):
             pred = runner.predict(args, fake, item, "C", Path(d))
         self.assertFalse(pred["has_error"])
         self.assertEqual(len(pred["bad_events"]), 1)
+        self.assertEqual((pred["status"], pred["verdict"]), ("invalid_output", None))
 
 
 class ConditionD(unittest.TestCase):
