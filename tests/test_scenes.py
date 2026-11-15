@@ -100,6 +100,14 @@ class Validation(unittest.TestCase):
         s["errors"][0]["difficulty"] = "hard"
         self.assertTrue(any("difficulty must be" in p for p in scenes.validate_scene(s)))
 
+    def test_cause_must_be_an_earlier_sentence(self):
+        s = self.scene()
+        s["errors"][0]["cause"] = 0
+        self.assertEqual(scenes.validate_scene(s), [])
+        self.assertEqual(scenes.expand(s)[1]["cause"], 0)
+        s["errors"][0]["cause"] = 1
+        self.assertTrue(any("must be an earlier sentence" in p for p in scenes.validate_scene(s)))
+
     def test_error_sentence_out_of_range(self):
         s = self.scene()
         s["errors"][0]["sentence"] = 5

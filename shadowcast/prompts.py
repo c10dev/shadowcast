@@ -4,6 +4,7 @@ Conditions (the same as hand-check):
   A  paragraph only -> the model judges
   B  paragraph + initial state -> the model judges
   C  paragraph + initial state -> the model extracts events -> rules.py judges
+  D  paragraph + character list -> the model extracts events -> rules.py judges from an unknown start
 
 The extraction schema is flat: every event has every field, and "" means "not used".
 Strict structured output works best when all fields are required. normalize() turns
@@ -179,7 +180,19 @@ def judge_prompt(item, with_state):
     return "\n\n".join(parts)
 
 
-def extract_prompt(item):
+def character_names(item):
+    """Names from the character list and the initial state, in that order."""
+    return list(dict.fromkeys([*(item.get("characters") or {}), *(item.get("initial_state") or {})]))
+
+
+def extract_prompt(item, with_state=True):
+    """Condition C gives the start state and the object list. Condition D gives the character list only."""
+    if not with_state:
+        return "\n\n".join([
+            "인물: " + (", ".join(character_names(item)) or "없음"),
+            "문단(문장 번호 포함):\n" + format_sentences(item["sentences"]),
+            "각 문장의 사건을 뽑아라.",
+        ])
     people = list((item.get("initial_state") or {}).keys())
     objects = object_names(item)
     return "\n\n".join([

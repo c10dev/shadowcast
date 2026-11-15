@@ -6,7 +6,7 @@ import json
 import tempfile
 import types
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 from shadowcast import __main__ as cli
@@ -45,6 +45,28 @@ class GoldAndBaseline(unittest.TestCase):
             self.assertEqual((m["recall"], m["false_alarm_rate"]), (0.0, 0.0))
             self.assertAlmostEqual(m["accuracy"], m["always_no_error_accuracy"])
 
+    def test_gold_condition_d_has_no_false_alarm(self):
+        # Errors whose cause is only in the start state are out of reach in D, so recall drops below 1.
+        with tempfile.TemporaryDirectory() as d:
+            self.assertEqual(run("--backend", "gold", "--results", d, "--conditions", "C,D"), 0)
+            m = last_report(d)["conditions"]["D"]["metrics"]
+        self.assertEqual(m["false_alarm_rate"], 0.0)
+        self.assertLess(m["recall"], 1.0)
+        self.assertTrue(all(v == 1.0 for v in m["extraction"].values()))
+
+    def test_unknown_condition(self):
+        with tempfile.TemporaryDirectory() as d, redirect_stderr(io.StringIO()):
+            self.assertEqual(run("--backend", "gold", "--results", d, "--conditions", "A,E"), 1)
+
+    def test_a_repeat_trial_makes_new_cache_entries(self):
+        with tempfile.TemporaryDirectory() as d:
+            run("--backend", "gold", "--results", d, "--limit", "1", "--conditions", "A")
+            first = len(list((Path(d) / "cache").iterdir()))
+            run("--backend", "gold", "--results", d, "--limit", "1", "--conditions", "A", "--trial", "2")
+            self.assertEqual(len(list((Path(d) / "cache").iterdir())), 2 * first)
+            report = json.loads(next(Path(d).glob("run-v2-*-trial2.json")).read_text(encoding="utf-8"))
+            self.assertEqual(report["trial"], 2)
+
     def test_limit_and_cache(self):
         with tempfile.TemporaryDirectory() as d:
             run("--backend", "gold", "--results", d, "--limit", "1")
@@ -66,6 +88,53 @@ class ExtractionScoring(unittest.TestCase):
             pred = runner.predict(args, fake, item, "C", Path(d))
         self.assertFalse(pred["has_error"])
         self.assertEqual(len(pred["bad_events"]), 1)
+
+
+class ConditionD(unittest.TestCase):
+    def test_d_judges_from_an_unknown_start(self):
+        from shadowcast import scenes
+        # p02-error1: the start state puts the backpack over the jacket, and the text never says so.
+        item = next(i for i in scenes.expand(scenes.load(runner.DEFAULT_DATA[0])[1]) if i["item_id"] == "p02-error1")
+        gold = {"sentences": [{"index": i, "events": [prompts.flatten(e) for e in ev]}
+                              for i, ev in enumerate(item["events"])]}
+        fake = types.SimpleNamespace(call=lambda *a: (gold, {}))
+        args = types.SimpleNamespace(backend="fake", model="m", effort="medium")
+        with tempfile.TemporaryDirectory() as d:
+            c = runner.predict(args, fake, item, "C", Path(d))
+            dd = runner.predict(args, fake, item, "D", Path(d))
+        self.assertTrue(c["has_error"])
+        self.assertFalse(dd["has_error"])
+
+    def test_unknown_start_keeps_the_characters(self):
+        item = {"characters": {"가": {}}, "initial_state": {"나": {"hands": {"left": "컵"}}}, "items": {"열쇠": "책상"}}
+        start = runner.unknown_start(item)
+        self.assertEqual((start["initial_state"], start["items"]), ({"가": {}, "나": {}}, None))
+
+
+class Metrics(unittest.TestCase):
+    def test_wilson(self):
+        # The roadmap numbers: 0 of 11 gives an upper bound of 0.26; 79 of 100 gives a lower bound of 0.70.
+        self.assertAlmostEqual(runner.wilson(0, 11)[1], 0.26, places=2)
+        self.assertAlmostEqual(runner.wilson(79, 100)[0], 0.70, places=2)
+        self.assertEqual(runner.wilson(0, 0), [0.0, 1.0])
+
+    def row(self, gold, flagged, sentences=(), n=20, cause=None, err=None):
+        return {"gold": gold, "error_sentence": err, "rule": "hand_full" if gold else None, "difficulty": None,
+                "cause": cause, "traps": [], "n_sentences": n,
+                "pred": {"has_error": flagged, "sentences": list(sentences), "rule": None}}
+
+    def test_false_alarms_per_100_clean_sentences(self):
+        rows = [self.row(False, True, [3, 7]), self.row(False, True), self.row(False, False), self.row(False, False)]
+        m = runner.score(rows, "A")
+        self.assertEqual(m["clean_sentences"], 80)
+        self.assertAlmostEqual(m["false_alarms_per_100_clean_sentences"], 100 * 3 / 80)  # two sentences, then one item
+
+    def test_recall_by_distance(self):
+        rows = [self.row(True, True, [20], cause=2, err=20), self.row(True, False, cause=10, err=20),
+                self.row(True, True, [5], err=5)]
+        by = runner.score(rows, "A")["by_distance"]
+        self.assertEqual({k: (v["n_error"], v["recall"]) for k, v in by.items()},
+                         {"far": (1, 1.0), "near": (1, 0.0), "-": (1, 1.0)})
 
 
 class FakeBackends(unittest.TestCase):
