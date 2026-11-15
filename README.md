@@ -11,6 +11,8 @@ The name comes from Plato's cave. The prisoners see only shadows on the wall and
 
 The scene data and the prompts are in Korean. The code, the rules, and the metrics do not depend on the language.
 
+Start with the [documentation index](docs/README.md) for the [implementation plan](docs/plan.md), [module design](docs/design.md), [evaluation specification](docs/evaluation.md), and [JEPA entry conditions](docs/research/jepa.md) (in Korean). Evaluation, extraction validation, and offline analysis are now separate modules. Use `rescore` and `audit` for saved runs; see the [analysis report](docs/analysis/2026-11-14-p1-p2.md). State interpretation changes and JEPA remain proposals. JEPA research runs in a separate private repository. The results below retain the scoring used for the original experiments.
+
 ## Why it matters
 
 Each sentence of AI-written prose can look correct. But the model does not keep a separate record of the body state, so the actions do not connect. Examples:

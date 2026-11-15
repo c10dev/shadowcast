@@ -12,13 +12,15 @@ Results: results/run-*.json. Responses are cached in results/cache/ by the full 
 
 import hashlib
 import json
-import math
 import os
 import sys
-import time
+from datetime import datetime, timezone
 from pathlib import Path
 
-from . import backends, prompts, rules, scenes
+from . import backends, evaluation, prompts, rules, scenes
+from .extraction import events_from_extraction, unknown_start, schema_issues, extraction_issues
+# Compatibility imports for callers of the original runner helpers.
+from .evaluation import wilson, flagged_sentences, distance_group, legacy_score as score
 
 ROOT = Path(__file__).parent.parent
 DEFAULT_DATA = [ROOT / "data" / "scenes-v2-pilot.json"]
@@ -26,7 +28,6 @@ RESULTS = ROOT / "results"
 ENV_FILES = [ROOT / ".env", ROOT / "hand-check" / ".env"]
 MODEL_BACKENDS = tuple(backends.BACKENDS)
 CONDITIONS = ("A", "B", "C", "D")
-FAR = 15  # an error is "far" when its cause is more than this many sentences back
 
 
 def load_env(paths=ENV_FILES):
@@ -56,26 +57,15 @@ def load_env(paths=ENV_FILES):
 def cached(cache, key, fn):
     path = cache / (hashlib.sha256(key.encode()).hexdigest()[:24] + ".json")
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        record = json.loads(path.read_text(encoding="utf-8"))
+        return {**record, "cache_hit": True, "cache_path": str(path),
+                "cache_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
     out, meta = fn()
     record = {"key": key, "output": out, "meta": meta}
     cache.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(record, ensure_ascii=False, indent=1), encoding="utf-8")
-    return record
-
-
-def people_of(item):
-    return list((item.get("initial_state") or {}).keys())
-
-
-def events_from_extraction(extraction, item):
-    n = len(item["sentences"])
-    events = [[] for _ in range(n)]
-    for s in extraction.get("sentences", []):
-        i = s.get("index")
-        if isinstance(i, int) and 0 <= i < n:
-            events[i] = [prompts.normalize(e, people_of(item)) for e in s.get("events", [])]
-    return events
+    return {**record, "cache_hit": False, "cache_path": str(path),
+            "cache_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
 # ---------- state channels for extraction accuracy ----------
@@ -111,6 +101,16 @@ def channel_accuracy(pred_states, gold_states):
 
 # ---------- prediction ----------
 
+def prediction_result(pred, n, rec, issues=()):
+    pred = {**pred, "status": "invalid_output" if issues else "ok",
+            "verdict": None if issues else ("error" if pred["has_error"] else "no_error"),
+            "issues": list(issues), "meta": rec["meta"],
+            "provenance": {"status_source": "validated_response", "raw_response_checked": True,
+                           "cache_path": rec["cache_path"], "cache_sha256": rec["cache_sha256"],
+                           "cache_hit": rec["cache_hit"]}}
+    return evaluation.normalize_prediction(pred, n)
+
+
 def judge(args, backend, item, with_state):
     if args.backend == "gold":
         err = item["error_sentence"]
@@ -119,12 +119,6 @@ def judge(args, backend, item, with_state):
     if args.backend == "baseline":
         return {"has_error": False, "sentences": [], "rule": "none", "reason": "baseline"}, {}
     return backend.call(prompts.JUDGE_SYSTEM, prompts.judge_prompt(item, with_state), prompts.JUDGE_SCHEMA)
-
-
-def unknown_start(item):
-    """The item as condition D sees it: the characters are known, their bodies and the object places are not."""
-    return {**item, "initial_state": {who: {} for who in prompts.character_names(item)},
-            "items": None, "aliases": None}
 
 
 def extract(args, backend, item, with_state=True):
@@ -145,13 +139,21 @@ def predict(args, backend, item, cond, cache):
         rec = cached(cache, tag + "|" + prompts.JUDGE_SYSTEM + "|" + prompts.judge_prompt(item, cond == "B"),
                      lambda: judge(args, backend, item, with_state=(cond == "B")))
         out = rec["output"]
+        issues = schema_issues(out, prompts.JUDGE_SCHEMA)
+        if issues:
+            return prediction_result({"has_error": False, "sentences": [], "rule": None,
+                                      "reason": "invalid judge response"}, len(item["sentences"]), rec, issues)
         rule = out.get("rule") if out.get("rule") in prompts.RULES else None
-        return {"has_error": bool(out.get("has_error")),
-                "sentences": [i for i in out.get("sentences", []) if isinstance(i, int)],
-                "rule": rule, "reason": out.get("reason", ""), "meta": rec["meta"]}
+        return prediction_result({"has_error": out["has_error"], "sentences": out["sentences"],
+                                  "rule": rule, "reason": out["reason"]}, len(item["sentences"]), rec)
     with_state = cond == "C"
     rec = cached(cache, tag + "|" + prompts.EXTRACT_SYSTEM + "|" + prompts.extract_prompt(item, with_state),
                  lambda: extract(args, backend, item, with_state))
+    issues = extraction_issues(rec["output"], len(item["sentences"]))
+    if issues:
+        return prediction_result({"has_error": False, "sentences": [], "rule": None,
+                                  "reason": "invalid extraction", "channels": {}, "bad_events": issues},
+                                 len(item["sentences"]), rec, issues)
     if not with_state:
         item = unknown_start(item)  # judge and compare from the same unknown start
     events = events_from_extraction(rec["output"], item)
@@ -160,91 +162,17 @@ def predict(args, backend, item, cond, cache):
     # A malformed extracted event is an extraction failure, not a contradiction in the text.
     bad = [v for v in violations if v["rule"] == "bad_event"]
     violations = [v for v in violations if v["rule"] != "bad_event"]
-    return {"has_error": bool(violations),
+    return prediction_result({"has_error": bool(violations),
             "sentences": sorted({v["sentence"] for v in violations}),
             "rule": violations[0]["rule"] if violations else None,
             "reason": "; ".join(v["reason"] for v in violations),
             "channels": {ch: list(mt) for ch, mt in channel_accuracy(states, gold_states).items()},
             "bad_events": [v["reason"] for v in bad],
-            "meta": rec["meta"]}
+            "warnings": [{**v, "evidence": []} for v in violations]}, len(item["sentences"]), rec,
+            [v["reason"] for v in bad])
 
 
 # ---------- scoring ----------
-
-def wilson(k, n, z=1.96):
-    """Wilson 95% interval for k successes in n trials, as [low, high]."""
-    if not n:
-        return [0.0, 1.0]
-    p = k / n
-    center = (p + z * z / (2 * n)) / (1 + z * z / n)
-    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
-    return [max(0.0, center - half), min(1.0, center + half)]
-
-
-def flagged_sentences(pred):
-    """Warnings that an author sees: one per flagged sentence, at least one when the item is flagged."""
-    return max(1, len(set(pred["sentences"]))) if pred["has_error"] else 0
-
-
-def distance_group(row):
-    if row.get("cause") is None:
-        return "-"
-    return "far" if row["error_sentence"] - row["cause"] > FAR else "near"
-
-
-def score(rows, cond):
-    tp = sum(r["gold"] and r["pred"]["has_error"] for r in rows)
-    fp = sum((not r["gold"]) and r["pred"]["has_error"] for r in rows)
-    fn = sum(r["gold"] and not r["pred"]["has_error"] for r in rows)
-    tn = sum((not r["gold"]) and not r["pred"]["has_error"] for r in rows)
-    n_err, n_clean = tp + fn, fp + tn
-    located = [r for r in rows if r["gold"] and r["pred"]["has_error"] and r["error_sentence"] in r["pred"]["sentences"]]
-    precision = tp / (tp + fp) if tp + fp else 0.0
-    recall = tp / n_err if n_err else 0.0
-    out = {
-        "n": len(rows),
-        "accuracy": (tp + tn) / len(rows) if rows else 0.0,
-        "precision": precision,
-        "recall": recall,
-        "f1": 2 * precision * recall / (precision + recall) if precision + recall else 0.0,
-        "false_alarm_rate": fp / n_clean if n_clean else 0.0,
-        "localization": len(located) / n_err if n_err else 0.0,
-        # Of the errors found at the right sentence, how many name the right rule.
-        "rule_accuracy": sum(r["pred"]["rule"] == r["rule"] for r in located) / len(located) if located else 0.0,
-        "always_no_error_accuracy": n_clean / len(rows) if rows else 0.0,
-        "recall_ci": wilson(tp, n_err),
-        "false_alarm_ci": wilson(fp, n_clean),
-    }
-    clean_sentences = sum(r["n_sentences"] for r in rows if not r["gold"])
-    clean_flags = sum(flagged_sentences(r["pred"]) for r in rows if not r["gold"])
-    out["clean_sentences"] = clean_sentences
-    out["false_alarms_per_100_clean_sentences"] = 100 * clean_flags / clean_sentences if clean_sentences else 0.0
-    if cond in ("C", "D"):
-        totals = {}
-        for r in rows:
-            if r["gold"]:
-                continue  # extraction accuracy uses clean items only
-            for ch, (m, t) in r["pred"]["channels"].items():
-                tm, tt = totals.get(ch, (0, 0))
-                totals[ch] = (tm + m, tt + t)
-        out["extraction"] = {ch: (m / t if t else None) for ch, (m, t) in sorted(totals.items())}
-    for field, key_of in (("difficulty", lambda r: r["difficulty"] or "-"), ("rule", lambda r: r["rule"] or "-"),
-                          ("distance", distance_group)):
-        groups = {}
-        for r in rows:
-            if r["gold"]:
-                groups.setdefault(key_of(r), []).append(r)
-        out[f"by_{field}"] = {
-            key: {"n_error": len(g),
-                  "recall": sum(r["pred"]["has_error"] for r in g) / len(g),
-                  "recall_ci": wilson(sum(r["pred"]["has_error"] for r in g), len(g)),
-                  "localization": sum(r["pred"]["has_error"] and r["error_sentence"] in r["pred"]["sentences"]
-                                      for r in g) / len(g)}
-            for key, g in sorted(groups.items())
-        }
-    traps = [r for r in rows if not r["gold"] and r["traps"]]
-    out["trap_false_alarm_rate"] = sum(r["pred"]["has_error"] for r in traps) / len(traps) if traps else 0.0
-    return out
 
 
 def run(args):
@@ -265,7 +193,15 @@ def run(args):
     results = Path(args.results) if args.results else RESULTS
     cache = results / "cache"
     report = {"backend": args.backend, "model": args.model, "effort": args.effort, "trial": args.trial,
-              "data": [str(p) for p in paths], "time": time.strftime("%Y-%m-%d %H:%M:%S"), "conditions": {}}
+              "report_version": 3, "metrics_version": evaluation.METRICS_VERSION,
+              "legacy_metrics_version": 1,
+              "data": [str(p) for p in paths], "time": datetime.now(timezone.utc).isoformat(),
+              "provenance": {"data_sha256": {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
+                             "code_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                                             for p in Path(__file__).parent.glob("*.py")},
+                             "effort_sent": args.effort if args.backend == "anthropic" else None,
+                             "retry_policy": "one attempt per item; backend SDK retries are not item trials"},
+              "conditions": {}}
     conds = args.conditions.split(",")
     if any(c not in CONDITIONS for c in conds):
         print(f"Unknown condition in '{args.conditions}'. Use {', '.join(CONDITIONS)}.", file=sys.stderr)
@@ -275,51 +211,46 @@ def run(args):
         for it in items:
             try:
                 pred = predict(args, backend, it, cond, cache)
-            except Exception as e:  # keep going; failed items count as "no error"
+            except Exception as e:  # preserve the failed attempt separately from the text verdict
                 pred = {"has_error": False, "sentences": [], "rule": None, "reason": f"ERROR: {e}",
-                        "channels": {}, "meta": {}}
+                        "channels": {}, "meta": {}, "status": "invalid_output" if isinstance(e, json.JSONDecodeError)
+                        else "call_error", "verdict": None, "warnings": [], "issues": [str(e)],
+                        "provenance": {"status_source": "runner_exception", "raw_response_checked": False}}
                 print(f"[{cond}] {it['item_id']}: {e}", file=sys.stderr)
             rows.append({"item_id": it["item_id"], "gold": it["error_sentence"] is not None,
+                         "scene_id": it["id"], "annotation_complete": True,
                          "error_sentence": it["error_sentence"], "rule": it["rule"], "cause": it["cause"],
                          "n_sentences": len(it["sentences"]),
                          "difficulty": it["difficulty"], "traps": it["traps"] or [], "pred": pred})
-        report["conditions"][cond] = {"metrics": score(rows, cond), "rows": rows}
+        report["conditions"][cond] = {"metrics": evaluation.evaluate(rows),
+                                      "legacy_metrics": score(rows, cond), "rows": rows}
 
     results.mkdir(parents=True, exist_ok=True)
     trial = f"-trial{args.trial}" if args.trial > 1 else ""
-    name = f"run-v2-{time.strftime('%Y%m%d-%H%M%S')}-{args.backend}-{args.model or 'none'}{trial}.json".replace("/", "_")
-    (results / name).write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    stamp = datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S-%f')
+    name = f"run-v2-{stamp}-{args.backend}-{args.model or 'none'}{trial}.json".replace("/", "_")
+    with (results / name).open("x", encoding="utf-8") as f:
+        f.write(json.dumps(report, ensure_ascii=False, indent=1))
     print_report(report, len(items))
     print(f"saved: {results / name}")
     return 0
 
 
 def print_report(report, n_items):
-    keys = ["accuracy", "precision", "recall", "false_alarm_rate", "localization", "rule_accuracy",
-            "always_no_error_accuracy"]
-    print(f"backend={report['backend']} model={report['model']} items={n_items}")
-    print("cond  " + "  ".join(f"{k[:12]:>12}" for k in keys))
-    for cond, res in report["conditions"].items():
-        m = res["metrics"]
-        print(f"{cond:<5} " + "  ".join(f"{m[k]:>12.2f}" for k in keys))
-    for cond, res in report["conditions"].items():
-        if "extraction" in res["metrics"]:
-            print(f"extraction ({cond}): " + "  ".join(
-                f"{ch} {v:.2f}" if v is not None else f"{ch} -" for ch, v in res["metrics"]["extraction"].items()))
-    print("95% Wilson intervals and false alarms per 100 clean sentences")
-    for cond, res in report["conditions"].items():
-        m = res["metrics"]
-        print(f"{cond:<5} recall {m['recall']:.2f} [{m['recall_ci'][0]:.2f}, {m['recall_ci'][1]:.2f}]"
-              f"  false alarm {m['false_alarm_rate']:.2f} [{m['false_alarm_ci'][0]:.2f}, {m['false_alarm_ci'][1]:.2f}]"
-              f"  per 100 clean sentences {m['false_alarms_per_100_clean_sentences']:.2f} (of {m['clean_sentences']})")
-    print("\nerror items by group (recall / localization)")
-    first = next(iter(report["conditions"].values()))["metrics"]
-    for field in ("difficulty", "distance", "rule"):
-        for key in first[f"by_{field}"]:
-            cells = []
-            for cond, res in report["conditions"].items():
-                g = res["metrics"][f"by_{field}"][key]
-                cells.append(f"{cond} {g['recall']:.2f}/{g['localization']:.2f}")
-            print(f"  {field}={key} (n={first[f'by_{field}'][key]['n_error']}): " + "  ".join(cells))
-    print("trap false alarm rate: " + "  ".join(
-        f"{cond} {res['metrics']['trap_false_alarm_rate']:.2f}" for cond, res in report["conditions"].items()))
+    def fmt(value):
+        return "-" if value is None else f"{value:.3f}"
+
+    print(f"backend={report['backend']} model={report['model']} items={n_items} metrics=v2")
+    print("cond  completed  call/invalid/abstain  localization(all/completed)  false_alarm  sentence_precision")
+    for cond, result in report["conditions"].items():
+        m = result["metrics"]
+        c = m["counts"]
+        print(f"{cond:<5} {c['completed']}/{c['attempted']}  "
+              f"{c['call_error']}/{c['invalid_output']}/{c['undetermined']}  "
+              f"{fmt(m['localization'])}/{fmt(m['localization_completed'])}  "
+              f"{fmt(m['false_alarm_rate'])}  {fmt(m['sentence_precision'])}")
+        print(f"      completed clean/error: {c['completed_clean']}/{c['clean']}, "
+              f"{c['completed_error']}/{c['error']}; false alarms per 100 clean sentences: "
+              f"{fmt(m['false_alarms_per_100_clean_sentences'])}; "
+              f"warnings without position: {c['warnings_without_position']}")
+    print("Historical item metrics and coarse state scores are saved under legacy_metrics (v1).")
